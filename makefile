@@ -26,6 +26,9 @@
  #################################################################################
 
 
+.PHONY: ensure_directories clean osaka
+.PRECIOUS: shackleton
+
 DIR := .
 SRCDIR := $(DIR)/src
 
@@ -56,9 +59,15 @@ SRC_FILES := \
                  
 OBJS := $(SRC_FILES:c=o)
 
-osaka: $(OBJS)
-	cc -o shackleton $(^) $(DIR)/main.c
-	cp shackleton $(DIR)/bin/init
+all: osaka ensure_directories
+
+osaka: shackleton
+shackleton: $(OBJS)
+	cc -o ${@} $(^) $(DIR)/main.c
+	cp ${@} $(DIR)/bin/init
+
+ensure_directories:
+	mkdir -p ./src/files/llvm/junk_output
 
 %.o: %.c
 	cc -c $^ -o $@
