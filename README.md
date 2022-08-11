@@ -40,7 +40,9 @@ LPG solves problems that are sequential.  This is useful for optimizing programs
 
 Shackleton comes pre-built with an LLVM optimizer optimizer (say that 5 times fast) baked into the framework. What that means is that one of the default object types (modules) available to the user is the LLVM_PASS module. Each instance of this module represents a single LLVM_PASS, while an Osaka List Structure (OSL) of this module represents a sequence of LLVM optimization passes that can be applied to a program. The framework iterates through its generations by creating new optimization sequences, applying them to inputted source code, and measuring their fitness by the amount of compute time. The optimization sequence that results in optimized code with the shortest time to run is considered the "best individual".
 
-When the -llvm_optimize flag is provided to the tool, it automatically takes you through a series of questions to input a series of source files to be tested against different optimization sequences.All source files used with this portion of the tool should be placed in src/files/llvm. The tool looks for files in relation to that directory, so if you input a file as "test.cpp" then the tool will look for that file in src/files/llvm/test.cpp. 
+When the `-llvm_optimize` flag is provided to the tool, it automatically takes you through a series of questions to input a series of source files to be tested against different optimization sequences.
+All source files used with this portion of the tool should be placed in `src/files/llvm`.
+The tool looks for files in relation to that directory, so if you input a file as `test.cpp` then the tool will look for that file in `src/files/llvm/test.cpp`. 
 
 --------
 
@@ -86,13 +88,13 @@ the following steps are run from terminal
 
 Once the build completes, check to make sure that your build/bin directory has been populated by a number of tools, including llc, lli, llvm-link, clang specifically. If the make and build was successful, please add the full path to the build/bin directory to the PATH variable on your machine. If you are new to LLVM and want to follow the instructional guide that was the main source of the steps listed below, you can find the presentation here as a recorded lecture and as slides: http://www.mshah.io/fosdem18.html.
 
-You are now ready to build the Shackleton tool. In the terminal, go to the top level directory of Shackleton (where you can see folders bin/, build/, docs/, img/, obj/, and src/). From there you run "make" and Shackleton should be fully built and ready to run! Happy Experimenting!
+You are now ready to build the Shackleton tool. In the terminal, go to the top level directory of Shackleton (where you can see folders `bin/`, `build/`, `docs/`, `img/`, `obj/`, and `src/`). From there you run `make` and Shackleton should be fully built and ready to run! Happy Experimenting!
 
 --------
 
-For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor [Wolfgang Banzhaf](http://www.cse.msu.edu/~banzhafw/) and postdoc [Yuan Yuan](https://www.researchgate.net/profile/Yuan_Yuan73) out of Michigan State University.
+For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was initially created during a summer internship at Arm Ltd. in collaboration with professor [Wolfgang Banzhaf](http://www.cse.msu.edu/~banzhafw/) and postdoc [Yuan Yuan](https://www.researchgate.net/profile/Yuan_Yuan73) out of Michigan State University.
 
-Stella Li (John Hopkins University, sli136@jhu.edu) enhanced this framework during her 2021 summer internship in collaboration between Arm and Michigan State Unviversity. Below is a list of enhancements in Shackleton 2.0: 
+Stella Li (John Hopkins University, sli136@jhu.edu) enhanced this framework during her 2021 summer internship in collaboration between Arm and Michigan State University. Below is a list of enhancements in Shackleton 2.0: 
 
 - Elitism (percentage specified as parameter)
 - New randomly generated individuals
