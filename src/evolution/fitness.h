@@ -50,12 +50,12 @@
  * STATIC
  */
 
-uint32_t (*fpfitness_simple)(node_str *n, bool vis);
-uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
-uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
-double (*fpfitness_llvm_pass)(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
-uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
-uint32_t (*fpfitness_gi_llvm_pass)(node_str *n, bool vis);
+extern uint32_t (*fpfitness_simple)(node_str *n, bool vis);
+extern uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
+extern uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
+extern double (*fpfitness_llvm_pass)(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
+extern uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
+extern uint32_t (*fpfitness_gi_llvm_pass)(node_str *n, bool vis);
 
 /*
  * ROUTINES
