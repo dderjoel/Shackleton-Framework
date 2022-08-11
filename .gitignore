@@ -5,7 +5,7 @@ vgcore.*
 .vscode/
 
 # outputs (mostly csv files)
-*cache*
-*junk_output*
-*params*
+src/files/cache/*
+src/files/llvm/junk_output/*
+src/files/params/*
 exp/*
