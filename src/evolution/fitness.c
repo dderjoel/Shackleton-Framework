@@ -417,98 +417,54 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
                                  const char *cache_id, uint32_t num_runs,
                                  bool fitness_with_var, const char **levels,
                                  const int num_levels) { // added 6/8/2021
-  char build_command[20000];
-  strcpy(build_command, "");
-  FILE *track_fitness_file_ptr;
-  double tol = 0.95;
+
+  const double tol = 0.95;
+
+  char base_file[300] = {'\0'};
+  char build_command[20000] = {'\0'};
+  char opt_command[1000] = {'\0'};
+  char bc_command[1000] = {'\0'};
+  char run_command[1000] = {'\0'};
 
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
-
   llvm_run_command(build_command);
-
+  cache_create_baseline_folder(cache, folder);
   if (!cache) {
     return;
   }
 
-  cache_create_baseline_folder(cache, folder);
-  struct timeval start, end;
-
-  uint32_t result = 0;
-  uint32_t success_runs = 0;
-  int counter = 0;
-
-  double total_time = 0.0;
-  double time_taken = 0.0;
-  double fitness = 0.0;
-
-  char test_file_name[100];
-  char test_file_name_no_path[100];
-  char opt_file[200];
-  char base_file[300] = {'\0'};
-
-  char opt_command[1000];
-  char bc_command[1000];
-  char run_command[1000];
-
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
-    total_time = 0.0;
-    time_taken = 0.0;
-    fitness = 0.0;
     if (strlen(levels[i]) == 0) {
-      strcpy(opt_command, "");
 
-      strcpy(bc_command, "llvm-as ");
-      strcat(bc_command, base_file);
-      strcat(bc_command, "_linked");
-      strcat(bc_command, ".ll");
+      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
+      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
 
-      strcpy(run_command, "lli ");
-      strcat(run_command, base_file);
-      strcat(run_command, "_linked");
-      strcat(run_command, ".bc");
     } else {
-      strcpy(opt_file, "");
-      strcat(opt_file, base_file);
-      strcat(opt_file, "_opt_");
-      strcat(opt_file, levels[i]);
 
-      strcpy(opt_command, "");
-      strcat(opt_command, "opt -");
-      strcat(opt_command, levels[i]);
-      strcat(opt_command, " ");
-      strcat(opt_command, base_file);
-      strcat(opt_command, "_linked.ll -S -o ");
-      strcat(opt_command, opt_file);
-      strcat(opt_command, ".ll");
+      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
+               levels[i], base_file, base_file, levels[i]);
+      llvm_run_command(opt_command);
 
-      strcpy(bc_command, "");
-      strcat(bc_command, "llvm-as ");
-      strcat(bc_command, opt_file);
-      strcat(bc_command, ".ll");
-
-      strcpy(run_command, "");
-      strcat(run_command, "lli ");
-      strcat(run_command, opt_file);
-      strcat(run_command, ".bc");
+      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
+      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
     }
 
-    llvm_run_command(opt_command);
     llvm_run_command(bc_command);
 
-    double all_runtime[num_runs]; // Added 7/7/2021
-    success_runs = 0;
-    time_taken = 0.0;
-    total_time = 0.0;
-    counter = 0;
+    double total_time = 0.0;
+    double time_taken = 0.0;
+    uint32_t success_runs = 0;
+    double all_runtime[num_runs];
+    struct timeval start, end;
 
-    for (uint32_t runs = 0; runs < num_runs; runs++) {
+    for (uint32_t run = 0; run < num_runs; run++) {
 
       gettimeofday(&start, NULL);
 
-      result = llvm_run_command(run_command);
+      int result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
 
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
@@ -516,29 +472,26 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
 
       if (result == 0) {
         success_runs++;
-        total_time = total_time + time_taken;
-        all_runtime[counter++] = time_taken;
+        total_time += time_taken;
+        all_runtime[run] = time_taken;
       }
     }
-    // Added 6/21/2021
-    if (success_runs < num_runs * tol) {
 
+    if (success_runs < num_runs * tol) {
       time_taken = UINT32_MAX;
     } else {
       time_taken = total_time / success_runs;
     }
 
+    double fitness = time_taken;
     if (fitness_with_var) {
-      fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
-    } else {
-      fitness = time_taken;
+      fitness += calc_var(all_runtime, time_taken, success_runs);
     }
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
   }
-  return;
 }
 
 void fitness_pre_cache_log_to_summary(int level_ind, char *folder,
@@ -612,83 +565,44 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
     return;
   }
 
-  struct timeval start, end;
+  const double tol = 0.95;
 
-  uint32_t result = 0;
-  uint32_t success_runs = 0;
-  int counter = 0;
-  double total_time = 0.0;
-  double time_taken = 0.0;
-  double fitness = 0.0;
-  double tol = 0.95;
-
-  char test_file_name[100];
-  char test_file_name_no_path[100];
-  char opt_file[200];
   char base_file[300] = {'\0'};
-
-  char opt_command[1000];
-  char bc_command[1000];
-  char run_command[1000];
+  char opt_command[1000] = {'\0'};
+  char bc_command[1000] = {'\0'};
+  char run_command[1000] = {'\0'};
 
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
-    total_time = 0.0;
-    time_taken = 0.0;
-    fitness = 0.0;
     if (strlen(levels[i]) == 0) {
-      strcpy(opt_command, "");
 
-      strcpy(bc_command, "llvm-as ");
-      strcat(bc_command, base_file);
-      strcat(bc_command, "_linked");
-      strcat(bc_command, ".ll");
+      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
+      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
 
-      strcpy(run_command, "lli ");
-      strcat(run_command, base_file);
-      strcat(run_command, "_linked");
-      strcat(run_command, ".bc");
     } else {
-      strcpy(opt_file, "");
-      strcat(opt_file, base_file);
-      strcat(opt_file, "_opt_");
-      strcat(opt_file, levels[i]);
 
-      strcpy(opt_command, "");
-      strcat(opt_command, "opt -");
-      strcat(opt_command, levels[i]);
-      strcat(opt_command, " ");
-      strcat(opt_command, base_file);
-      strcat(opt_command, "_linked.ll -S -o ");
-      strcat(opt_command, opt_file);
-      strcat(opt_command, ".ll");
+      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
+               levels[i], base_file, base_file, levels[i]);
+      llvm_run_command(opt_command);
 
-      strcpy(bc_command, "");
-      strcat(bc_command, "llvm-as ");
-      strcat(bc_command, opt_file);
-      strcat(bc_command, ".ll");
-
-      strcpy(run_command, "");
-      strcat(run_command, "lli ");
-      strcat(run_command, opt_file);
-      strcat(run_command, ".bc");
+      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
+      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
     }
 
-    llvm_run_command(opt_command);
     llvm_run_command(bc_command);
 
-    double all_runtime[num_runs]; // Added 7/7/2021
-    success_runs = 0;
-    time_taken = 0.0;
-    total_time = 0.0;
-    counter = 0;
+    double total_time = 0.0;
+    double time_taken = 0.0;
+    uint32_t success_runs = 0;
+    double all_runtime[num_runs];
+    struct timeval start, end;
 
-    for (uint32_t runs = 0; runs < num_runs; runs++) {
+    for (uint32_t run = 0; run < num_runs; run++) {
 
       gettimeofday(&start, NULL);
 
-      result = llvm_run_command(run_command);
+      int result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
 
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
@@ -696,29 +610,27 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
 
       if (result == 0) {
         success_runs++;
-        total_time = total_time + time_taken;
-        all_runtime[counter++] = time_taken;
+        total_time += time_taken;
+        all_runtime[run] = time_taken;
       }
     }
     if (success_runs < num_runs * tol) {
-
       time_taken = UINT32_MAX;
     } else {
       time_taken = total_time / success_runs;
     }
 
+    double fitness = time_taken;
     if (fitness_with_var) {
-      fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
-    } else {
-      fitness = time_taken;
+      fitness += calc_var(all_runtime, time_taken, success_runs);
     }
+
     printf("LLVM opt level: %s, average time=%lf over %d success runs, "
            "fitness=%lf\n",
            strlen(levels[i]) == 0 ? "no_opt" : levels[i], time_taken,
            success_runs, fitness);
     track_fitness[i] = fitness; // Added 6/8/2021
   }
-  return;
 }
 
 /*
@@ -840,40 +752,28 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
                          DataNode *indiv_data, uint32_t num_runs, int gen,
                          bool fitness_with_var) {
 
-  double fitness;
-  fitness = indiv_data->fitness;
+  const double tol = 0.95;
+
+  char file_name[300] = {'\0'};
+  char base_name[300] = {'\0'};
+  char input_file[300] = {'\0'};
+  char output_file[300] = {'\0'};
+  char base_file[300] = {'\0'};
+  char opt_command[5000] = {'\0'};
+  char run_command[5000] = {'\0'};
+
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
   }
-  uint32_t success_runs = 0; // Added 6/21/2021
-
-  char file_name[300];
-  char base_name[300];
-  char input_file[300];
-  char output_file[300];
-  char base_file[300] = {'\0'};
-
-  struct timeval start, end;
-
-  uint32_t result = 0;
-  double tol = 0.95;
-
-  build_basefilename(base_file, 300, file, cache_id);
-
-  strcpy(input_file, base_file);
-  strcat(input_file, "_linked.ll");
-
-  strcpy(output_file, base_file);
-  strcat(output_file, "_shackleton.ll");
 
   if (vis) {
     printf("Calculating fitness of individual\n");
   }
 
-  char opt_command[5000];
-  char run_command[5000];
-  strcpy(opt_command, "");
-  strcpy(run_command, "");
+  build_basefilename(base_file, 300, file, cache_id);
+
+  snprintf(input_file, 300, "%s_linked.ll", base_file);
+  snprintf(output_file, 300, "%s_shackleton.ll", base_file);
 
   llvm_form_opt_command(indiv, NULL, 0, input_file, output_file, opt_command);
   llvm_form_exec_code_command_from_ll(output_file, run_command);
@@ -882,14 +782,15 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   double total_time = 0.0;
   double time_taken = 0.0;
-  double all_runtime[num_runs]; // Added 7/7/2021
-  int counter = 0;              // Added 7/7/2021
+  uint32_t success_runs = 0;
+  double all_runtime[num_runs];
+  struct timeval start, end;
 
-  for (uint32_t runs = 0; runs < num_runs; runs++) {
+  for (uint32_t run = 0; run < num_runs; run++) {
 
     gettimeofday(&start, NULL);
 
-    result = llvm_run_command(run_command);
+    int result = llvm_run_command(run_command);
     gettimeofday(&end, NULL);
 
     time_taken = (end.tv_sec - start.tv_sec) * 1e6;
@@ -899,7 +800,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
       success_runs++;
       total_time += time_taken;
 
-      all_runtime[counter++] = time_taken; // Added 7/7/2021
+      all_runtime[run] = time_taken; // Added 7/7/2021
     }
   }
 
@@ -910,9 +811,8 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
     time_taken = total_time / success_runs;
   }
 
-  fitness = node_record_data(indiv_data, indiv, all_runtime, time_taken,
-                             success_runs, gen, fitness_with_var);
-  return fitness;
+  return node_record_data(indiv_data, indiv, all_runtime, time_taken,
+                          success_runs, gen, fitness_with_var);
 }
 
 /*
@@ -1057,98 +957,52 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
                                     const char *cache_id, uint32_t num_runs,
                                     bool fitness_with_var, const char **levels,
                                     const int num_levels) { // added 6/8/2021
-  char build_command[20000];
-  strcpy(build_command, "");
-  FILE *track_fitness_file_ptr;
-  double tol = 0.95;
+
+  char base_file[300] = {'\0'};
+  char build_command[20000] = {'\0'};
+  char opt_command[1000] = {'\0'};
+  char bc_command[1000] = {'\0'};
+  char run_command[1000] = {'\0'};
 
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
-
   llvm_run_command(build_command);
+  cache_create_baseline_folder(cache, folder);
 
   if (!cache) {
     return;
   }
-
-  cache_create_baseline_folder(cache, folder);
-  struct timeval start, end;
-
-  uint32_t result = 0;
-  uint32_t success_runs = 0;
-  int counter = 0;
-
-  double total_time = 0.0;
-  double time_taken = 0.0;
-  double fitness = 0.0;
-
-  char test_file_name[100];
-  char test_file_name_no_path[100];
-  char opt_file[200];
-  char base_file[300] = {'\0'};
-
-  char opt_command[1000];
-  char bc_command[1000];
-  char run_command[1000];
-
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
-    total_time = 0.0;
-    time_taken = 0.0;
-    fitness = 0.0;
     if (strlen(levels[i]) == 0) {
-      strcpy(opt_command, "");
 
-      strcpy(bc_command, "llvm-as ");
-      strcat(bc_command, base_file);
-      strcat(bc_command, "_linked");
-      strcat(bc_command, ".ll");
+      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
+      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
 
-      strcpy(run_command, "lli ");
-      strcat(run_command, base_file);
-      strcat(run_command, "_linked");
-      strcat(run_command, ".bc");
     } else {
-      strcpy(opt_file, "");
-      strcat(opt_file, base_file);
-      strcat(opt_file, "_opt_");
-      strcat(opt_file, levels[i]);
 
-      strcpy(opt_command, "");
-      strcat(opt_command, "opt -");
-      strcat(opt_command, levels[i]);
-      strcat(opt_command, " ");
-      strcat(opt_command, base_file);
-      strcat(opt_command, "_linked.ll -S -o ");
-      strcat(opt_command, opt_file);
-      strcat(opt_command, ".ll");
+      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
+               levels[i], base_file, base_file, levels[i]);
+      llvm_run_command(opt_command);
 
-      strcpy(bc_command, "");
-      strcat(bc_command, "llvm-as ");
-      strcat(bc_command, opt_file);
-      strcat(bc_command, ".ll");
-
-      strcpy(run_command, "");
-      strcat(run_command, "lli ");
-      strcat(run_command, opt_file);
-      strcat(run_command, ".bc");
+      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
+      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
     }
 
-    llvm_run_command(opt_command);
     llvm_run_command(bc_command);
 
-    double all_runtime[num_runs]; // Added 7/7/2021
-    success_runs = 0;
-    time_taken = 0.0;
-    total_time = 0.0;
-    counter = 0;
+    double total_time = 0.0;
+    double time_taken = 0.0;
+    uint32_t success_runs = 0;
+    double all_runtime[num_runs];
+    struct timeval start, end;
 
-    for (uint32_t runs = 0; runs < num_runs; runs++) {
+    for (uint32_t run = 0; run < num_runs; run++) {
 
       gettimeofday(&start, NULL);
 
-      result = llvm_run_command(run_command);
+      int result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
 
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
@@ -1156,21 +1010,21 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
       if (result == 0) {
         success_runs++;
-        total_time = total_time + time_taken;
-        all_runtime[counter++] = time_taken;
+        total_time += time_taken;
+        all_runtime[run] = time_taken;
       }
     }
     time_taken = total_time / success_runs;
+
+    double fitness = time_taken;
     if (fitness_with_var) {
-      fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
-    } else {
-      fitness = time_taken;
+      fitness += calc_var(all_runtime, time_taken, success_runs);
     }
+
     track_fitness[i] = fitness; // Added 6/8/2021
 
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
   }
-  return;
 }
 
 /*
@@ -1245,74 +1099,54 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
                             bool fitness_with_var) {
 
-  char *sequence = malloc(sizeof(char) * 2000);
-  sequence = seq_str_fitness(indiv);
+  const double tol = 0.95;
 
-  double fitness;
-  fitness = indiv_data->fitness;
+  char base_name[300] = {'\0'};
+  char output_file[300] = {'\0'};
+  char base_file[300] = {'\0'};
+  char opt_command[5000] = {'\0'};
+  char run_command[5000] = {'\0'};
+
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
   }
-  uint32_t success_runs = 0;
-
-  char base_name[300];
-  char input_file[300];
-  char output_file[300];
-  char base_file[300] = {'\0'};
-
-  struct timeval start, end;
-
-  uint32_t result = 0;
-  double tol = 0.95;
-
-  // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
-  build_basefilename(base_file, 300, file, cache_id);
-
-  strcpy(input_file, base_file);
-  strcat(input_file, "_linked.ll");
-
-  strcpy(output_file, base_file);
-  strcat(output_file, "_shackleton.ll");
 
   if (vis) {
     printf("Calculating fitness of individual\n");
   }
 
-  char opt_command[5000];
-  char run_command[5000];
-  strcpy(opt_command, "");
-  strcat(opt_command, "opt ");
-  strcat(opt_command, sequence);
-  strcat(opt_command, "-S ");
-  strcat(opt_command, input_file);
-  strcat(opt_command, " -o ");
-  strcat(opt_command, output_file);
+  char *sequence = seq_str_fitness(indiv);
 
-  free(sequence);
+  // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
+  build_basefilename(base_file, 300, file, cache_id);
 
-  strcpy(run_command, "");
+  snprintf(output_file, 300, "%s_shackleton.ll", base_file);
+  snprintf(opt_command, 5000, "opt %s -S %s_linked.ll -o %s", sequence,
+           base_file, output_file);
+
+  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
   llvm_form_exec_code_command_from_ll(output_file, run_command);
 
   llvm_run_command(opt_command);
 
   double total_time = 0.0;
   double time_taken = 0.0;
-  double all_runtime[num_runs]; // Added 7/7/2021
-  int counter = 0;              // Added 7/7/2021
+  uint32_t success_runs = 0;
+  double all_runtime[num_runs];
+  struct timeval start, end;
 
-  // printf("run command: %s\n", run_command);
-  for (uint32_t runs = 0; runs < num_runs; runs++) {
+  for (uint32_t run = 0; run < num_runs; run++) {
 
     gettimeofday(&start, NULL);
 
-    result = llvm_run_command(run_command);
+    int result = llvm_run_command(run_command);
     gettimeofday(&end, NULL);
     time_taken = (end.tv_sec - start.tv_sec) * 1e6;
     time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
     if (result == 0) {
       success_runs++;
-      total_time = total_time + time_taken;
-      all_runtime[counter++] = time_taken; // Added 7/7/2021
+      total_time += time_taken;
+      all_runtime[run] = time_taken;
     }
   }
   if (success_runs < num_runs * tol) {
@@ -1320,9 +1154,9 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   } else {
     time_taken = total_time / success_runs;
   }
-  fitness = node_record_data(indiv_data, indiv, all_runtime, time_taken,
-                             success_runs, gen, fitness_with_var);
-  return fitness;
+
+  return node_record_data(indiv_data, indiv, all_runtime, time_taken,
+                          success_runs, gen, fitness_with_var);
 }
 
 /*
