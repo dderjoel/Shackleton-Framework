@@ -50,6 +50,7 @@ SRC_FILES := \
 	$(SRCDIR)/module/simple.c \
 	$(SRCDIR)/osaka/osaka.c \
 	$(SRCDIR)/osaka/osaka_test.c \
+	$(SRCDIR)/passes/llvm_pass_dflt.c \
 	$(SRCDIR)/support/cJSON.c \
 	$(SRCDIR)/support/cache.c \
 	$(SRCDIR)/support/llvm.c \
