@@ -178,7 +178,8 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
                 printf("\t[2] ASSEMBLER\n");
                 printf("\t[3] OSAKA_STRING\n");
                 printf("\t[4] LLVM_PASS\n");
-                printf("\t[5] BINARY_UP_TO_512\n\n");
+                printf("\t[5] BINARY_UP_TO_512\n");
+                printf("\t[6] GI_LLVM_PASS\n\n");
                 printf("In addition to changing the type of object that will have a sequence evolved for it, you can also change the parameters of the evolutionary process itself."
                                     " Here are the options available as well as a short description and their default values:\n\n");
                 printf("\t[1] num_generations = %d\t\t-- Maximum number of generations for an evolutionary run\n", num_generations);
@@ -496,7 +497,7 @@ osaka_object_typ set_obj_type(uint32_t argc, char* argv[]) {
     }
     if (!type_num_set) {
         osaka_print_available_object_types();
-        printf("\nWhich object type will you be using? 1/2/3/4/5: ");
+        printf("\nWhich object type will you be using? 1/2/3/4/5/6: ");
         scanf("%s", type);
         printf("\n");
     }

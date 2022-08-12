@@ -123,6 +123,9 @@ void llvm_form_opt_command(node_str* indiv, char** passes, uint32_t passes_size,
     strcat(command, input_file);
     strcat(command, " -o ");
     strcat(command, output_file);
+    
+    strcat(command, " && llvm-as ");
+    strcat(command, output_file);
 }
 
 /*
@@ -521,9 +524,7 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command) {
         exit(0);
     }
 
-    strcpy(command, "llvm-as ");
-    strcat(command, file);
-    strcat(command, " && lli ");
+    strcpy(command, "lli ");
     strcat(command, file_name);
     strcat(command, ".bc");
 
