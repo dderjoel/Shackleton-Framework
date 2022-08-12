@@ -758,7 +758,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   char base_name[300] = {'\0'};
   char input_file[300] = {'\0'};
   char output_file[300] = {'\0'};
-  char base_file[300] = {'\0'};
+  char base_file[280] = {'\0'};
   char opt_command[5000] = {'\0'};
   char run_command[5000] = {'\0'};
 
@@ -770,7 +770,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
     printf("Calculating fitness of individual\n");
   }
 
-  build_basefilename(base_file, 300, file, cache_id);
+  build_basefilename(base_file, 280, file, cache_id);
 
   snprintf(input_file, 300, "%s_linked.ll", base_file);
   snprintf(output_file, 300, "%s_shackleton.ll", base_file);
@@ -799,8 +799,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
     if (result == 0) {
       success_runs++;
       total_time += time_taken;
-
-      all_runtime[run] = time_taken; // Added 7/7/2021
+      all_runtime[run] = time_taken;
     }
   }
 
@@ -1103,7 +1102,7 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   char base_name[300] = {'\0'};
   char output_file[300] = {'\0'};
-  char base_file[300] = {'\0'};
+  char base_file[280] = {'\0'};
   char opt_command[5000] = {'\0'};
   char run_command[5000] = {'\0'};
 
@@ -1118,7 +1117,7 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   char *sequence = seq_str_fitness(indiv);
 
   // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
-  build_basefilename(base_file, 300, file, cache_id);
+  build_basefilename(base_file, 280, file, cache_id);
 
   snprintf(output_file, 300, "%s_shackleton.ll", base_file);
   snprintf(opt_command, 5000, "opt %s -S %s_linked.ll -o %s", sequence,
