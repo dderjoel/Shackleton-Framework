@@ -427,10 +427,15 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
   const double tol = 0.95;
 
   char base_file[300] = {'\0'};
+  char input_file_base[300] = {'\0'};
+  char out_file_base[300] = {'\0'};
+  char so_in_file[300] = {'\0'};
+  char so_file[300] = {'\0'};
   char build_command[20000] = {'\0'};
   char opt_command[1000] = {'\0'};
   char bc_command[1000] = {'\0'};
   char run_command[1000] = {'\0'};
+  char so_command[5000] = {'\0'};
 
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
@@ -443,21 +448,36 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
+
+    snprintf(input_file_base, 300, "%s_linked", base_file);
+
     if (strlen(levels[i]) == 0) {
 
-      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
-      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
+      snprintf(so_in_file, 300, "%s.ll", input_file_base);
+      snprintf(so_file, 300, "%s.so", input_file_base);
 
     } else {
 
-      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
-               levels[i], base_file, base_file, levels[i]);
+      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
+      snprintf(so_in_file, 300, "%s.ll", out_file_base);
+      snprintf(so_file, 300, "%s.so", out_file_base);
+
+      // optimze
+      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
+               input_file_base, so_in_file);
       llvm_run_command(opt_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
-      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
     }
 
+    // compile ll to shared object
+    build_command_ll2so(so_command, 5000, so_in_file, so_file);
+    llvm_run_command(so_command);
+
+    // assemble ll to bc
     llvm_run_command(bc_command);
 
     double total_time = 0.0;
@@ -574,28 +594,48 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
   const double tol = 0.95;
 
   char base_file[300] = {'\0'};
+  char input_file_base[300] = {'\0'};
+  char out_file_base[300] = {'\0'};
+  char so_in_file[300] = {'\0'};
+  char so_file[300] = {'\0'};
   char opt_command[1000] = {'\0'};
   char bc_command[1000] = {'\0'};
   char run_command[1000] = {'\0'};
+  char so_command[5000] = {'\0'};
 
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
+
+    snprintf(input_file_base, 300, "%s_linked", base_file);
+
     if (strlen(levels[i]) == 0) {
 
-      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
-      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
+      snprintf(so_in_file, 300, "%s.ll", input_file_base);
+      snprintf(so_file, 300, "%s.so", input_file_base);
 
     } else {
 
-      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
-               levels[i], base_file, base_file, levels[i]);
+      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
+      snprintf(so_in_file, 300, "%s.ll", out_file_base);
+      snprintf(so_file, 300, "%s.so", out_file_base);
+
+      // optimze
+      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
+               input_file_base, so_in_file);
       llvm_run_command(opt_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
-      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
     }
 
+    // compile ll to shared object
+    build_command_ll2so(so_command, 5000, so_in_file, so_file);
+    llvm_run_command(so_command);
+
+    // assemble ll to bc
     llvm_run_command(bc_command);
 
     double total_time = 0.0;
@@ -973,6 +1013,8 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
   char base_file[300] = {'\0'};
   char input_file_base[300] = {'\0'};
   char out_file_base[300] = {'\0'};
+  char so_in_file[300] = {'\0'};
+  char so_file[300] = {'\0'};
   char build_command[20000] = {'\0'};
   char opt_command[1000] = {'\0'};
   char bc_command[1000] = {'\0'};
@@ -990,21 +1032,36 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
+
+    snprintf(input_file_base, 300, "%s_linked", base_file);
+
     if (strlen(levels[i]) == 0) {
 
-      snprintf(bc_command, 1000, "llvm-as %s_linked.ll", base_file);
-      snprintf(run_command, 1000, "lli %s_linked.bc", base_file);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
+      snprintf(so_in_file, 300, "%s.ll", input_file_base);
+      snprintf(so_file, 300, "%s.so", input_file_base);
 
     } else {
 
-      snprintf(opt_command, 1000, "opt -%s %s_linked.ll -S -o %s_opt_%s.ll",
-               levels[i], base_file, base_file, levels[i]);
+      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
+      snprintf(so_in_file, 300, "%s.ll", out_file_base);
+      snprintf(so_file, 300, "%s.so", out_file_base);
+
+      // optimze
+      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
+               input_file_base, so_in_file);
       llvm_run_command(opt_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s_opt_%s.ll", base_file, levels[i]);
-      snprintf(run_command, 1000, "lli %s_opt_%s.bc", base_file, levels[i]);
+      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
+      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
     }
 
+    // compile ll to shared object
+    build_command_ll2so(so_command, 5000, so_in_file, so_file);
+    llvm_run_command(so_command);
+
+    // assemble ll to bc
     llvm_run_command(bc_command);
 
     double total_time = 0.0;
