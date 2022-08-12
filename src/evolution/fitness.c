@@ -381,6 +381,12 @@ void build_basefilename(char *dest, const int len_dest, const char *file,
            t != NULL ? t + 1 : working_cpy, cache_id);
 };
 
+void build_command_ll2so(char *dest, const int len_dest, const char *ll,
+                         const char *so) {
+  snprintf(dest, len_dest, "clang %s -shared -fpic -fpie -o %s", ll, so);
+  printf("compiling ll to so with %s\n", dest);
+}
+
 /*
  * NAME
  *
@@ -759,8 +765,10 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   char input_file[300] = {'\0'};
   char output_file[300] = {'\0'};
   char base_file[280] = {'\0'};
+  char so_file[300] = {'\0'};
   char opt_command[5000] = {'\0'};
   char run_command[5000] = {'\0'};
+  char so_command[5000] = {'\0'};
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
@@ -771,14 +779,17 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   }
 
   build_basefilename(base_file, 280, file, cache_id);
-
   snprintf(input_file, 300, "%s_linked.ll", base_file);
   snprintf(output_file, 300, "%s_shackleton.ll", base_file);
+  snprintf(so_file, 300, "%s_shackleton.so", base_file);
 
+  // optimze
   llvm_form_opt_command(indiv, NULL, 0, input_file, output_file, opt_command);
-  llvm_form_exec_code_command_from_ll(output_file, run_command);
-
   llvm_run_command(opt_command);
+
+  // compile ll to shared object
+  build_command_ll2so(so_command, 5000, output_file, so_file);
+  llvm_run_command(so_command);
 
   double total_time = 0.0;
   double time_taken = 0.0;
@@ -786,6 +797,8 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   double all_runtime[num_runs];
   struct timeval start, end;
 
+  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
+  llvm_form_exec_code_command_from_ll(output_file, run_command);
   for (uint32_t run = 0; run < num_runs; run++) {
 
     gettimeofday(&start, NULL);
@@ -958,10 +971,13 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
                                     const int num_levels) { // added 6/8/2021
 
   char base_file[300] = {'\0'};
+  char input_file_base[300] = {'\0'};
+  char out_file_base[300] = {'\0'};
   char build_command[20000] = {'\0'};
   char opt_command[1000] = {'\0'};
   char bc_command[1000] = {'\0'};
   char run_command[1000] = {'\0'};
+  char so_command[5000] = {'\0'};
 
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
@@ -1102,9 +1118,11 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   char base_name[300] = {'\0'};
   char output_file[300] = {'\0'};
+  char so_file[300] = {'\0'};
   char base_file[280] = {'\0'};
   char opt_command[5000] = {'\0'};
   char run_command[5000] = {'\0'};
+  char so_command[5000] = {'\0'};
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
@@ -1118,15 +1136,17 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
   build_basefilename(base_file, 280, file, cache_id);
-
   snprintf(output_file, 300, "%s_shackleton.ll", base_file);
-  snprintf(opt_command, 5000, "opt %s -S %s_linked.ll -o %s", sequence,
-           base_file, output_file);
+  snprintf(so_file, 300, "%s_shackleton.so", base_file);
 
-  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
-  llvm_form_exec_code_command_from_ll(output_file, run_command);
-
+  // optimze
+  snprintf(opt_command, 5000, "opt %s -S %s_linked.ll -o %s_shackleton.ll",
+           sequence, base_file, base_file);
   llvm_run_command(opt_command);
+
+  // compile ll to so
+  build_command_ll2so(so_command, 5000, output_file, so_file);
+  llvm_run_command(so_command);
 
   double total_time = 0.0;
   double time_taken = 0.0;
@@ -1134,6 +1154,8 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   double all_runtime[num_runs];
   struct timeval start, end;
 
+  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
+  llvm_form_exec_code_command_from_ll(output_file, run_command);
   for (uint32_t run = 0; run < num_runs; run++) {
 
     gettimeofday(&start, NULL);
