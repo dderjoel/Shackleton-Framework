@@ -59,13 +59,16 @@ SRC_FILES := \
 	$(SRCDIR)/support/visualization.c \
                  
 OBJS := $(SRC_FILES:c=o)
+LIB_MS=./MeasureSuite/libmeasuresuite.a
 
 all: osaka ensure_directories
 
 osaka: shackleton
-shackleton: $(OBJS)
-	cc -o ${@} $(^) $(DIR)/main.c
-	cp ${@} $(DIR)/bin/init
+shackleton: $(OBJS) $(LIB_MS)
+	cc -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm -lassemblyline
+
+$(LIB_MS):
+	make -C ./MeasureSuite/ libmeasuresuite.a
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output

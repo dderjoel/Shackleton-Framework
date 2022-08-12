@@ -34,6 +34,7 @@
  */
 
 #include "fitness.h"
+#include "../../MeasureSuite/src/include/measuresuite.h"
 #define BILLION 1000000000L;
 /*
  * ROUTINES
@@ -423,6 +424,8 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
                                  const char *cache_id, uint32_t num_runs,
                                  bool fitness_with_var, const char **levels,
                                  const int num_levels) { // added 6/8/2021
+  measuresuite_t ms;
+  const uint64_t bounds[] = {-1};
 
   const double tol = 0.95;
 
@@ -477,36 +480,21 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
     build_command_ll2so(so_command, 5000, so_in_file, so_file);
     llvm_run_command(so_command);
 
-    // assemble ll to bc
-    llvm_run_command(bc_command);
+    const int batchsize = 100;
+    /** make num_runs uneven so we have one median  */
+    num_runs |= 0b1;
+    ms_measure_lib_only(ms, batchsize, num_runs);
 
-    double total_time = 0.0;
-    double time_taken = 0.0;
-    uint32_t success_runs = 0;
+    const uint64_t *cycles;
+    ms_get_libcycles(ms, &cycles);
+    // cycles is now an array of length num_runs, which contains cycle counts
+
+    double time_taken = median(cycles, num_runs);
+    uint32_t success_runs = num_runs;
     double all_runtime[num_runs];
-    struct timeval start, end;
 
     for (uint32_t run = 0; run < num_runs; run++) {
-
-      gettimeofday(&start, NULL);
-
-      int result = llvm_run_command(run_command);
-      gettimeofday(&end, NULL);
-
-      time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-      time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-      if (result == 0) {
-        success_runs++;
-        total_time += time_taken;
-        all_runtime[run] = time_taken;
-      }
-    }
-
-    if (success_runs < num_runs * tol) {
-      time_taken = UINT32_MAX;
-    } else {
-      time_taken = total_time / success_runs;
+      all_runtime[run] = (double)cycles[run];
     }
 
     double fitness = time_taken;
@@ -590,6 +578,8 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
   if (!cache) {
     return;
   }
+  measuresuite_t ms;
+  const uint64_t bounds[] = {-1};
 
   const double tol = 0.95;
 
@@ -635,35 +625,21 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
     build_command_ll2so(so_command, 5000, so_in_file, so_file);
     llvm_run_command(so_command);
 
-    // assemble ll to bc
-    llvm_run_command(bc_command);
+    const int batchsize = 100;
+    /** make num_runs uneven so we have one median  */
+    num_runs |= 0b1;
+    ms_measure_lib_only(ms, batchsize, num_runs);
 
-    double total_time = 0.0;
-    double time_taken = 0.0;
-    uint32_t success_runs = 0;
+    const uint64_t *cycles;
+    ms_get_libcycles(ms, &cycles);
+    // cycles is now an array of length num_runs, which contains cycle counts
+
+    double time_taken = median(cycles, num_runs);
+    uint32_t success_runs = num_runs;
     double all_runtime[num_runs];
-    struct timeval start, end;
 
     for (uint32_t run = 0; run < num_runs; run++) {
-
-      gettimeofday(&start, NULL);
-
-      int result = llvm_run_command(run_command);
-      gettimeofday(&end, NULL);
-
-      time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-      time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-      if (result == 0) {
-        success_runs++;
-        total_time += time_taken;
-        all_runtime[run] = time_taken;
-      }
-    }
-    if (success_runs < num_runs * tol) {
-      time_taken = UINT32_MAX;
-    } else {
-      time_taken = total_time / success_runs;
+      all_runtime[run] = (double)cycles[run];
     }
 
     double fitness = time_taken;
@@ -797,6 +773,8 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
                          char *cache_file, const char *cache_id,
                          DataNode *indiv_data, uint32_t num_runs, int gen,
                          bool fitness_with_var) {
+  measuresuite_t ms;
+  const uint64_t bounds[] = {-1};
 
   const double tol = 0.95;
 
@@ -830,38 +808,26 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   // compile ll to shared object
   build_command_ll2so(so_command, 5000, output_file, so_file);
   llvm_run_command(so_command);
+  ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "fiat_25519_carry_mul");
 
-  double total_time = 0.0;
-  double time_taken = 0.0;
-  uint32_t success_runs = 0;
+  const int batchsize = 100;
+  /** make num_runs uneven so we have one median  */
+  num_runs |= 0b1;
+  ms_measure_lib_only(ms, batchsize, num_runs);
+
+  const uint64_t *cycles;
+  ms_get_libcycles(ms, &cycles);
+  // cycles is now an array of length num_runs, which contains cycle counts
+
+  double time_taken = median(cycles, num_runs);
+  uint32_t success_runs = num_runs;
   double all_runtime[num_runs];
-  struct timeval start, end;
 
-  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
-  llvm_form_exec_code_command_from_ll(output_file, run_command);
   for (uint32_t run = 0; run < num_runs; run++) {
-
-    gettimeofday(&start, NULL);
-
-    int result = llvm_run_command(run_command);
-    gettimeofday(&end, NULL);
-
-    time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-    time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-    if (result == 0) {
-      success_runs++;
-      total_time += time_taken;
-      all_runtime[run] = time_taken;
-    }
+    all_runtime[run] = (double)cycles[run];
   }
 
-  // Added 6/21/2021
-  if (success_runs < num_runs * tol) {
-    time_taken = UINT32_MAX;
-  } else {
-    time_taken = total_time / success_runs;
-  }
+  ms_measure_end(ms);
 
   return node_record_data(indiv_data, indiv, all_runtime, time_taken,
                           success_runs, gen, fitness_with_var);
@@ -1009,6 +975,8 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
                                     const char *cache_id, uint32_t num_runs,
                                     bool fitness_with_var, const char **levels,
                                     const int num_levels) { // added 6/8/2021
+  measuresuite_t ms;
+  const uint64_t bounds[] = {-1};
 
   char base_file[300] = {'\0'};
   char input_file_base[300] = {'\0'};
@@ -1061,32 +1029,22 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
     build_command_ll2so(so_command, 5000, so_in_file, so_file);
     llvm_run_command(so_command);
 
-    // assemble ll to bc
-    llvm_run_command(bc_command);
+    const int batchsize = 100;
+    /** make num_runs uneven so we have one median  */
+    num_runs |= 0b1;
+    ms_measure_lib_only(ms, batchsize, num_runs);
 
-    double total_time = 0.0;
-    double time_taken = 0.0;
-    uint32_t success_runs = 0;
+    const uint64_t *cycles;
+    ms_get_libcycles(ms, &cycles);
+    // cycles is now an array of length num_runs, which contains cycle counts
+
+    double time_taken = median(cycles, num_runs);
+    uint32_t success_runs = num_runs;
     double all_runtime[num_runs];
-    struct timeval start, end;
 
     for (uint32_t run = 0; run < num_runs; run++) {
-
-      gettimeofday(&start, NULL);
-
-      int result = llvm_run_command(run_command);
-      gettimeofday(&end, NULL);
-
-      time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-      time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-      if (result == 0) {
-        success_runs++;
-        total_time += time_taken;
-        all_runtime[run] = time_taken;
-      }
+      all_runtime[run] = (double)cycles[run];
     }
-    time_taken = total_time / success_runs;
 
     double fitness = time_taken;
     if (fitness_with_var) {
@@ -1170,6 +1128,8 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             char *cache_file, const char *cache_id,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
                             bool fitness_with_var) {
+  measuresuite_t ms;
+  const uint64_t bounds[] = {-1};
 
   const double tol = 0.95;
 
@@ -1178,7 +1138,6 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   char so_file[300] = {'\0'};
   char base_file[280] = {'\0'};
   char opt_command[5000] = {'\0'};
-  char run_command[5000] = {'\0'};
   char so_command[5000] = {'\0'};
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
@@ -1205,34 +1164,26 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   build_command_ll2so(so_command, 5000, output_file, so_file);
   llvm_run_command(so_command);
 
-  double total_time = 0.0;
-  double time_taken = 0.0;
-  uint32_t success_runs = 0;
+  ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "fiat_25519_carry_mul");
+
+  const int batchsize = 100;
+  /** make num_runs uneven so we have one median  */
+  num_runs |= 0b1;
+  ms_measure_lib_only(ms, batchsize, num_runs);
+
+  const uint64_t *cycles;
+  ms_get_libcycles(ms, &cycles);
+  // cycles is now an array of length num_runs, which contains cycle counts
+
+  double time_taken = median(cycles, num_runs);
+  uint32_t success_runs = num_runs;
   double all_runtime[num_runs];
-  struct timeval start, end;
 
-  // *run_command = llvm-as output_file && lli output_file(.ll=.bc)
-  llvm_form_exec_code_command_from_ll(output_file, run_command);
   for (uint32_t run = 0; run < num_runs; run++) {
-
-    gettimeofday(&start, NULL);
-
-    int result = llvm_run_command(run_command);
-    gettimeofday(&end, NULL);
-    time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-    time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-    if (result == 0) {
-      success_runs++;
-      total_time += time_taken;
-      all_runtime[run] = time_taken;
-    }
-  }
-  if (success_runs < num_runs * tol) {
-    time_taken = UINT32_MAX;
-  } else {
-    time_taken = total_time / success_runs;
+    all_runtime[run] = (double)cycles[run];
   }
 
+  ms_measure_end(ms);
   return node_record_data(indiv_data, indiv, all_runtime, time_taken,
                           success_runs, gen, fitness_with_var);
 }
