@@ -357,6 +357,31 @@ uint32_t fitness_osaka_string(node_str *indiv, bool vis) {
 }
 
 /*
+ * writes ./src/files/llvm/junk_output/<file>_<cache_id> into @param dest
+ */
+void build_basefilename(char *dest, const int len_dest, const char *file,
+                        const char *cache_id) {
+
+  char working_cpy[1000];
+  strncpy(working_cpy, file, 1000);
+
+  char *p = strchr(working_cpy, '.');
+  if (!p) {
+    printf(
+        "File (%s) must have valid extension such as .c or .cpp.\n\nAborting "
+        "code\n\n",
+        file);
+    exit(0);
+  }
+  *p = 0;
+
+  char *t = strrchr(working_cpy, '/');
+
+  snprintf(dest, len_dest, "src/files/llvm/junk_output/%s_%s",
+           t != NULL ? t + 1 : working_cpy, cache_id);
+};
+
+/*
  * NAME
  *
  *   fitness_pre_cache_llvm_pass
@@ -419,36 +444,14 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
 
   char test_file_name[100];
   char test_file_name_no_path[100];
-  char junk_dir[200];
   char opt_file[200];
-  char base_file[200];
+  char base_file[300] = {'\0'};
 
   char opt_command[1000];
   char bc_command[1000];
   char run_command[1000];
 
-  strcpy(test_file_name, test_file);
-  char *p = strchr(test_file_name, '.');
-
-  if (!p) {
-    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
-           "code\n\n");
-    exit(0);
-  }
-  *p = 0;
-
-  strcpy(test_file_name_no_path, "");
-  char *t = strrchr(test_file_name, '/');
-  if (!t) {
-    strcpy(test_file_name_no_path, test_file_name);
-  } else
-    strcpy(test_file_name_no_path, t + 1);
-
-  strcpy(junk_dir, "src/files/llvm/junk_output/");
-  strcpy(base_file, junk_dir);
-  strcat(base_file, test_file_name_no_path);
-  strcat(base_file, "_");
-  strcat(base_file, cache_id);
+  build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
     total_time = 0.0;
@@ -621,35 +624,14 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
 
   char test_file_name[100];
   char test_file_name_no_path[100];
-  char junk_dir[200];
   char opt_file[200];
-  char base_file[200];
+  char base_file[300] = {'\0'};
 
   char opt_command[1000];
   char bc_command[1000];
   char run_command[1000];
 
-  strcpy(test_file_name, test_file);
-  char *p = strchr(test_file_name, '.');
-  if (!p) {
-    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
-           "code\n\n");
-    exit(0);
-  }
-  *p = 0;
-
-  strcpy(test_file_name_no_path, "");
-  char *t = strrchr(test_file_name, '/');
-  if (!t) {
-    strcpy(test_file_name_no_path, test_file_name);
-  } else
-    strcpy(test_file_name_no_path, t + 1);
-
-  strcpy(junk_dir, "src/files/llvm/junk_output/");
-  strcpy(base_file, junk_dir);
-  strcat(base_file, test_file_name_no_path);
-  strcat(base_file, "_");
-  strcat(base_file, cache_id);
+  build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
     total_time = 0.0;
@@ -869,36 +851,14 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   char base_name[300];
   char input_file[300];
   char output_file[300];
-  char base_file[300];
+  char base_file[300] = {'\0'};
 
   struct timeval start, end;
 
   uint32_t result = 0;
   double tol = 0.95;
 
-  strcpy(file_name, file);
-  char *p = strchr(file_name, '.');
-
-  if (!p) {
-    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
-           "code\n\n");
-    exit(0);
-  }
-  *p = 0;
-
-  char file_name_no_path[100];
-  strcpy(file_name_no_path, "");
-  char *t = strrchr(file_name, '/');
-  if (!t) {
-    strcpy(file_name_no_path, file_name);
-  } else
-    strcpy(file_name_no_path, t + 1);
-
-  strcpy(base_file, "");
-  strcat(base_file, "src/files/llvm/junk_output/");
-  strcat(base_file, file_name_no_path);
-  strcat(base_file, "_");
-  strcat(base_file, cache_id);
+  build_basefilename(base_file, 300, file, cache_id);
 
   strcpy(input_file, base_file);
   strcat(input_file, "_linked.ll");
@@ -1124,36 +1084,14 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
   char test_file_name[100];
   char test_file_name_no_path[100];
-  char junk_dir[200];
   char opt_file[200];
-  char base_file[200];
+  char base_file[300] = {'\0'};
 
   char opt_command[1000];
   char bc_command[1000];
   char run_command[1000];
 
-  strcpy(test_file_name, test_file);
-  char *p = strchr(test_file_name, '.');
-
-  if (!p) {
-    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
-           "code\n\n");
-    exit(0);
-  }
-  *p = 0;
-
-  strcpy(test_file_name_no_path, "");
-  char *t = strrchr(test_file_name, '/');
-  if (!t) {
-    strcpy(test_file_name_no_path, test_file_name);
-  } else
-    strcpy(test_file_name_no_path, t + 1);
-
-  strcpy(junk_dir, "src/files/llvm/junk_output/");
-  strcpy(base_file, junk_dir);
-  strcat(base_file, test_file_name_no_path);
-  strcat(base_file, "_");
-  strcat(base_file, cache_id);
+  build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
     total_time = 0.0;
@@ -1317,40 +1255,18 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   }
   uint32_t success_runs = 0;
 
-  char file_name[300];
   char base_name[300];
   char input_file[300];
   char output_file[300];
-  char base_file[300];
+  char base_file[300] = {'\0'};
 
   struct timeval start, end;
 
   uint32_t result = 0;
   double tol = 0.95;
 
-  strcpy(file_name, file);
-  char *p = strchr(file_name, '.');
-
-  if (!p) {
-    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
-           "code\n\n");
-    exit(0);
-  }
-  *p = 0;
-
-  char file_name_no_path[100];
-  strcpy(file_name_no_path, "");
-  char *t = strrchr(file_name, '/');
-  if (!t) {
-    strcpy(file_name_no_path, file_name);
-  } else
-    strcpy(file_name_no_path, t + 1);
-
-  strcpy(base_file, "");
-  strcat(base_file, "src/files/llvm/junk_output/");
-  strcat(base_file, file_name_no_path);
-  strcat(base_file, "_");
-  strcat(base_file, cache_id);
+  // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
+  build_basefilename(base_file, 300, file, cache_id);
 
   strcpy(input_file, base_file);
   strcat(input_file, "_linked.ll");
