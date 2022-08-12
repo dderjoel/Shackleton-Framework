@@ -408,8 +408,6 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
 
   cache_create_baseline_folder(cache, folder);
   struct timeval start, end;
-  // clock_t start, end;
-  // struct timespec start, end;
 
   uint32_t result = 0;
   uint32_t success_runs = 0;
@@ -494,12 +492,6 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
       strcat(run_command, ".bc");
     }
 
-    /*printf("\n--------------------LLVM opt level: %s, ALL COMMANDS
-    GENERATED---------------------\n", strlen(levels[i])==0?"no_opt":levels[i]);
-    printf("opt_command: %s\n", opt_command);
-    printf("bc_command: %s\n", bc_command);
-    printf("run_command: %s\n", run_command);*/
-
     llvm_run_command(opt_command);
     llvm_run_command(bc_command);
 
@@ -512,53 +504,34 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
     for (uint32_t runs = 0; runs < num_runs; runs++) {
 
       gettimeofday(&start, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
       result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
       time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-      // time_taken = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec -
-      // start.tv_nsec ) / BILLION; time_taken = (double)( end.tv_sec -
-      // start.tv_sec )*1000000.0 + ( end.tv_nsec - start.tv_nsec ) / 1000.0;
-      // printf("line 728 time_taken=%lf, start=%lf, end=%lf\n", time_taken,
-      // (double)start.tv_sec, (double)end.tv_sec); printf("line 728
-      // time_taken=%f, start=%lf, end=%lf\n", time_taken, (double)start,
-      // (double)end);
 
-      // printf("LLVM opt level: %s, run #%d, time taken: %lf\n",
-      // strlen(levels[i])==0?"no_opt":levels[i], runs+1, time_taken);
       if (result == 0) {
         success_runs++;
         total_time = total_time + time_taken;
         all_runtime[counter++] = time_taken;
-        // printf("Time taken: %lf sec.\n", time_taken);
-      } else {
-        // printf("Run exited with code %d (time taken: %lf sec.)\n", result,
-        // time_taken);
       }
     }
     // Added 6/21/2021
     if (success_runs < num_runs * tol) {
-      // printf("success_runs < num_runs * %f, fitness set to max.\n", tol);
+
       time_taken = UINT32_MAX;
     } else {
       time_taken = total_time / success_runs;
     }
-    // time_taken = total_time / success_runs;
+
     if (fitness_with_var) {
       fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
     } else {
       fitness = time_taken;
     }
-    // printf("LLVM opt level: %s, average time=%lf over %d success runs,
-    // fitness=%lf\n", strlen(levels[i])==0?"no_opt":levels[i], time_taken,
-    // success_runs, fitness);
+
     track_fitness[i] = fitness; // Added 6/8/2021
-    /*for (int k = 0; k <= i; k++) {
-        printf("%s%lf%s", k==0?"track_fitness=[":"", track_fitness[k],
-    k==i?"]\n":",");
-    }*/
 
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
   }
@@ -637,8 +610,6 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
   }
 
   struct timeval start, end;
-  // clock_t start, end;
-  // struct timespec start, end;
 
   uint32_t result = 0;
   uint32_t success_runs = 0;
@@ -722,12 +693,6 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
       strcat(run_command, ".bc");
     }
 
-    // printf("\n--------------------LLVM opt level: %s, ALL COMMANDS
-    // GENERATED---------------------\n",
-    // strlen(levels[i])==0?"no_opt":levels[i]); printf("opt_command: %s\n",
-    // opt_command); printf("bc_command: %s\n", bc_command); printf("run_command:
-    // %s\n", run_command);
-
     llvm_run_command(opt_command);
     llvm_run_command(bc_command);
 
@@ -740,21 +705,13 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
     for (uint32_t runs = 0; runs < num_runs; runs++) {
 
       gettimeofday(&start, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
       result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
       time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-      // time_taken = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec -
-      // start.tv_nsec ) / BILLION; time_taken = (double)( end.tv_sec -
-      // start.tv_sec )*1000000.0 + ( end.tv_nsec - start.tv_nsec ) / 1000.0;
 
-      // printf("line 735 time_taken=%lf, start=%lf, end=%lf\n", time_taken,
-      // (double)start.tv_sec, (double)end.tv_sec); printf("line 728
-      // time_taken=%f, start=%lf, end=%lf\n", time_taken, (double)start,
-      // (double)end); printf("LLVM opt level: %s, run #%d, time taken: %lf\n",
-      // strlen(levels[i])==0?"no_opt":levels[i], runs+1, time_taken);
       if (result == 0) {
         success_runs++;
         total_time = total_time + time_taken;
@@ -762,12 +719,12 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
       }
     }
     if (success_runs < num_runs * tol) {
-      // printf("success_runs < num_runs * %f, fitness set to max.\n", tol);
+
       time_taken = UINT32_MAX;
     } else {
       time_taken = total_time / success_runs;
     }
-    // time_taken = total_time / success_runs;
+
     if (fitness_with_var) {
       fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
     } else {
@@ -904,8 +861,6 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   double fitness;
   fitness = indiv_data->fitness;
   if (!node_reeval_by_chance(indiv_data, gen)) {
-    // printf("----skipped re-evaluation for individual id=%d\n",
-    // indiv_data->seq_id);
     return indiv_data->fitness;
   }
   uint32_t success_runs = 0; // Added 6/21/2021
@@ -917,8 +872,6 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   char base_file[300];
 
   struct timeval start, end;
-  // clock_t start, end;
-  // struct timespec start, end;
 
   uint32_t result = 0;
   double tol = 0.95;
@@ -962,14 +915,8 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   strcpy(opt_command, "");
   strcpy(run_command, "");
 
-  // printf("building opt command with input_file=%s, output_file=%s\n\n",
-  // input_file, output_file); printf("input_file: %s\n", input_file);
-  // printf("output_file: %s\n", output_file);
   llvm_form_opt_command(indiv, NULL, 0, input_file, output_file, opt_command);
   llvm_form_exec_code_command_from_ll(output_file, run_command);
-
-  // printf("\nShackleton opt command: %s\n", opt_command);
-  // printf("run command: %s\n", run_command);
 
   llvm_run_command(opt_command);
 
@@ -980,53 +927,31 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   for (uint32_t runs = 0; runs < num_runs; runs++) {
 
-    // printf("\n-----------------------------------------------------------------------------\n");
-    // printf("Shackleton optimization run %d\n\n", runs+1);
-
     gettimeofday(&start, NULL);
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
     result = llvm_run_command(run_command);
     gettimeofday(&end, NULL);
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+
     time_taken = (end.tv_sec - start.tv_sec) * 1e6;
     time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-    // time_taken = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec -
-    // start.tv_nsec ) / BILLION; time_taken = (double)( end.tv_sec -
-    // start.tv_sec )*1000000.0 + ( end.tv_nsec - start.tv_nsec ) / 1000.0;
 
-    // printf("line 962 time_taken=%lf, start=%lf, end=%lf\n", time_taken,
-    // (double)start.tv_sec, (double)end.tv_sec); printf("line 952 time_taken=%f,
-    // start=%lf, end=%lf\n", time_taken, (double)start, (double)end);
-    // printf("Shackleton opt run #%d, time taken: %lf\n", runs+1, time_taken);
     if (result == 0) {
       success_runs++;
       total_time += time_taken;
-      // printf("Time taken in current run: %lf sec.\n", time_taken);
+
       all_runtime[counter++] = time_taken; // Added 7/7/2021
-    } else {
-      // printf("Run exited with code %d (time taken: %lf sec.)\n", result,
-      // time_taken);
     }
   }
 
   // Added 6/21/2021
   if (success_runs < num_runs * tol) {
-    // printf("success_runs < num_runs*%f, fitness set to max.\n", tol);
     time_taken = UINT32_MAX;
   } else {
     time_taken = total_time / success_runs;
-    // printf("average time taken: %lf\n", time_taken);
   }
 
   fitness = node_record_data(indiv_data, indiv, all_runtime, time_taken,
                              success_runs, gen, fitness_with_var);
-  // fitness = node_look_up_fitness(indiv_data, indiv, all_runtime, time_taken,
-  // success_runs); printf("Average time: %lf over %d success runs,
-  // fitness=%lf\n", time_taken, success_runs, fitness);
-
-  /*if (cache) {
-      fitness_cache_llvm_pass(fitness, indiv, cache_file);
-  }*/
   return fitness;
 }
 
@@ -1188,8 +1113,6 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
   cache_create_baseline_folder(cache, folder);
   struct timeval start, end;
-  // clock_t start, end;
-  // struct timespec start, end;
 
   uint32_t result = 0;
   uint32_t success_runs = 0;
@@ -1286,30 +1209,17 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
     for (uint32_t runs = 0; runs < num_runs; runs++) {
 
       gettimeofday(&start, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
       result = llvm_run_command(run_command);
       gettimeofday(&end, NULL);
-      // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
-      // time_taken = (end.tv_sec - start.tv_sec);
-      // time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-      // time_taken = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec -
-      // start.tv_nsec ) / BILLION; time_taken = (double)( end.tv_sec -
-      // start.tv_sec )*1000000.0 + ( end.tv_nsec - start.tv_nsec ) / 1000.0;
+
       time_taken = (end.tv_sec - start.tv_sec) * 1e6;
       time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
 
-      // printf("line 1254 time_taken=%lf, start=%lf, end=%lf\n", time_taken,
-      // (double)start.tv_sec, (double)end.tv_sec); printf("LLVM opt level: %s,
-      // run #%d, time taken: %lf\n", strlen(levels[i])==0?"no_opt":levels[i],
-      // runs+1, time_taken);
       if (result == 0) {
         success_runs++;
         total_time = total_time + time_taken;
         all_runtime[counter++] = time_taken;
-        // printf("Time taken: %lf sec.\n", time_taken);
-      } else {
-        // printf("Run exited with code %d (time taken: %lf sec.)\n", result,
-        // time_taken);
       }
     }
     time_taken = total_time / success_runs;
@@ -1318,14 +1228,7 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
     } else {
       fitness = time_taken;
     }
-    // printf("LLVM opt level: %s, average time=%lf over %d success runs,
-    // fitness=%lf\n", strlen(levels[i])==0?"no_opt":levels[i], time_taken,
-    // success_runs, fitness);
     track_fitness[i] = fitness; // Added 6/8/2021
-    /*for (int k = 0; k <= i; k++) {
-        printf("%s%lf%s", k==0?"track_fitness=[":"", track_fitness[k],
-    k==i?"]\n":",");
-    }*/
 
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
   }
@@ -1403,7 +1306,7 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             char *cache_file, const char *cache_id,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
                             bool fitness_with_var) {
-  // visualization_print_individual_concise_details(indiv);
+
   char *sequence = malloc(sizeof(char) * 2000);
   sequence = seq_str_fitness(indiv);
 
@@ -1421,8 +1324,6 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   char base_file[300];
 
   struct timeval start, end;
-  // clock_t start, end;
-  // struct timespec start, end;
 
   uint32_t result = 0;
   double tol = 0.95;
@@ -1487,21 +1388,11 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   for (uint32_t runs = 0; runs < num_runs; runs++) {
 
     gettimeofday(&start, NULL);
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
     result = llvm_run_command(run_command);
     gettimeofday(&end, NULL);
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
-    // time_taken = (end.tv_sec - start.tv_sec);
-    // time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
     time_taken = (end.tv_sec - start.tv_sec) * 1e6;
     time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-    // time_taken = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec -
-    // start.tv_nsec ) / BILLION; time_taken = (double)( end.tv_sec -
-    // start.tv_sec )*1000000.0 + ( end.tv_nsec - start.tv_nsec ) / 1000.0;
-
-    // printf("line 1443 time_taken=%lf, nsec_diff=%lf, sec_diff=%lf\n",
-    // time_taken, (double)end.tv_nsec-(double)start.tv_nsec,
-    // (double)end.tv_sec-(double)start.tv_sec);
     if (result == 0) {
       success_runs++;
       total_time = total_time + time_taken;
@@ -1513,10 +1404,8 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   } else {
     time_taken = total_time / success_runs;
   }
-  // printf("reevaluate fitness, before: %lf, ", fitness);
   fitness = node_record_data(indiv_data, indiv, all_runtime, time_taken,
                              success_runs, gen, fitness_with_var);
-  // printf("after: %lf\n", fitness);
   return fitness;
 }
 
