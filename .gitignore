@@ -9,3 +9,6 @@ src/files/cache/*
 src/files/llvm/junk_output/*
 src/files/params/*
 exp/*
+*.o
+shackleton
+bin/init

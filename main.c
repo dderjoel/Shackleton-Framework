@@ -54,6 +54,13 @@ void free_all(bool llvm_optimizing, char** src_files, uint32_t num_src_files, do
 int num_passes;
 char** values;
 
+uint32_t (*fpfitness_simple)(node_str *n, bool vis);
+uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
+uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
+double (*fpfitness_llvm_pass)(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
+uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
+uint32_t (*fpfitness_gi_llvm_pass)(node_str *n, bool vis);
+
 int main(uint32_t argc, char* argv[]) {
 
     // parameters for the evolution itself
@@ -124,14 +131,14 @@ int main(uint32_t argc, char* argv[]) {
     // --------------------------------------------------------------------------------
     // Executing Code -----------------------------------------------------------------
     gettimeofday(&shackleton_start, NULL);  //added 6/14/2021
-    int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, cache_id, levels, num_levels); // Added 6/21/2021
+    int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, cache_id, levels, num_levels, false); // Added 6/21/2021
     //evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, src_files, num_src_files, caching);
     gettimeofday(&shackleton_end, NULL);  //added 6/14/2021
     
     // --------------------------------------------------------------------------------
     // Tests --------------------------------------------------------------------------
     if (test) {
-        test_master(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness);
+        test_master(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, false);
     }
 
     // --------------------------------------------------------------------------------
