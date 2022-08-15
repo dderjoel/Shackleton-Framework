@@ -34,7 +34,8 @@
  */
 
 #include "fitness.h"
-#include "../../MeasureSuite/src/include/measuresuite.h"
+#include "support/build_llvm.h"
+#include "support/measure.h"
 #define BILLION 1000000000L;
 /*
  * ROUTINES
@@ -424,21 +425,13 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
                                  const char *cache_id, uint32_t num_runs,
                                  bool fitness_with_var, const char **levels,
                                  const int num_levels) { // added 6/8/2021
-  measuresuite_t ms;
-  const uint64_t bounds[] = {-1};
 
   const double tol = 0.95;
 
   char base_file[300] = {'\0'};
-  char input_file_base[300] = {'\0'};
-  char out_file_base[300] = {'\0'};
-  char so_in_file[300] = {'\0'};
-  char so_file[300] = {'\0'};
   char build_command[20000] = {'\0'};
-  char opt_command[1000] = {'\0'};
-  char bc_command[1000] = {'\0'};
   char run_command[1000] = {'\0'};
-  char so_command[5000] = {'\0'};
+  char so_file[300] = {'\0'};
 
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
@@ -452,55 +445,14 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
 
   for (int i = 0; i < num_levels; i++) {
 
-    snprintf(input_file_base, 300, "%s_linked", base_file);
+    build_commands(build_command, 20000, so_file, 300, run_command, 1000,
+                   base_file, levels[i]);
 
-    if (strlen(levels[i]) == 0) {
+    // builds bc and so
+    llvm_run_command(build_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
-      snprintf(so_in_file, 300, "%s.ll", input_file_base);
-      snprintf(so_file, 300, "%s.so", input_file_base);
-
-    } else {
-
-      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
-      snprintf(so_in_file, 300, "%s.ll", out_file_base);
-      snprintf(so_file, 300, "%s.so", out_file_base);
-
-      // optimze
-      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
-               input_file_base, so_in_file);
-      llvm_run_command(opt_command);
-
-      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
-    }
-
-    // compile ll to shared object
-    build_command_ll2so(so_command, 5000, so_in_file, so_file);
-    llvm_run_command(so_command);
-
-    const int batchsize = 100;
-    /** make num_runs uneven so we have one median  */
-    num_runs |= 0b1;
-    ms_measure_lib_only(ms, batchsize, num_runs);
-
-    const uint64_t *cycles;
-    ms_get_libcycles(ms, &cycles);
-    // cycles is now an array of length num_runs, which contains cycle counts
-
-    double time_taken = median(cycles, num_runs);
-    uint32_t success_runs = num_runs;
-    double all_runtime[num_runs];
-
-    for (uint32_t run = 0; run < num_runs; run++) {
-      all_runtime[run] = (double)cycles[run];
-    }
-
-    double fitness = time_taken;
-    if (fitness_with_var) {
-      fitness += calc_var(all_runtime, time_taken, success_runs);
-    }
+    double fitness =
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
@@ -578,79 +530,28 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
   if (!cache) {
     return;
   }
-  measuresuite_t ms;
-  const uint64_t bounds[] = {-1};
-
-  const double tol = 0.95;
-
   char base_file[300] = {'\0'};
-  char input_file_base[300] = {'\0'};
-  char out_file_base[300] = {'\0'};
-  char so_in_file[300] = {'\0'};
-  char so_file[300] = {'\0'};
-  char opt_command[1000] = {'\0'};
-  char bc_command[1000] = {'\0'};
+  char build_command[20000] = {'\0'};
   char run_command[1000] = {'\0'};
-  char so_command[5000] = {'\0'};
+  char so_file[300] = {'\0'};
 
   build_basefilename(base_file, 300, test_file, cache_id);
 
   for (int i = 0; i < num_levels; i++) {
 
-    snprintf(input_file_base, 300, "%s_linked", base_file);
+    build_commands(build_command, 20000, so_file, 300, run_command, 1000,
+                   base_file, levels[i]);
 
-    if (strlen(levels[i]) == 0) {
+    // builds bc and so
+    llvm_run_command(build_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
-      snprintf(so_in_file, 300, "%s.ll", input_file_base);
-      snprintf(so_file, 300, "%s.so", input_file_base);
-
-    } else {
-
-      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
-      snprintf(so_in_file, 300, "%s.ll", out_file_base);
-      snprintf(so_file, 300, "%s.so", out_file_base);
-
-      // optimze
-      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
-               input_file_base, so_in_file);
-      llvm_run_command(opt_command);
-
-      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
-    }
-
-    // compile ll to shared object
-    build_command_ll2so(so_command, 5000, so_in_file, so_file);
-    llvm_run_command(so_command);
-
-    const int batchsize = 100;
-    /** make num_runs uneven so we have one median  */
-    num_runs |= 0b1;
-    ms_measure_lib_only(ms, batchsize, num_runs);
-
-    const uint64_t *cycles;
-    ms_get_libcycles(ms, &cycles);
-    // cycles is now an array of length num_runs, which contains cycle counts
-
-    double time_taken = median(cycles, num_runs);
-    uint32_t success_runs = num_runs;
-    double all_runtime[num_runs];
-
-    for (uint32_t run = 0; run < num_runs; run++) {
-      all_runtime[run] = (double)cycles[run];
-    }
-
-    double fitness = time_taken;
-    if (fitness_with_var) {
-      fitness += calc_var(all_runtime, time_taken, success_runs);
-    }
+    double fitness =
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
 
     printf("LLVM opt level: %s, average time=%lf over %d success runs, "
            "fitness=%lf\n",
-           strlen(levels[i]) == 0 ? "no_opt" : levels[i], time_taken,
-           success_runs, fitness);
+           strlen(levels[i]) == 0 ? "no_opt" : levels[i], fitness, num_runs,
+           fitness);
     track_fitness[i] = fitness; // Added 6/8/2021
   }
 }
@@ -773,20 +674,11 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
                          char *cache_file, const char *cache_id,
                          DataNode *indiv_data, uint32_t num_runs, int gen,
                          bool fitness_with_var) {
-  measuresuite_t ms;
-  const uint64_t bounds[] = {-1};
 
-  const double tol = 0.95;
-
-  char file_name[300] = {'\0'};
-  char base_name[300] = {'\0'};
-  char input_file[300] = {'\0'};
-  char output_file[300] = {'\0'};
-  char base_file[280] = {'\0'};
+  char base_file[300] = {'\0'};
+  char build_command[20000] = {'\0'};
+  char run_command[1000] = {'\0'};
   char so_file[300] = {'\0'};
-  char opt_command[5000] = {'\0'};
-  char run_command[5000] = {'\0'};
-  char so_command[5000] = {'\0'};
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
@@ -797,40 +689,21 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   }
 
   build_basefilename(base_file, 280, file, cache_id);
-  snprintf(input_file, 300, "%s_linked.ll", base_file);
-  snprintf(output_file, 300, "%s_shackleton.ll", base_file);
-  snprintf(so_file, 300, "%s_shackleton.so", base_file);
 
-  // optimze
-  llvm_form_opt_command(indiv, NULL, 0, input_file, output_file, opt_command);
-  llvm_run_command(opt_command);
+  build_commands_individual(build_command, 20000, so_file, 300, run_command,
+                            1000, base_file, indiv);
 
-  // compile ll to shared object
-  build_command_ll2so(so_command, 5000, output_file, so_file);
-  llvm_run_command(so_command);
-  ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "fiat_25519_carry_mul");
+  // builds bc and so
+  llvm_run_command(build_command);
 
-  const int batchsize = 100;
-  /** make num_runs uneven so we have one median  */
-  num_runs |= 0b1;
-  ms_measure_lib_only(ms, batchsize, num_runs);
-
-  const uint64_t *cycles;
-  ms_get_libcycles(ms, &cycles);
-  // cycles is now an array of length num_runs, which contains cycle counts
-
-  double time_taken = median(cycles, num_runs);
-  uint32_t success_runs = num_runs;
   double all_runtime[num_runs];
 
-  for (uint32_t run = 0; run < num_runs; run++) {
-    all_runtime[run] = (double)cycles[run];
-  }
+  // will fill all_runtime with the cycle-results
+  double fitness =
+      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime);
 
-  ms_measure_end(ms);
-
-  return node_record_data(indiv_data, indiv, all_runtime, time_taken,
-                          success_runs, gen, fitness_with_var);
+  return node_record_data(indiv_data, indiv, all_runtime, fitness, num_runs,
+                          gen, fitness_with_var);
 }
 
 /*
@@ -975,8 +848,6 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
                                     const char *cache_id, uint32_t num_runs,
                                     bool fitness_with_var, const char **levels,
                                     const int num_levels) { // added 6/8/2021
-  measuresuite_t ms;
-  const uint64_t bounds[] = {-1};
 
   char base_file[300] = {'\0'};
   char input_file_base[300] = {'\0'};
@@ -1001,55 +872,16 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
   for (int i = 0; i < num_levels; i++) {
 
-    snprintf(input_file_base, 300, "%s_linked", base_file);
+    build_commands(build_command, 20000, so_file, 300, run_command, 1000,
+                   base_file, levels[i]);
 
-    if (strlen(levels[i]) == 0) {
+    // builds bc and so
+    llvm_run_command(build_command);
 
-      snprintf(bc_command, 1000, "llvm-as %s.ll", input_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", input_file_base);
-      snprintf(so_in_file, 300, "%s.ll", input_file_base);
-      snprintf(so_file, 300, "%s.so", input_file_base);
+    double fitness =
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
 
-    } else {
-
-      snprintf(out_file_base, 300, "%s_opt_%s", base_file, levels[i]);
-      snprintf(so_in_file, 300, "%s.ll", out_file_base);
-      snprintf(so_file, 300, "%s.so", out_file_base);
-
-      // optimze
-      snprintf(opt_command, 1000, "opt -%s %s.ll -S -o %s", levels[i],
-               input_file_base, so_in_file);
-      llvm_run_command(opt_command);
-
-      snprintf(bc_command, 1000, "llvm-as %s.ll", out_file_base);
-      snprintf(run_command, 1000, "lli %s.bc", out_file_base);
-    }
-
-    // compile ll to shared object
-    build_command_ll2so(so_command, 5000, so_in_file, so_file);
-    llvm_run_command(so_command);
-
-    const int batchsize = 100;
-    /** make num_runs uneven so we have one median  */
-    num_runs |= 0b1;
-    ms_measure_lib_only(ms, batchsize, num_runs);
-
-    const uint64_t *cycles;
-    ms_get_libcycles(ms, &cycles);
-    // cycles is now an array of length num_runs, which contains cycle counts
-
-    double time_taken = median(cycles, num_runs);
-    uint32_t success_runs = num_runs;
-    double all_runtime[num_runs];
-
-    for (uint32_t run = 0; run < num_runs; run++) {
-      all_runtime[run] = (double)cycles[run];
-    }
-
-    double fitness = time_taken;
-    if (fitness_with_var) {
-      fitness += calc_var(all_runtime, time_taken, success_runs);
-    }
+    track_fitness[i] = fitness; // Added 6/8/2021
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
@@ -1128,17 +960,11 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             char *cache_file, const char *cache_id,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
                             bool fitness_with_var) {
-  measuresuite_t ms;
-  const uint64_t bounds[] = {-1};
 
-  const double tol = 0.95;
-
-  char base_name[300] = {'\0'};
-  char output_file[300] = {'\0'};
   char so_file[300] = {'\0'};
   char base_file[280] = {'\0'};
-  char opt_command[5000] = {'\0'};
-  char so_command[5000] = {'\0'};
+  char build_command[20000] = {'\0'};
+  char run_command[1000] = {'\0'};
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
@@ -1152,40 +978,18 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
   build_basefilename(base_file, 280, file, cache_id);
-  snprintf(output_file, 300, "%s_shackleton.ll", base_file);
-  snprintf(so_file, 300, "%s_shackleton.so", base_file);
 
-  // optimze
-  snprintf(opt_command, 5000, "opt %s -S %s_linked.ll -o %s_shackleton.ll",
-           sequence, base_file, base_file);
-  llvm_run_command(opt_command);
+  build_commands_sequence(build_command, 20000, so_file, 300, run_command, 1000,
+                          base_file, sequence);
+  // builds bc and so
+  llvm_run_command(build_command);
 
-  // compile ll to so
-  build_command_ll2so(so_command, 5000, output_file, so_file);
-  llvm_run_command(so_command);
-
-  ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "fiat_25519_carry_mul");
-
-  const int batchsize = 100;
-  /** make num_runs uneven so we have one median  */
-  num_runs |= 0b1;
-  ms_measure_lib_only(ms, batchsize, num_runs);
-
-  const uint64_t *cycles;
-  ms_get_libcycles(ms, &cycles);
-  // cycles is now an array of length num_runs, which contains cycle counts
-
-  double time_taken = median(cycles, num_runs);
-  uint32_t success_runs = num_runs;
   double all_runtime[num_runs];
+  double fitness =
+      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime);
 
-  for (uint32_t run = 0; run < num_runs; run++) {
-    all_runtime[run] = (double)cycles[run];
-  }
-
-  ms_measure_end(ms);
-  return node_record_data(indiv_data, indiv, all_runtime, time_taken,
-                          success_runs, gen, fitness_with_var);
+  return node_record_data(indiv_data, indiv, all_runtime, fitness, num_runs,
+                          gen, fitness_with_var);
 }
 
 /*
