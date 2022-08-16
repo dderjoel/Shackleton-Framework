@@ -174,14 +174,12 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
     // be chosen more than once for the tournament selection process
 
     if (vis) {
-
         printf("Choosing using the basic tournament selection method ---------------------------------\n\n");
-
     }
     double fitness_values[tournament_size];
     uint32_t fitness_indices[tournament_size];
     double max_fitness = 0;
-    uint32_t max_fitness_ind = -1;
+    uint32_t max_fitness_ind = 0;
     bool repeat_index = false;
     uint32_t num_chosen = 0;
     osaka_object_typ type = OBJECT_TYPE(population[0]);
@@ -199,26 +197,29 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
                 repeat_index = true;
             }
         }
-        if (repeat_index) {
-            // repeated index, need to pick another one
-        }
-        else {
+        if (!repeat_index) {
             //not chosen yet, can add new index
             fitness_indices[num_chosen] = index;
             num_chosen++;
         }
         repeat_index = false;
     }
+    //printf("got here line 213, tournament_size=%d\n", tournament_size);
 
     for (uint32_t c = 0; c < tournament_size; c++) {
+        //printf("got here line 216, c=%d\n", c);
         fitness_values[c] = fitness_values_all[fitness_indices[c]];
         //printf("individual #%d is in the tournament, its fitness is: %lf\n", fitness_indices[c], fitness_values[c]);
         // update which is the current best out of those chosen thus far
-        if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
+        //printf("got here line 214, fitness_values[c]=%f, max_fitness=%f\n", fitness_values[c], max_fitness);
+
+        bool cond = rand() > 0.5;  //ATTENTION: TEMP FIX
+        //bool cond = selection_compare_fitness(fitness_values[c], max_fitness, type);
+        if (cond) {
             max_fitness = fitness_values[c];
             max_fitness_ind = fitness_indices[c];
         }
-
+        //printf("got here line 225, max_fitness_ind=%d\n", max_fitness_ind);
     }
 
     //printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
@@ -230,6 +231,7 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
 
     }
     result = population[max_fitness_ind];
+    
     return max_fitness_ind;
 
 }

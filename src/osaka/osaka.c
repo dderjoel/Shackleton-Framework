@@ -412,7 +412,6 @@ node_str *osaka_addnodetohead(node_str *r,node_str *n)  {
 node_str *osaka_createnode(node_str *r,append_typ app_ty,osaka_object_typ ot) {
 
     node_str *n;
-
     n = __osaka_createnode(ot);
 
     if (osaka_whatisnode(r)!=EMPTY) {
@@ -421,7 +420,6 @@ node_str *osaka_createnode(node_str *r,append_typ app_ty,osaka_object_typ ot) {
             case TAIL: return osaka_addnodetotail(r,n); break;
         }
     }
-
     return n;
 
 }
@@ -834,14 +832,12 @@ void osaka_freenode(node_str *n)  {
 
 void osaka_randomizenode(node_str *n) {
 
-
     if (n == NULL)  {
         printf ("error: cannot randomize a NULL node");
         exit(0);
     }
 
     object_table_function[OBJECT_TYPE(n)].osaka_randomizeobject(OBJECT(n));
-
 }
 
 
@@ -1346,7 +1342,6 @@ node_str *osaka_copylist(node_str *r) {
         if (OBJECT_TYPE(r)!=NOTSET) {
             OBJECT(c)=object_table_function[OBJECT_TYPE(r)].osaka_copyobject(OBJECT(r));
         }
-
         r=NEXT(r);
     }
 

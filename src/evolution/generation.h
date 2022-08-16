@@ -39,6 +39,8 @@
 
 #include "../osaka/osaka.h"
 #include "mutation.h"
+#include "../module/llvm_pass.h"
+#include "../module/gi_llvm_pass.h"
 
 /*
  * ROUTINES

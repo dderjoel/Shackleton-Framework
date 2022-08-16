@@ -1,4 +1,4 @@
-#include <osaka/osaka.h>
+#include "../osaka/osaka.h"
 #include <stdlib.h>
 int build_commands(
     char *build_command, // will build an optimized .bc and .so

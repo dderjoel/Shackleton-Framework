@@ -287,24 +287,6 @@ void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* 
     strcat(command, test_file_name_no_path);
     strcat(command, ".ll ");
 
-
-    //printf("After adding the test file, the build command is this: %s\n", command);
-    //printf("We now need to add %d source code files\n", num_src_files);
-
-    /*for (int i = 0; i < num_src_files; i++) {
-        //printf("Now adding each source file in turn\n");
-        strcpy(src_file_name, src_files[i]);
-        //printf("Here is what is being added: %s\n", src_file_name);
-        strcat(command, " && ");
-        strcat(command, compiler);
-        strcat(command, " -S -emit-llvm ");
-        strcat(command, base_name);
-        //printf("Got this far. Gonna add: %s\n", src_file_name);
-        strcat(command, src_file_name);
-        printf("The command is now this: %s\n", command);
-        printf("length of command is: %ld\n", strlen(command));
-    }*/
-
     // Added 6/10/2021
     for (int i = 0; i < num_src_files; i++) {
         strcpy(src_file_name, src_files[i]);
@@ -361,39 +343,14 @@ void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* 
     strcat(command, test_file_name_no_path);
     strcat(command, "_");
     strcat(command, id);
-    strcat(command, "_linked"); //added 6/10/2021
-    strcat(command, ".ll");
-    /*strcat(command, "_linked.ll && mv ");
-    strcat(command, base_name);
-    strcat(command, test_file_name);
-    strcat(command, "_linked.ll ");
-    strcat(command, base_name);
-    strcat(command, "junk_output/");*/
-
-    /*printf("Adding removals\n");
-    strcat(command, " && rm ");
+    strcat(command, "_linked.ll && llvm-as ");
     strcat(command, junk_folder);
     strcat(command, test_file_name_no_path);
-    strcat(command, ".ll ");
+    strcat(command, "_");
+    strcat(command, id);
+    strcat(command, "_linked.ll");
 
-    for (int i = 0; i < num_src_files; i++) {
-        //printf("Added removals for src files one at a time\n");
-        strcpy(src_file_name, src_files[i]);
-        char* p = strchr(src_file_name, '.');
-        *p = 0;
-        strcpy(src_file_name_no_path, "");
-        char *t = strrchr(src_file_name, '/'); 
-        if (!t) {
-            strcpy(src_file_name_no_path, src_file_name);
-        } else strcpy(src_file_name_no_path, t+1);
-
-        strcat(command, junk_folder);
-        strcat(command, src_file_name_no_path);
-        strcat(command, ".ll ");
-        //printf("Added removal for src file: %s\n", src_files[i]);
-    }*/
-
-    printf("\n\nFinal build command: %s\n", command);
+    printf("\n\nFINAL build command: %s\n", command);
 
 }
 
@@ -564,7 +521,6 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command) {
  */
 
 void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test_file, char* build_command, char* run_command, const char *id) {
-
     llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command, id);
     llvm_form_run_command(test_file, run_command);
 
@@ -599,7 +555,7 @@ void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test
 
 uint32_t llvm_run_command(char* command) {
 
-    printf("running %s\n",command);
+    //printf("running %s\n",command);
     return system(command); //>> 8; // shift by 8 to get the correct error number
 
 }

@@ -15,6 +15,8 @@
 #include <math.h>
 
 #include "../osaka/osaka.h"
+#include "llvm_pass.h"
+#include "../module/llvm_pass.h"
 
 typedef struct gi_llvm_pass_patch_type {
 	char* value;
@@ -43,7 +45,7 @@ typedef struct gi_llvm_pass_new_pass {
 typedef struct object_gi_llvm_pass_str {
 	gi_llvm_pass_patch_type* pass_type;
 	gi_llvm_pass_location* location;
-	gi_llvm_pass_new_pass* pass;
+	gi_llvm_pass_new_pass* new_pass;
 } object_gi_llvm_pass_str;
 
 // Auto-generated macros: ----------------------------------------------
@@ -62,12 +64,12 @@ typedef struct object_gi_llvm_pass_str {
 #define GI_LLVM_PASS_LOCATION_VALID_VALUES(s) s->location->valid_values
 #define GI_LLVM_PASS_LOCATION_NUM_VALID_VALUES(s) s->location->num_values
 
-#define GI_LLVM_PASS_NEW_PASS_STRUCT(s) s->pass
-#define GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS(s) s->pass->value
-#define GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS_INDEX(s) s->pass->value_index
-#define GI_LLVM_PASS_NEW_PASS_CONSTRAINED(s) s->pass->constrained
-#define GI_LLVM_PASS_NEW_PASS_VALID_VALUES(s) s->pass->valid_values
-#define GI_LLVM_PASS_NEW_PASS_NUM_VALID_VALUES(s) s->pass->num_values
+#define GI_LLVM_PASS_NEW_PASS_STRUCT(s) s->new_pass
+#define GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS(s) s->new_pass->value
+#define GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS_INDEX(s) s->new_pass->value_index
+#define GI_LLVM_PASS_NEW_PASS_CONSTRAINED(s) s->new_pass->constrained
+#define GI_LLVM_PASS_NEW_PASS_VALID_VALUES(s) s->new_pass->valid_values
+#define GI_LLVM_PASS_NEW_PASS_NUM_VALID_VALUES(s) s->new_pass->num_values
 
 // ----------------------------------------------------------------------
 

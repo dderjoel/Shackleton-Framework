@@ -99,7 +99,7 @@ double node_update_fitness(DataNode* d, bool fitness_with_var) {
 }
 
 void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
-    //printf("\ninside node_add_group, max_id=%d\n", *max_id_ptr);
+    //printf("\ninside node_add_group\nmax_id=%d\ngroup size: %d\n", *max_id_ptr, group_size); //todo
     for (int g = 0; g < group_size; g++) {
         int new_allele_id = node_add(gen[g], max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
         current_gen_id[g] = new_allele_id;
@@ -109,6 +109,7 @@ void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, in
 int node_add(node_str* sequence, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
     //printf("before node_find,  max_id=%d\n", *max_id_ptr);
     int new_allele_id = node_find(*all_indiv_ptr, *max_id_ptr, sequence);
+    //printf("after node_find,  max_id=%d, new_alleleid=%d\n", *max_id_ptr, new_allele_id); //todo
     if (new_allele_id < 0) {
         new_allele_id = (*max_id_ptr)++;
         node_add_indiv(sequence, new_allele_id, hash_cap_ptr, all_indiv_ptr, ot);

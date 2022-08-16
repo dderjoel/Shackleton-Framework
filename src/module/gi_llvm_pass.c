@@ -13,7 +13,6 @@
 
  #include "../osaka/osaka.h"
  #include "gi_llvm_pass.h"
- #include "llvm_pass.h"
 
 uint32_t gi_llvm_pass_uid(void) {
 
@@ -55,10 +54,13 @@ void gi_llvm_pass_new_pass_set_valid_values(object_gi_llvm_pass_str* o) {
   llvm_pass_set_valid_values(&o_temp);
 
   // and copying them to the gi_ object
-  o->pass_type->constrained = o_temp.pass->constrained;
-  o->pass_type->valid_values = o_temp.pass->valid_values;
-  o->pass_type->num_values = o_temp.pass->num_values;
+  o->new_pass->constrained = o_temp.pass->constrained;
+  o->new_pass->valid_values = o_temp.pass->valid_values;
+  o->new_pass->num_values = o_temp.pass->num_values;
 
+  //GI_LLVM_PASS_NEW_PASS_VALID_VALUES(o) = values;
+  //GI_LLVM_PASS_NEW_PASS_CONSTRAINED(o) = true;
+  //GI_LLVM_PASS_NEW_PASS_NUM_VALID_VALUES(o) = 3;
 
 }
 
@@ -106,15 +108,12 @@ void gi_llvm_pass_randomizeobject(object_gi_llvm_pass_str *o) {
 	uint32_t new_index0 = (uint32_t) (num_valid_values0 * (rand() / (RAND_MAX + 1.0)));
 	GI_LLVM_PASS_PATCH_TYPE_MY_PATCH_TYPE_INDEX(o) = new_index0;
 	GI_LLVM_PASS_PATCH_TYPE_MY_PATCH_TYPE(o) = GI_LLVM_PASS_PATCH_TYPE_VALID_VALUES(o)[new_index0];
-
 	GI_LLVM_PASS_LOCATION_MY_LOCATION(o) = rand() / (RAND_MAX + 1.0);
-    //printf("NEW OBJECT LOCATION: %lf\n\n", GI_LLVM_PASS_LOCATION_MY_LOCATION(o));
-
+	
 	uint32_t num_valid_values1 = GI_LLVM_PASS_NEW_PASS_NUM_VALID_VALUES(o);
 	uint32_t new_index1 = (uint32_t) (num_valid_values1 * (rand() / (RAND_MAX + 1.0)));
 	GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS_INDEX(o) = new_index1;
 	GI_LLVM_PASS_NEW_PASS_MY_NEW_PASS(o) = GI_LLVM_PASS_NEW_PASS_VALID_VALUES(o)[new_index1];
-
 }
 
 void gi_llvm_pass_setobject(object_gi_llvm_pass_str* o, char* pass) {

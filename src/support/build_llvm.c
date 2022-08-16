@@ -1,5 +1,5 @@
 #include "build_llvm.h"
-#include <osaka/osaka.h>
+#include "../osaka/osaka.h"
 #include <stdio.h>
 #include <string.h>
 

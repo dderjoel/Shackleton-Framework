@@ -34,8 +34,8 @@
  */
 
 #include "fitness.h"
-#include "support/build_llvm.h"
-#include "support/measure.h"
+#include "../support/build_llvm.h"
+#include "../support/measure.h"
 #define BILLION 1000000000L;
 /*
  * ROUTINES
@@ -364,6 +364,8 @@ uint32_t fitness_osaka_string(node_str *indiv, bool vis) {
 void build_basefilename(char *dest, const int len_dest, const char *file,
                         const char *cache_id) {
 
+  //printf("inside build basefile name\ndest: %s\nlen_dest: %s\nfile: %s\ncache_id: %s\n\n", dest, len_dest, file, cache_id);
+  //printf("got here line 390\n"); //todo
   char working_cpy[1000];
   strncpy(working_cpy, file, 1000);
 
@@ -376,11 +378,10 @@ void build_basefilename(char *dest, const int len_dest, const char *file,
     exit(0);
   }
   *p = 0;
-
   char *t = strrchr(working_cpy, '/');
-
   snprintf(dest, len_dest, "src/files/llvm/junk_output/%s_%s",
            t != NULL ? t + 1 : working_cpy, cache_id);
+  //printf("got here line 390, dest=%s\n", dest); //todo
 };
 
 void build_command_ll2so(char *dest, const int len_dest, const char *ll,
@@ -433,6 +434,7 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
   char run_command[1000] = {'\0'};
   char so_file[300] = {'\0'};
 
+  printf("\n\ngot here line 436\n\n"); //todo
   llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command,
                              cache_id);
   llvm_run_command(build_command);
@@ -440,8 +442,9 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
   if (!cache) {
     return;
   }
-
+  printf("got here line 447\n");
   build_basefilename(base_file, 300, test_file, cache_id);
+  printf("got here line 449\n");
 
   for (int i = 0; i < num_levels; i++) {
 
@@ -534,8 +537,9 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
   char build_command[20000] = {'\0'};
   char run_command[1000] = {'\0'};
   char so_file[300] = {'\0'};
-
+  printf("got here line 542\n");
   build_basefilename(base_file, 300, test_file, cache_id);
+  printf("got here line 544\n");
 
   for (int i = 0; i < num_levels; i++) {
 
@@ -687,8 +691,9 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   if (vis) {
     printf("Calculating fitness of individual\n");
   }
-
+  printf("got here line 696\n");
   build_basefilename(base_file, 280, file, cache_id);
+  printf("got here line 698\n");
 
   build_commands_individual(build_command, 20000, so_file, 300, run_command,
                             1000, base_file, indiv);
@@ -868,7 +873,9 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
   if (!cache) {
     return;
   }
+  printf("\n\ngot here line 875\n\n"); //todo
   build_basefilename(base_file, 300, test_file, cache_id);
+  printf("\n\ngot here line 877\n\n"); //todo
 
   for (int i = 0; i < num_levels; i++) {
 
@@ -887,6 +894,7 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
   }
+  printf("\n\ngot here line 895\n\n"); //todo
 }
 
 /*
@@ -961,10 +969,10 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
                             bool fitness_with_var) {
 
-  char so_file[300] = {'\0'};
-  char base_file[280] = {'\0'};
-  char build_command[20000] = {'\0'};
-  char run_command[1000] = {'\0'};
+  char so_file[300];
+  char base_file[280];
+  char build_command[20000];
+  char run_command[1000];
 
   if (!node_reeval_by_chance(indiv_data, gen)) {
     return indiv_data->fitness;
@@ -975,9 +983,10 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
   }
 
   char *sequence = seq_str_fitness(indiv);
-
   // writes ./src/files/llvm/junk_output/<file>_<cache_id> into base_file
+  //printf("got here fitness.c line 986\n");
   build_basefilename(base_file, 280, file, cache_id);
+  //printf("got here fitness.c line 988\n");
 
   build_commands_sequence(build_command, 20000, so_file, 300, run_command, 1000,
                           base_file, sequence);
@@ -1052,7 +1061,6 @@ void fitness_pre_cache(char *folder, char *test_file, char **src_files,
     fitness_pre_cache_gi_llvm_pass(folder, test_file, src_files, num_src_files,
                                    cache, track_fitness, cache_id, num_runs,
                                    fitness_with_var, levels, num_levels);
-    // fitness_pre_cache_gi_llvm_pass(folder, cache);
   }
 }
 

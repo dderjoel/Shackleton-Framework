@@ -455,7 +455,7 @@ char** set_test_src_files(uint32_t argc, char* argv[], char test_file[], bool* l
     *llvm_optimizing_ptr = src_files == NULL ? false : true;
     if (!*llvm_optimizing_ptr) {
         *curr_type_ptr = set_obj_type(argc, argv);
-        if (*curr_type_ptr == 3) {
+        if (*curr_type_ptr == 3 || *curr_type_ptr == 5) {
             set_test_file(argc, argv, test_file);
             src_files = set_src_file(argc, argv, num_src_files_ptr);
             *llvm_optimizing_ptr = true;

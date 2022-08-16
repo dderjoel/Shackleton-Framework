@@ -316,22 +316,22 @@ void create_randoms(int num_elites, int num_new_random, int* max_id_ptr, node_st
 }
 
 void select_parents(uint32_t* contestant1_ind, uint32_t* contestant2_ind, node_str** copy_gen, double* fitness_values, int copy_size, int tourn_size, bool vis) {
-    //printf("inside select parents\n");
+    //printf("inside select parents\n"); //todo
     uint32_t c1 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
     uint32_t c2 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
-    
+    //printf("got here line 322\n"); //todo
     // contestants cannot be the same individual, the indices must be different
     while (c1 == c2) {
         c2 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
     }
-
+    //printf("got here line 327\n"); //todo
     // swap if contestant1 comes before contestant2, swap so deletion order is correct
     if (c1 < c2) {
         uint32_t swap_ind = c1;
         c1 = c2;
         c2 = swap_ind;
     }
-    
+    //printf("got here line 334\n");
     // get actual individuals using the indices
     //*contestant1 = osaka_copylist(copy_gen[c1]);
     //*contestant2 = osaka_copylist(copy_gen[c2]);
@@ -341,6 +341,7 @@ void select_parents(uint32_t* contestant1_ind, uint32_t* contestant2_ind, node_s
 
     *contestant1_ind = c1;
     *contestant2_ind = c2;
+    //printf("got here line 344\n"); //todo
     //printf("Done selecting parents, contestant1_ind=%d, contestant2_ind=%d\n", c1, c2);
 }
 
@@ -494,6 +495,8 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
     node_str* ofs_best[2];
     int best_id[2];
 
+    //printf("got here line 497\n"); //todo
+
     for (uint32_t itr = 0; itr < ((pop_size - num_elites - num_new_random) / 2); itr++) {
         //printf("About to fill in position %d and %d\n", num_elites + num_new_random + itr, num_elites + num_new_random + itr + ((pop_size-num_elites-num_new_random) / 2));
         vis_itr(vis, itr, g);
@@ -525,7 +528,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                                 pop_size, num_elites, num_new_random, itr);
         //printf("after update_generation\n");
     }
-    //printf("Done creating mutants\n");
+    printf("Done creating mutants\n");
 }
 
 void log_all_indiv_info(bool cache, DataNode** all_indiv, char* main_folder, int num_runs, int max_id) {
@@ -695,7 +698,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
     int max_id = 0;
     /* number of positions that generation fitness from shackleton is offset in the track_fitness vector 
        because fitness for basic optimization levels and initial generation are recorded before them */
-    int offset = num_levels + 1;  
+    int offset = num_levels + 1;
 
     // variables used for caching
     int hash_cap = pop_size * 5;

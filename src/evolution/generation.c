@@ -35,6 +35,8 @@
  */
 
 #include "generation.h"
+#include "../module/llvm_pass.h"
+#include "../module/gi_llvm_pass.h"
 
 /*
  * ROUTINES
@@ -68,12 +70,9 @@
  */
 
 node_str* generate_new_initialized_node(osaka_object_typ osaka_type) {
-
     node_str* new_node = osaka_createnode(NULL, HEAD, osaka_type);
-    
     // initializes all parameters in the single node, specific to object type
     osaka_randomizenode(new_node);
-
     return new_node;
 
 }
@@ -108,9 +107,7 @@ node_str* generate_new_initialized_node(osaka_object_typ osaka_type) {
  */
 
 node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osaka_type) {
-    
     node_str *head = generate_new_initialized_node(osaka_type);
-
     if (individual_size == 0) {
         individual_size = rand() % 80 + 10;
     }
@@ -215,7 +212,6 @@ void generate_new_generation(node_str** gen, uint32_t population_size, uint32_t 
         gen[g] = new_seq;
         //gen_id[g] = (*max_id_ptr)++;
     }
-
     generate_free_generation(level_passes, num_levels);
     free(level_passes);
 }
