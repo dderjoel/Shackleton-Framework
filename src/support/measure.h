@@ -5,4 +5,4 @@
  * written to that array
  */
 double run_with_measuresuite(int num_runs, bool fitness_with_var,
-                             const char *so_file, double all_runtime[]);
+                             const char *so_file, double all_runtime[], int func_num);

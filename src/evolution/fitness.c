@@ -423,7 +423,7 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
                                  bool cache, double *track_fitness,
                                  const char *cache_id, uint32_t num_runs,
                                  bool fitness_with_var, const char **levels,
-                                 const int num_levels) { // added 6/8/2021
+                                 const int num_levels, uint32_t func_num) { // added 6/8/2021
 
   const double tol = 0.95;
 
@@ -451,17 +451,17 @@ void fitness_pre_cache_llvm_pass(char *folder, char *test_file,
     llvm_run_command(build_command);
 
     double fitness =
-        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL, func_num);
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
-    fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
+    fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness, func_num);
   }
 }
 
 void fitness_pre_cache_log_to_summary(int level_ind, char *folder,
                                       const char **levels, const int num_levels,
-                                      double fitness) {
+                                      double fitness, uint32_t func_num) {
   // record precache information to /main_folder/track_fitness.csv file
   char track_fitness_file[300];
   strcpy(track_fitness_file, folder);
@@ -525,7 +525,7 @@ void fitness_pre_cache_log_to_summary(int level_ind, char *folder,
 void fitness_redo_basic(char *folder, char *test_file, bool cache,
                         double *track_fitness, const char *cache_id,
                         uint32_t num_runs, bool fitness_with_var,
-                        const char **levels, const int num_levels) {
+                        const char **levels, const int num_levels, uint32_t func_num) {
   if (!cache) {
     return;
   }
@@ -544,7 +544,7 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
     llvm_run_command(build_command);
 
     double fitness =
-        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL, func_num);
 
     printf("LLVM opt level: %s, average time=%lf over %d success runs, "
            "fitness=%lf\n",
@@ -586,26 +586,38 @@ void fitness_redo_basic(char *folder, char *test_file, bool cache,
  */
 
 void fitness_cache_llvm_pass(double fitness, node_str *indiv,
-                             char *cache_file) {
+                             char *cache_file, uint32_t func_num) {
   // printf("fitness.c:682, fitness_cache, cache_file: %s\n", cache_file);
   char string[30000];
   char fitness_num[100];
   char input_str[10000];
   char output_str[10000];
 
-  strcpy(string, "Description file for Individual 1\n\nHere are the passes in "
+  char func_num_str[20];
+  itoa(func_num, func_num_str, 20);
+
+
+  strcpy(string, "Description file for Individual (function number: #");
+  strcat(string, func_num_str);
+  strcat(string, ")\n\nHere are the passes in "
                  "this individual, in order:\n\n");
   sprintf(fitness_num, "%f", fitness);
   strcpy(input_str, "");
   strcpy(output_str, "");
 
-  while (NEXT(indiv) != NULL) {
-    char desc[60];
-    strcpy(desc, "");
-    osaka_describenode(desc, indiv);
-    strcat(string, desc);
-    strcat(string, "\n");
-    indiv = NEXT(indiv);
+  int seq_len = 0;
+  if (indiv->objtype == 5) {
+    char *opt_seq_str = gen_seq_str(indiv, &seq_len);
+    strcat(string, opt_seq_str);
+  } if (indiv->objtype == 3) {
+    while (NEXT(indiv) != NULL) {
+      char desc[60];
+      strcpy(desc, "");
+      osaka_describenode(desc, indiv);
+      strcat(string, desc);
+      strcat(string, " ");
+      indiv = NEXT(indiv);
+    }
   }
 
   char desc[60];
@@ -619,11 +631,7 @@ void fitness_cache_llvm_pass(double fitness, node_str *indiv,
   strcat(string, fitness_num);
   strcat(string, " sec\n\n");
 
-  int seq_len = 0;
-  if (indiv->objtype == 5) {
-    char *opt_seq_str = gen_seq_str(indiv, &seq_len);
-    strcat(string, opt_seq_str);
-  }
+  
 
   // printf("fitness.c:737, fitness_cache, cache_file: %s\n", cache_file);
 
@@ -671,7 +679,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
                          uint32_t num_src_files, bool vis, bool cache,
                          char *cache_file, const char *cache_id,
                          DataNode *indiv_data, uint32_t num_runs, int gen,
-                         bool fitness_with_var) {
+                         bool fitness_with_var, uint32_t func_num) {
 
   char base_file[300] = {'\0'};
   char build_command[20000] = {'\0'};
@@ -697,7 +705,7 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   // will fill all_runtime with the cycle-results
   double fitness =
-      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime);
+      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime, func_num);
 
   for (size_t i = 0; i < num_runs; i++) {
     printf("datapoint all_runtime[%lu]: %f\n", i, all_runtime[i]);
@@ -849,7 +857,7 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
                                     bool cache, double *track_fitness,
                                     const char *cache_id, uint32_t num_runs,
                                     bool fitness_with_var, const char **levels,
-                                    const int num_levels) { // added 6/8/2021
+                                    const int num_levels, uint32_t func_num) { // added 6/8/2021
 
   char base_file[300] = {'\0'};
   char input_file_base[300] = {'\0'};
@@ -881,13 +889,13 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
     llvm_run_command(build_command);
 
     double fitness =
-        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL);
+        run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL, func_num);
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
-    fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
+    fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness, func_num);
   }
 }
 
@@ -923,9 +931,9 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
  */
 
 void fitness_cache_gi_llvm_pass(double fitness, node_str *indiv,
-                                char *cache_file) {
+                                char *cache_file, uint32_t func_num) {
 
-  // do nothing, default for now
+  fitness_cache_llvm_pass(fitness, indiv, cache_file, func_num);
 }
 
 /*
@@ -961,7 +969,7 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
                             uint32_t num_src_files, bool vis, bool cache,
                             char *cache_file, const char *cache_id,
                             DataNode *indiv_data, uint32_t num_runs, int gen,
-                            bool fitness_with_var) {
+                            bool fitness_with_var, uint32_t func_num) {
 
   char so_file[300];
   char base_file[280];
@@ -987,7 +995,7 @@ double fitness_gi_llvm_pass(node_str *indiv, char *file, char **src_files,
 
   double all_runtime[num_runs];
   double fitness =
-      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime);
+      run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime, func_num);
 
   return node_record_data(indiv_data, indiv, all_runtime, fitness, num_runs,
                           gen, fitness_with_var);
@@ -1029,7 +1037,7 @@ void fitness_pre_cache(char *folder, char *test_file, char **src_files,
                        bool cache, double *track_fitness, const char *cache_id,
                        uint32_t num_runs, bool fitness_with_var,
                        const char **levels,
-                       const int num_levels) { // added 6/8/2021
+                       const int num_levels, uint32_t func_num) { // added 6/8/2021
   // double fitness_pre_cache(char* folder, char* test_file, char** src_files,
   // uint32_t num_src_files, osaka_object_typ type, bool cache) { //added
   // 6/2/2021 void fitness_pre_cache(char* folder, char* test_file, char**
@@ -1044,7 +1052,7 @@ void fitness_pre_cache(char *folder, char *test_file, char **src_files,
     fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files,
                                 cache, track_fitness, cache_id, num_runs,
                                 fitness_with_var, levels,
-                                num_levels); // added 6/8/2021
+                                num_levels, func_num); // added 6/8/2021
     // return fitness_pre_cache_llvm_pass(folder, test_file, src_files,
     // num_src_files, cache);  //added 6/2/2021
   } else if (type == 4) { // BINARY_UP_TO_512
@@ -1052,7 +1060,7 @@ void fitness_pre_cache(char *folder, char *test_file, char **src_files,
   } else if (type == 5) { // GI_LLVM_PASS
     fitness_pre_cache_gi_llvm_pass(folder, test_file, src_files, num_src_files,
                                    cache, track_fitness, cache_id, num_runs,
-                                   fitness_with_var, levels, num_levels);
+                                   fitness_with_var, levels, num_levels, func_num);
   }
 }
 
@@ -1085,7 +1093,7 @@ void fitness_pre_cache(char *folder, char *test_file, char **src_files,
  *
  */
 
-void fitness_cache(double fitness_value, node_str *indiv, char *cache_file) {
+void fitness_cache(double fitness_value, node_str *indiv, char *cache_file, uint32_t func_num) {
   // printf("fitness.c:1101, fitness_cache, cache_id: %s\n", cache_id);
   osaka_object_typ type = OBJECT_TYPE(indiv);
 
@@ -1096,11 +1104,11 @@ void fitness_cache(double fitness_value, node_str *indiv, char *cache_file) {
   } else if (type == 2) { // OSAKA_STRING
     return fitness_cache_osaka_string(fitness_value, indiv, cache_file);
   } else if (type == 3) { // LLVM_PASS
-    return fitness_cache_llvm_pass(fitness_value, indiv, cache_file);
+    return fitness_cache_llvm_pass(fitness_value, indiv, cache_file, func_num);
   } else if (type == 4) { // BINARY_UP_TO_512
     return fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
   } else if (type == 5) { // GI_LLVM_PASS
-    return fitness_cache_gi_llvm_pass(fitness_value, indiv, cache_file);
+    return fitness_cache_gi_llvm_pass(fitness_value, indiv, cache_file, func_num);
   }
 }
 
@@ -1136,7 +1144,7 @@ void fitness_cache(double fitness_value, node_str *indiv, char *cache_file) {
 double fitness_top(node_str *indiv, bool vis, char *test_file, char **src_files,
                    uint32_t num_src_files, bool cache, char *cache_file,
                    const char *cache_id, DataNode *indiv_data,
-                   uint32_t num_runs, int gen, bool fitness_with_var) {
+                   uint32_t num_runs, int gen, bool fitness_with_var, uint32_t func_num) {
 
   osaka_object_typ type = OBJECT_TYPE(indiv);
 
@@ -1150,13 +1158,13 @@ double fitness_top(node_str *indiv, bool vis, char *test_file, char **src_files,
   } else if (type == 3) { // LLVM_PASS
     return fitness_llvm_pass(indiv, test_file, src_files, num_src_files, vis,
                              cache, cache_file, cache_id, indiv_data, num_runs,
-                             gen, fitness_with_var);
+                             gen, fitness_with_var, func_num);
   } else if (type == 4) { // BINARY_UP_TO_512
     return fitness_binary_up_to_512(indiv, vis);
   } else if (type == 5) { // GI_LLVM_PASS
     return fitness_gi_llvm_pass(indiv, test_file, src_files, num_src_files, vis,
                                 cache, cache_file, cache_id, indiv_data,
-                                num_runs, gen, fitness_with_var);
+                                num_runs, gen, fitness_with_var, func_num);
   } else {
     return 100;
   }

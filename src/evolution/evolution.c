@@ -72,7 +72,7 @@
  *
  */
 
-void evolution_cache_generation_old(bool cache, char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot,double* track_fitness, int offset) {
+void evolution_cache_generation_old(bool cache, char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot,double* track_fitness, int offset, uint32_t func_num) {
 //added 6/2/2021
 //void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot) {
     if (!cache) {
@@ -114,7 +114,7 @@ void evolution_cache_generation_old(bool cache, char* main_folder, uint32_t gen,
         printf("fitness for %d is %f\n", i, fitness_values[i]);
     }
     printf("\nbest fitness is that of %d, %f\n", winner, winner_value);*/
-    fitness_cache(winner_value, winner_seq, best_file);
+    fitness_cache(winner_value, winner_seq, best_file, func_num);
 
     track_fitness[gen + offset] = winner_value;
     
@@ -235,29 +235,6 @@ void evolution_log_to_summary(bool cache, char* main_folder, \
     
     // track all id changes over generation, and a separate file recording their fitness
     // set up before constructing the all_indiv table so this is no longer needed
-    /*for (int k = 0; k < pop_size; k++) {
-        if (cache) {
-            char track_id_file[300];
-            strcpy(track_id_file, main_folder);
-            strcat(track_id_file, "/track_id.csv");
-            char track_all_fitness_file[300];
-            strcpy(track_all_fitness_file, main_folder);
-            strcat(track_all_fitness_file, "/track_all_fitness.csv");
-
-            FILE* track_id_file_ptr = fopen(track_id_file, "a");
-            FILE* track_all_fitness_file_ptr = fopen(track_all_fitness_file, "a");
-            if (k == 0) {
-                fprintf(track_id_file_ptr, "%s%d, %d%s", g==-1?"initial":"gen", g+1, current_gen_id[k], k<pop_size-1?",":"\n");
-                fprintf(track_all_fitness_file_ptr, "%s%d, %d%s", g==-1?"initial":"gen", g+1, fitness_values[k], k<pop_size-1?",":"\n");
-            } else {
-                fprintf(track_id_file_ptr, "%d%s", current_gen_id[k], k<pop_size-1?",":"\n");
-                fprintf(track_all_fitness_file_ptr, "%lf%s", fitness_values[k], k<pop_size-1?",":"\n");
-            }
-            fclose(track_id_file_ptr);
-            fclose(track_all_fitness_file_ptr);
-        }
-    }*/
-    //printf("Done logging to all files\n");
 }
 
 void print_elites(int num_elites, int* elite_indx, double* fitness_values, int* elite_id, node_str** current_gen) {
@@ -408,12 +385,12 @@ void genetic_operators(node_str* contestant1, node_str* contestant2, bool* c1_ch
     //printf("Done applying genetic operators, c1_change=%s, c2_change=%s\n", c1?"true":"false", c2?"true":"false");
 }
 
-void select_offspring(node_str** best, int* best_id, node_str** offsprings, bool* ofs_change, int* ofs_id, int num_offspring, int parent1_ind, int parent2_ind, double* fitness_values, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, int g, DataNode*** all_indiv_ptr, uint32_t num_runs, bool fitness_with_var) {
+void select_offspring(node_str** best, int* best_id, node_str** offsprings, bool* ofs_change, int* ofs_id, int num_offspring, int parent1_ind, int parent2_ind, double* fitness_values, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, int g, DataNode*** all_indiv_ptr, uint32_t num_runs, bool fitness_with_var, uint32_t func_num) {
     //printf("\nInside select_offspring, calculating offspring fitness, num_offspring=%d:\n", num_offspring);
 
     double ofs_fitness[num_offspring];
     for (int i = 0; i < num_offspring; i++) {
-        ofs_fitness[i] = fitness_top(offsprings[i], vis, test_file, src_files, num_src_files, false, NULL, cache_id, (*all_indiv_ptr)[ofs_id[i]], num_runs, g, fitness_with_var);
+        ofs_fitness[i] = fitness_top(offsprings[i], vis, test_file, src_files, num_src_files, false, NULL, cache_id, (*all_indiv_ptr)[ofs_id[i]], num_runs, g, fitness_with_var, func_num);
         //printf("offspring #%d: fitness=%lf\n", i, ofs_fitness[i]);
     }
     //printf("Done calculating offspring fitness:\n");
@@ -481,7 +458,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                         char* file, char** src_files, uint32_t num_src_files, \
                         bool vis, int g, osaka_object_typ ot,\
                         bool cache, char* cache_file, const char* cache_id, \
-                        DataNode*** all_indiv_ptr, int* hash_cap_ptr, bool fitness_with_var) {
+                        DataNode*** all_indiv_ptr, int* hash_cap_ptr, bool fitness_with_var, uint32_t func_num) {
     uint32_t contestant1_ind = 0;
     uint32_t contestant2_ind = 0;
     node_str* offsprings[num_offspring];
@@ -513,7 +490,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                                 fitness_values, \
                                 vis, file, src_files, num_src_files, \
                                 cache, cache_file, cache_id, g, \
-                                all_indiv_ptr, num_runs, fitness_with_var);
+                                all_indiv_ptr, num_runs, fitness_with_var, func_num);
         //printf("after select_offspring\n");
         //printf("before update_generation\n");
         update_generation(ofs_best[0], ofs_best[1], \
@@ -551,14 +528,14 @@ void log_all_indiv_info(bool cache, DataNode** all_indiv, char* main_folder, int
     //printf("Done logging generation\n");
 }
 
-void log_redo_basic(char* main_folder, char* file, bool cache, const char *cache_id, double best_fitness, uint32_t num_runs, bool fitness_with_var, int g, const char** levels, const int num_levels) {
+void log_redo_basic(char* main_folder, char* file, bool cache, const char *cache_id, double best_fitness, uint32_t num_runs, bool fitness_with_var, int g, const char** levels, const int num_levels, uint32_t func_num) {
     if (!cache) {
         return;
     }
     if ((g+1) % 5 == 0) {
         printf("\n-----------------------------Redo Basic LLVM opt Levels-----------------------------\n");
         double temp_track[num_levels];
-        fitness_redo_basic(main_folder, file, cache, temp_track, cache_id, num_runs, fitness_with_var, levels, num_levels);
+        fitness_redo_basic(main_folder, file, cache, temp_track, cache_id, num_runs, fitness_with_var, levels, num_levels, func_num);
         char test_compare[200];
         strcpy(test_compare, main_folder);
         strcat(test_compare, "/test_compare.csv");
@@ -666,7 +643,7 @@ int evolution_clean_up(int num_elites, node_str** current_generation, uint32_t p
  *
  */
 
-int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double *track_fitness, const char *cache_id, const char** levels, const int num_levels, bool gi) {
+int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double *track_fitness, const char *cache_id, const char** levels, const int num_levels, bool gi, uint32_t func_num) {
     if (vis) {
         printf("Performing basic tournament/crossover/mutation evolution with replacement --------\n\n");
     }
@@ -704,12 +681,12 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
 
     // variables used for selecting offspring
     int num_offspring = 6;  // HAS TO BE GREATER THAN 2: 2 offsprings will be identical to parents, and num_offspring-2 new individuals
-    uint32_t num_runs = 60;
+    uint32_t num_runs = 50;
     bool fitness_with_var = false;
 
     cache_create_new_run_folder(cache, main_folder, cache_id);
     cache_params(cache, main_folder, num_gens, pop_size, cross_perc, mut_perc, elite_perc, tourn_size);
-    fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache, track_fitness, cache_id, num_runs, fitness_with_var, levels, num_levels);
+    fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache, track_fitness, cache_id, num_runs, fitness_with_var, levels, num_levels, func_num);
 
     // create the initial population
     generate_new_generation(current_generation, pop_size, indiv_size, ot, gi, levels, num_levels);
@@ -729,7 +706,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
         cache_file_name(cache, main_folder, cache_file, -1, k);
         //indiv_data = all_indiv[k];  // Added7/7/2021
         indiv_data = all_indiv[current_gen_id[k]];
-        fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, generation_num, fitness_with_var); // Added 6/24/2021
+        fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, generation_num, fitness_with_var, func_num); // Added 6/24/2021
         node_increment_gen(indiv_data);
         //=%lf\n", fitness_values[k]);
     }
@@ -775,7 +752,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
                         file, src_files, num_src_files, \
                         vis, g, ot,\
                         cache, cache_file, cache_id, \
-                        &all_indiv, &hash_cap, fitness_with_var);
+                        &all_indiv, &hash_cap, fitness_with_var, func_num);
         //printf("after create_mutants\n");
         
         printf("old generation ID: [");
@@ -797,7 +774,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
             
             cache_file_name(cache, main_folder, cache_file, g, k);
             indiv_data = all_indiv[current_gen_id[k]];
-            fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, g, fitness_with_var); // Added 6/18/2021
+            fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, g, fitness_with_var, func_num); // Added 6/18/2021
             node_increment_gen(indiv_data);
         }
         select_elites(pop_size, num_elites, fitness_values, current_gen_id, elite_indx, elite_id);
@@ -810,7 +787,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
 
         vis_print_gen(vis, true, current_generation, g, pop_size);
         printf("-------------------------------- End of Generation %d --------------------------------\n\n", g + 1);
-        log_redo_basic(main_folder, file, cache, cache_id, track_fitness[g + offset], num_runs, fitness_with_var, g, levels, num_levels);
+        log_redo_basic(main_folder, file, cache, cache_id, track_fitness[g + offset], num_runs, fitness_with_var, g, levels, num_levels, func_num);
         //bool terminate = check_termination(track_fitness[g + offset], &lowest, &stale_counter, stale_limit);
         bool terminate = false;
         if (terminate) {

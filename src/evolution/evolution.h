@@ -85,7 +85,7 @@
  *
  */
 
-void evolution_cache_generation_old(bool cache, char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot, double* track_fitness, int offset);
+void evolution_cache_generation_old(bool cache, char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot, double* track_fitness, int offset, uint32_t func_num);
 
 /*
  * NAME
@@ -238,7 +238,7 @@ void create_randoms(int num_elites, int num_new_random, int* max_id, node_str** 
 void select_parents(uint32_t* c_ind1, uint32_t* c_ind2, node_str** copy_gen, double* fitness_values, int copy_size, int tourn_size, bool vis);
 void generate_offspring(int parent1_ind, int parent2_ind, node_str** copy_gen, int* copy_gen_id, int num_offspring, node_str** offsprings, bool* ofs_change, int* ofs_id, uint32_t cross_perc, uint32_t mut_perc, bool vis, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot);
 void genetic_operators(node_str* contestant1, node_str* contestant2, bool* c1_change, bool* c2_change, uint32_t cross_perc, uint32_t mut_perc, bool vis);
-void select_offspring(node_str** best, int* best_id, node_str** offsprings, bool* ofs_change, int* ofs_id, int num_offspring, int parent1_ind, int parent2_ind, double* fitness_values, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, int g, DataNode*** all_indiv_ptr, uint32_t num_runs, bool fitness_with_var);
+void select_offspring(node_str** best, int* best_id, node_str** offsprings, bool* ofs_change, int* ofs_id, int num_offspring, int parent1_ind, int parent2_ind, double* fitness_values, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, int g, DataNode*** all_indiv_ptr, uint32_t num_runs, bool fitness_with_var, uint32_t func_num);
 void update_generation(node_str* contestant1, node_str* contestant2, int c1_id, int c2_id, node_str** current_generation, int* current_gen_id, int pop_size, int num_elites, int num_new_random, int p);
 void create_mutants(node_str** copy_gen, node_str** current_generation, double* fitness_values,\
                         int* copy_gen_id, int* current_gen_id, int* max_id_ptr, \
@@ -248,9 +248,9 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                         char* file, char** src_files, uint32_t num_src_files, \
                         bool vis, int g, osaka_object_typ ot,\
                         bool cache, char* cache_file, const char* cache_id, \
-                        DataNode*** all_indiv_ptr, int* hash_cap_ptr, bool fitness_with_var);
+                        DataNode*** all_indiv_ptr, int* hash_cap_ptr, bool fitness_with_var, uint32_t func_num);
 void log_all_indiv_info(bool cache, DataNode** all_indiv, char* main_folder, int num_runs, int max_id);
-void log_redo_basic(char* folder, char* file, bool cache, const char *cache_id, double best_fitness, uint32_t num_runs, bool fitness_with_var, int g, const char** levels, int num_levels);
+void log_redo_basic(char* folder, char* file, bool cache, const char *cache_id, double best_fitness, uint32_t num_runs, bool fitness_with_var, int g, const char** levels, int num_levels, uint32_t func_num);
 bool check_termination(double best_fitness, double* lowest_ptr, int* stale_counter_ptr, const int stale_limit);
 int evolution_clean_up(int num_elites, node_str** current_generation, uint32_t pop_size, \
                                 bool vis, char* main_folder, char* file, const char* cache_id, bool cache, \
@@ -296,7 +296,7 @@ int evolution_clean_up(int num_elites, node_str** current_generation, uint32_t p
  *
  */
 
-int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, const char** levels, int num_levels, bool gi); //Added 6/9/2021
+int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, const char** levels, int num_levels, bool gi, uint32_t func_num); //Added 6/9/2021
 //node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache);
 
 #endif /* EVOLUTION_EVOLUTION_H_ */

@@ -3,7 +3,7 @@
 #include <measuresuite.h>
 
 double run_with_measuresuite(int num_runs, bool fitness_with_var,
-                             const char *so_file, double all_runtime[]) {
+                             const char *so_file, double all_runtime[], int func_num) {
   measuresuite_t ms;
   const uint64_t bounds[] = {-1};
   int init = ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "function");

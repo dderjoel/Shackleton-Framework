@@ -360,7 +360,7 @@ void test_copy_generation(uint32_t pop_size, uint32_t indiv_size, osaka_object_t
  *
  */
 
-void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files);
+void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, uint32_t func_num);
 
 /*
  * NAME
@@ -394,7 +394,7 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
  *
  */
 
-void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files);
+void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, uint32_t func_num);
 
 /*
  * NAME
@@ -498,7 +498,7 @@ void test_evolution_basic_crossover_and_mutation(uint32_t pop_size, uint32_t num
  *
  */
 
-void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi);
+void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi, uint32_t func_num);
 
 /*
  * NAME
@@ -534,6 +534,6 @@ void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
  *
  */
 
-void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi);
+void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi, uint32_t func_num);
 
 #endif /* SUPPORT_TEST_H_ */

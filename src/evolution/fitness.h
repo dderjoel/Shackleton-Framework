@@ -378,11 +378,11 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
  *
  */
 
-void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels);  //added 6/8/2021
+void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels, uint32_t func_num);  //added 6/8/2021
 //double fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache);  //added 6/2/2021
 //void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache);
-void fitness_redo_basic(char* folder, char* test_file, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels);
-void fitness_pre_cache_log_to_summary(int level_ind, char* folder, const char** levels, const int num_levels, double fitness);
+void fitness_redo_basic(char* folder, char* test_file, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels, uint32_t func_num);
+void fitness_pre_cache_log_to_summary(int level_ind, char* folder, const char** levels, const int num_levels, double fitness, uint32_t func_num);
 
 /*
  * NAME
@@ -413,7 +413,7 @@ void fitness_pre_cache_log_to_summary(int level_ind, char* folder, const char** 
  *
  */
 
-double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var);
+double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var, uint32_t func_num);
 
 /*
  * NAME
@@ -541,7 +541,7 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
  *
  */
 
-void fitness_pre_cache_gi_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels); //2/12/2022
+void fitness_pre_cache_gi_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels, uint32_t func_num); //2/12/2022
 
 /*
  * NAME
@@ -574,7 +574,7 @@ void fitness_pre_cache_gi_llvm_pass(char* folder, char* test_file, char** src_fi
  *
  */
 
-void fitness_cache_gi_llvm_pass(double fitness, node_str* indiv, char* cache_file);
+void fitness_cache_gi_llvm_pass(double fitness, node_str* indiv, char* cache_file, uint32_t func_num);
 
 /*
  * NAME
@@ -605,7 +605,7 @@ void fitness_cache_gi_llvm_pass(double fitness, node_str* indiv, char* cache_fil
  *
  */
 
-double fitness_gi_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var);
+double fitness_gi_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var, uint32_t func_num);
 
 /*
  * NAME
@@ -638,7 +638,7 @@ double fitness_gi_llvm_pass(node_str* indiv, char* file, char** src_files, uint3
  *
  */
 
-void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache, double* track_fitness, const char *id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels);  //added 6/8/2021
+void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache, double* track_fitness, const char *id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels, uint32_t func_num);  //added 6/8/2021
 //double fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache);  //added 6/2/2021
 //void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache);
 
@@ -671,7 +671,7 @@ void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t
  *
  */
 
-void fitness_cache(double fitness_value, node_str* indiv, char* cache_file);
+void fitness_cache(double fitness_value, node_str* indiv, char* cache_file, uint32_t func_num);
 /*
  * NAME
  *
@@ -701,7 +701,7 @@ void fitness_cache(double fitness_value, node_str* indiv, char* cache_file);
  *
  */
 
-double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var);
+double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var, uint32_t func_num);
 
 /*
  * NAME

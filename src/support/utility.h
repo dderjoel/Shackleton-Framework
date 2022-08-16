@@ -305,7 +305,7 @@ char *randomString(uint32_t length);
  *
  */
 
-void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file);
+void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file, uint32_t *func_num);
 
 double calc_var(double* array, double mean, int length);
 bool is_in_list(int num, int* list, int length);

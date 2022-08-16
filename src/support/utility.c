@@ -458,7 +458,7 @@ char *randomString(uint32_t length) {
  *
  */
 
-void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file) { //added 6/4/2021
+void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file, uint32_t *func_num) { //added 6/4/2021
 //void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *tourn_size, bool *vis) {
 
     FILE *file;
@@ -542,6 +542,12 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
                     *vis = false;
                     printf(" = false\n");
                 }
+            }
+            else if (strcmp(temp, "function_num:") == 0) {
+                //printf("\tsetting visualization from file - %s",line);
+                temp = strtok(NULL, delim);
+                temp[strlen(temp) - 1] = '\0';
+                str2int(tourn_size, temp, 10);
             }
             /*else if (strcmp(temp, "osaka_type:") == 0) {
                 //printf("\tsetting osaka data type from file - %s",line);

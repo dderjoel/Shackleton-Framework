@@ -69,10 +69,10 @@ all: osaka ensure_directories
 osaka: shackleton
 
 shackleton: $(OBJS) $(LIB_MS)
-	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm
+	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm 
 
 $(LIB_MS):
-	make -C ./MeasureSuite/ NO_AL=1 libmeasuresuite.a
+	make -C ./MeasureSuite/ NO_AL=1 libmeasuresuite.a -B
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output

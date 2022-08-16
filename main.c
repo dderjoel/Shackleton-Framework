@@ -36,9 +36,9 @@
 #include "src/support/test.h"
 #include "src/module/llvm_pass.h"
 
-void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization);
-void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization);
-void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint32_t *num_population_size, uint32_t *percent_crossover, uint32_t *percent_mutation, uint32_t *percent_elite, uint32_t *tournament_size, bool *visualization);
+void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization, uint32_t func_num);
+void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization, uint32_t func_num);
+void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint32_t *num_population_size, uint32_t *percent_crossover, uint32_t *percent_mutation, uint32_t *percent_elite, uint32_t *tournament_size, bool *visualizationm, uint32_t *func_num);
 char** set_llvm_optimize(uint32_t argc, char* argv[], char test_file[], uint32_t* num_src_files_ptr);
 void set_test_file(uint32_t argc, char* argv[], char test_file[]);
 char** set_src_file(uint32_t argc, char* argv[], uint32_t* num_src_files_ptr);
@@ -71,6 +71,7 @@ int main(uint32_t argc, char* argv[]) {
     uint32_t percent_elite = 20;
     uint32_t tournament_size = 2;
     bool visualization = false;
+    uint32_t func_num = 0;
     osaka_object_typ curr_type = NOTSET;
 
     // variables that are only used for llvm optimization
@@ -106,15 +107,15 @@ int main(uint32_t argc, char* argv[]) {
 
     // --------------------------------------------------------------------------------
     // Arg parsing to see if the help flag was triggered, overrides all other flags ---
-    print_help_msg(argc, argv, num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization);
+    print_help_msg(argc, argv, num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization, func_num);
 
     // --------------------------------------------------------------------------------
     // Parsing and interaction with users begin ---------------------------------------
-    print_launch_msg(num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization);
+    print_launch_msg(num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization, func_num);
 
     // --------------------------------------------------------------------------------
     // Parameteres_file parsing, added option to specify name of parameter file - 6/4/2021
-    process_params(argc, argv, &num_generations, &num_population_size, &percent_crossover, &percent_mutation, &percent_elite, &tournament_size, &visualization);
+    process_params(argc, argv, &num_generations, &num_population_size, &percent_crossover, &percent_mutation, &percent_elite, &tournament_size, &visualization, &func_num);
     // this array contains runtime for: no_opt, O0, O1, O2, O3, Os, Oz, initial population, gen1, gen2, etc.
     double *track_fitness = calloc(num_generations + num_levels + 1, sizeof(double)); // Added 6/8/2021
     
@@ -131,14 +132,14 @@ int main(uint32_t argc, char* argv[]) {
     // --------------------------------------------------------------------------------
     // Executing Code -----------------------------------------------------------------
     gettimeofday(&shackleton_start, NULL);  //added 6/14/2021
-    int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, cache_id, levels, num_levels, false); // Added 6/21/2021
+    int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, cache_id, levels, num_levels, false, func_num); // Added 6/21/2021
     //evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, src_files, num_src_files, caching);
     gettimeofday(&shackleton_end, NULL);  //added 6/14/2021
     
     // --------------------------------------------------------------------------------
     // Tests --------------------------------------------------------------------------
     if (test) {
-        test_master(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, false);
+        test_master(num_generations, num_population_size, indiv_size, tournament_size, percent_mutation, percent_crossover, percent_elite, curr_type, visualization, test_file, src_files, num_src_files, caching, track_fitness, false, func_num);
     }
 
     // --------------------------------------------------------------------------------
@@ -160,7 +161,7 @@ int main(uint32_t argc, char* argv[]) {
 }
 
 
-void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization) {
+void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization, uint32_t func_num) {
     if (argc >= 2) {
         for (uint32_t curr = 1; curr < argc; curr++) {
             if (strcmp(argv[curr], "-help") == 0) {
@@ -188,7 +189,8 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
                 printf("\t[4] percent_mutation = %d\t\t-- The percent chance that any one individual will have mutation applied to it\n", percent_mutation);
                 printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);  //Added 6/14/2021
                 printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
-                printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n\n", visualization ? "true" : "false");
+                printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n", visualization ? "true" : "false");
+                printf("\t[8] function_number = %s\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
                 printf("These are all the options that are built into the command line interface for the Shackleton tool. If you have more questions about the inner"
                                         " workings of the tool and everything that goes into the implemention, please refer to the README documents contained in the github"
                                         " repository which can be found at: https://github.com/ARM-software/Shackleton-Framework. \n\n");
@@ -198,7 +200,7 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
     }
 }
 
-void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization) {
+void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, uint32_t percent_crossover, uint32_t percent_mutation, uint32_t percent_elite, uint32_t tournament_size, bool visualization, uint32_t func_num) {
     printf("\n--------------------------------------------------------- Launching Project Shackleton ---------------------------------------------------------\n\n\n");
 
     printf("Welcome to the Shackleton Framework tool, a generic genetic programming framework that enables easier experimentation for linear genetic programming\n" 
@@ -212,10 +214,11 @@ void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, ui
     printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);
     printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
     printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n\n", visualization ? "true" : "false");
+    printf("\t[8] function_number = %s\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
 
 }
 
-void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint32_t *num_population_size, uint32_t *percent_crossover, uint32_t *percent_mutation, uint32_t *percent_elite, uint32_t *tournament_size, bool *visualization) {
+void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint32_t *num_population_size, uint32_t *percent_crossover, uint32_t *percent_mutation, uint32_t *percent_elite, uint32_t *tournament_size, bool *visualization, uint32_t *func_num) {
     bool using_params_file = false;
     if (argc >= 2) {
         for (uint32_t curr = 1; curr < argc; curr++) {
@@ -241,7 +244,7 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
                     strcpy(param_file, substr);
                 }
                 printf("Using a parameters file has been chosen, any changes to parameters will be taken from the src/files/params/%s\n\n", param_file);
-                set_params_from_file(num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization, param_file);
+                set_params_from_file(num_generations, num_population_size, percent_crossover, percent_mutation, percent_elite, tournament_size, visualization, param_file, func_num);
                 printf("\nHere are the values being used for this evolutionary run:\n");
                 printf("\t[1] num_generations = %d\n", *num_generations);
                 printf("\t[2] num_population_size = %d\n", *num_population_size);
@@ -250,6 +253,7 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
                 printf("\t[5] percent_elite = %d\n", *percent_elite);
                 printf("\t[6] tournament_size = %d\n", *tournament_size);
                 printf("\t[7] visualization = %s\n\n", *visualization ? "true" : "false");
+                printf("\t[8] function = %s\n\n", *func_num);
                 using_params_file = true;
             }
         }
@@ -260,7 +264,7 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
         scanf("%s", answer);
         if (strcmp(answer, "y") == 0 || strcmp(answer, "Y") == 0) {
             while (strcmp(answer, "y") == 0 || strcmp(answer, "Y") == 0) {
-                printf("\n\nWhich parameter from the above would you like to change? 1/2/3/4/5/6: ");
+                printf("\n\nWhich parameter from the above would you like to change? 1/2/3/4/5/6/7/8: ");
                 scanf("%s", answer);
 
                 if (strcmp(answer, "1") == 0) {
@@ -309,6 +313,12 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
                         *visualization = false;
                     }
                     printf("\nVisualization has been set to the requested value of %s\n\n", *visualization ? "true" : "false");
+                }
+                else if (strcmp(answer, "8") == 0) {
+                    printf("\nPlease specify the funcion number to be used (int number): ");
+                    scanf("%s", answer);
+                    str2int(func_num, answer, 10);
+                    printf("\nFunction number has been set to the requested value of %d\n\n", *func_num);
                 }
                 else {
                     printf("The input was not a valid option, please only choose a value between 1 and 6\n");
