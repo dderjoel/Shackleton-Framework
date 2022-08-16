@@ -12,10 +12,8 @@ double run_with_measuresuite(int num_runs, bool fitness_with_var,
     ms_p_error(ms);
   }
 
-  const int batchsize = 100;
+  const int batchsize = 101;
   // make num_runs uneven so we have one median
-  num_runs |= 0b1;
-  num_runs -= 2;
   ms_measure_lib_only(ms, batchsize, num_runs);
 
   uint64_t *cycles;
