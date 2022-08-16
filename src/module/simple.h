@@ -3,8 +3,8 @@
  Name        : simple.c
  Author      : Andrew Sloss
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Simple type, used as a test for verification
  ============================================================================
  */
@@ -35,18 +35,18 @@
  */
 
 #include "../osaka/osaka.h"
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
 
 /*
  * DATATYPES
  */
 
-typedef struct object_simple_str    {
-    uint32_t subtype;
-    uint32_t i;
+typedef struct object_simple_str {
+  uint32_t subtype;
+  uint32_t i;
 } object_simple_str;
 
 /*
@@ -63,20 +63,20 @@ typedef struct object_simple_str    {
 object_simple_str *simple_createobject(void);
 
 void simple_randomizeobject(object_simple_str *o);
-void simple_setobject(object_simple_str *o, char* pass);
+void simple_setobject(object_simple_str *o, char *pass);
 
 void simple_printobject(object_simple_str *o);
 
-void simple_describeobject(char* desc, object_simple_str *o);
+void simple_describeobject(char *desc, object_simple_str *o);
 
 void simple_deleteobject(object_simple_str *o);
 
-void simple_writeobject(FILE *stream,object_simple_str *o);
+void simple_writeobject(FILE *stream, object_simple_str *o);
 
 void *simple_readobject(FILE *stream);
 
 void *simple_copyobject(object_simple_str *o);
 
-//uint32_t simple_fitnessobject(node_str *n);
+// uint32_t simple_fitnessobject(node_str *n);
 
 #endif /* MODULE_SIMPLE_H_ */

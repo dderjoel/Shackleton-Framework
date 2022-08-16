@@ -3,8 +3,8 @@
  Name        : modules.h
  Author      : Andrew Sloss, edited by Hannah Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Top-level file for choosing object types for the Framework
  ============================================================================
  */
@@ -34,30 +34,30 @@
  * IMPORT ...
  */
 
-#include "simple.h"
 #include "assembler.h"
-#include "osaka_string.h"
-#include "llvm_pass.h"
 #include "binary_up_to_512.h"
 #include "gi_llvm_pass.h"
-
+#include "llvm_pass.h"
+#include "osaka_string.h"
+#include "simple.h"
 /*
  * DATATYPE
  */
 
 typedef struct object_functions_str {
-    uint32_t object_type;
-    char name[25];
-    object_simple_str *(*osaka_createobject)(void);
-    void *(*osaka_randomizeobject)(void *);
-    void *(*osaka_setobject)(void *, char*);
-    void (*osaka_deleteobject)(void *);
-    void (*osaka_printobject)(void *);     
-    void (*osaka_writeobject)(FILE *stream,void *);
-    void *(*osaka_readobject)(FILE *stream);
-    void *(*osaka_copyobject)(void *);
-    void (*osaka_describeobject)(char *, void *);         // Will be used for caching functionality, WIP
-    bool (*osaka_compareobject)(void *object_ptr1, void *object_ptr2);
+  uint32_t object_type;
+  char name[25];
+  object_simple_str *(*osaka_createobject)(void);
+  void *(*osaka_randomizeobject)(void *);
+  void *(*osaka_setobject)(void *, char *);
+  void (*osaka_deleteobject)(void *);
+  void (*osaka_printobject)(void *);
+  void (*osaka_writeobject)(FILE *stream, void *);
+  void *(*osaka_readobject)(FILE *stream);
+  void *(*osaka_copyobject)(void *);
+  void (*osaka_describeobject)(
+      char *, void *); // Will be used for caching functionality, WIP
+  bool (*osaka_compareobject)(void *object_ptr1, void *object_ptr2);
 } object_functions_str;
 
 /*

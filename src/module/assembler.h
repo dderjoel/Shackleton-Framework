@@ -3,8 +3,8 @@
  Name        : assembler.h
  Author      : Andrew Sloss
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Base type for simple Assembler Objects
  ============================================================================
  */
@@ -37,32 +37,21 @@
 #include "../osaka/osaka.h"
 #include "modules.h"
 #include "simple.h"
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
 
 /*
  * DATATYPES
  */
 
-typedef enum    {
-    ADD = 0,
-    SUB,
-    MUL,
-    SDIV,
-    MOV = 4
-} instruction_typ;
+typedef enum { ADD = 0, SUB, MUL, SDIV, MOV = 4 } instruction_typ;
 
-typedef enum    {
-    R0 = 0,
-    R1,
-    R2,
-    R3
-} register_name;
+typedef enum { R0 = 0, R1, R2, R3 } register_name;
 
-typedef struct object_assembler_str    {
-    instruction_typ instr;
+typedef struct object_assembler_str {
+  instruction_typ instr;
 } object_assembler_str;
 
 /*
@@ -80,11 +69,11 @@ typedef struct object_assembler_str    {
 object_assembler_str *assembler_createobject(void);
 
 void assembler_randomizeobject(object_assembler_str *o);
-void assembler_setobject(object_assembler_str *o, char* pass);
+void assembler_setobject(object_assembler_str *o, char *pass);
 
 void assembler_printobject(object_assembler_str *o);
 
-void assembler_describeobject(char* desc, object_assembler_str *o);
+void assembler_describeobject(char *desc, object_assembler_str *o);
 
 void assembler_deleteobject(object_assembler_str *o);
 

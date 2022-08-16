@@ -3,8 +3,8 @@
  Name        : autogen_test.h
  Author      : Autogenereted
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Test type for the editor tool
  ============================================================================
  */
@@ -35,32 +35,32 @@
  */
 
 #include "../osaka/osaka.h"
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
 
 /*
  * DATATYPES
  */
 
 typedef struct test_test_params_number {
-	uint32_t value;
-	bool constrained;
-	uint32_t* valid_values;
-	int num_values;
+  uint32_t value;
+  bool constrained;
+  uint32_t *valid_values;
+  int num_values;
 } test_test_params_number;
 
 typedef struct test_test_params_binary {
-	uint32_t value;
-	bool constrained;
-	uint32_t* valid_values;
-	int num_values;
+  uint32_t value;
+  bool constrained;
+  uint32_t *valid_values;
+  int num_values;
 } test_test_params_binary;
 
 typedef struct object_autogen_test_str {
-	test_test_params_number* item0;
-	test_test_params_binary* item1;
+  test_test_params_number *item0;
+  test_test_params_binary *item1;
 } object_autogen_test_str;
 
 /*
@@ -93,7 +93,7 @@ void autogen_test_randomizeobject(object_autogen_test_str *o);
 
 void autogen_test_printobject(object_autogen_test_str *o);
 
-void autogen_test_describeobject(char* desc, object_autogen_test_str *o);
+void autogen_test_describeobject(char *desc, object_autogen_test_str *o);
 
 void autogen_test_deleteobject(object_autogen_test_str *o);
 

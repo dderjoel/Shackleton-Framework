@@ -3,8 +3,8 @@
  Name        : llvm_pass.h
  Author      : Hannah Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : LLVM optimization pass object type for use with the LLVM
                     integrated portion of the Shackleton Framework
  ============================================================================
@@ -36,25 +36,25 @@
  */
 
 #include "../osaka/osaka.h"
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
 
 /*
  * DATATYPES
  */
 
 typedef struct pass_struct {
-    char* value;
-    uint32_t value_index;
-    bool constrained;
-    char** valid_values;
-    int num_values;
+  char *value;
+  uint32_t value_index;
+  bool constrained;
+  char **valid_values;
+  int num_values;
 } pass_struct;
 
 typedef struct object_llvm_pass_str {
-    pass_struct* pass;
+  pass_struct *pass;
 } object_llvm_pass_str;
 
 /*
@@ -71,33 +71,36 @@ typedef struct object_llvm_pass_str {
 /*
  * ROUTINES
  */
-//void llvm_init_from_list();
+// void llvm_init_from_list();
 
 void llvm_init_valid_values();
 
-char*** llvm_set_default_level_strings(int* default_string_lengths, const int num_levels);  //added 8/13/21
-int* llvm_default_level_string_lengths(const int num_levels);  //added 8/13/21
+char ***llvm_set_default_level_strings(int *default_string_lengths,
+                                       const int num_levels); // added 8/13/21
+int *llvm_default_level_string_lengths(const int num_levels); // added 8/13/21
 
-void llvm_pass_set_valid_values(object_llvm_pass_str* o);
+void llvm_pass_set_valid_values(object_llvm_pass_str *o);
 
 object_llvm_pass_str *llvm_pass_createobject(void);
 
 void llvm_pass_randomizeobject(object_llvm_pass_str *o);
-void llvm_pass_setobject(object_llvm_pass_str* o, char* pass);  //added 8/13/21
-int llvm_find_pass(char** values, int num_valid_values, char* pass);   //added 8/13/21
+void llvm_pass_setobject(object_llvm_pass_str *o, char *pass); // added 8/13/21
+int llvm_find_pass(char **values, int num_valid_values,
+                   char *pass); // added 8/13/21
 
 void llvm_pass_printobject(object_llvm_pass_str *o);
 
-void llvm_pass_describeobject(char* desc, object_llvm_pass_str *o);
+void llvm_pass_describeobject(char *desc, object_llvm_pass_str *o);
 
 void llvm_pass_deleteobject(object_llvm_pass_str *o);
 
-void llvm_pass_writeobject(FILE *stream,object_llvm_pass_str *o);
+void llvm_pass_writeobject(FILE *stream, object_llvm_pass_str *o);
 
 void *llvm_pass_readobject(FILE *stream);
 
 void *llvm_pass_copyobject(object_llvm_pass_str *o);
 
-bool llvm_pass_compareobject(object_llvm_pass_str *o1, object_llvm_pass_str *o2);
+bool llvm_pass_compareobject(object_llvm_pass_str *o1,
+                             object_llvm_pass_str *o2);
 
 #endif /* MODULE_LLVM_PASS_H_ */
