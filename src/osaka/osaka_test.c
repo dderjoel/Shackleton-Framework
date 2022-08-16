@@ -27,8 +27,8 @@
  ============================================================================
  */
 
-#include "osaka.h"
 #include "osaka_test.h"
+#include "osaka.h"
 
 #define DEBUGIF if (mode == LOUD)
 
