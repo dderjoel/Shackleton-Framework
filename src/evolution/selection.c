@@ -3,8 +3,8 @@
  Name        : selection.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Contains method for selecting individuals from a population
                to then be varied into the next population
  ============================================================================
@@ -38,7 +38,7 @@
  * ROUTINES
  */
 
- /*
+/*
  * NAME
  *
  *   selection_get_min_max
@@ -46,12 +46,13 @@
  * DESCRIPTION
  *
  *  Returns true or false depending on if a fitness metric has the quality of
- *  larger is better, or smaller is better. True means that smaller is better (cost),
- *  false means that larger is better (benefit)
+ *  larger is better, or smaller is better. True means that smaller is better
+ * (cost), false means that larger is better (benefit)
  *
  * PARAMETERS
  *
- *  osaka_object_typ object_type - what osaka object type the individuals being compared are
+ *  osaka_object_typ object_type - what osaka object type the individuals being
+ * compared are
  *
  * RETURN
  *
@@ -63,7 +64,7 @@
  *      best_fitness = fitness1;
  *  }
  *  else {
- *      best_fitness = fitness2;   
+ *      best_fitness = fitness2;
  *  }
  *
  * SIDE-EFFECT
@@ -74,18 +75,17 @@
 
 bool selection_get_min_max(osaka_object_typ object_type) {
 
-    // determines if the fitness value is preferred to be
-    // higher or lower.
-    bool fitness_max_or_min[5] = {
-        false,       // a larger fitness value for SIMPLE is better
-        false,       // a larger fitness value for ASSEMBLER is better
-        false,       // a larger fitness value for OSAKA_STRING is better
-        true,        // a smaller fitness value for LLVM_PASS is better
-        false        // a larger fitness value for BINARY_UP_TO_512 is better
-    };
+  // determines if the fitness value is preferred to be
+  // higher or lower.
+  bool fitness_max_or_min[5] = {
+      false, // a larger fitness value for SIMPLE is better
+      false, // a larger fitness value for ASSEMBLER is better
+      false, // a larger fitness value for OSAKA_STRING is better
+      true,  // a smaller fitness value for LLVM_PASS is better
+      false  // a larger fitness value for BINARY_UP_TO_512 is better
+  };
 
-    return fitness_max_or_min[object_type];
-
+  return fitness_max_or_min[object_type];
 }
 
 /*
@@ -103,7 +103,8 @@ bool selection_get_min_max(osaka_object_typ object_type) {
  *
  *  double fitness1 - the fitness that is expected to be the "best"
  *  double fitness2 - the fitness that is being compared with
- *  osaka_object_typ object_type - what osaka object type the individuals being compared are
+ *  osaka_object_typ object_type - what osaka object type the individuals being
+ * compared are
  *
  * RETURN
  *
@@ -113,7 +114,7 @@ bool selection_get_min_max(osaka_object_typ object_type) {
  *
  *  if (selection_compare_fitness(fitness1, fitness2, LLVM_PASS)) {
  *      max_fitness = fitness2; // fitness2 was better than fitness1
- *  } 
+ *  }
  *
  * SIDE-EFFECT
  *
@@ -121,17 +122,17 @@ bool selection_get_min_max(osaka_object_typ object_type) {
  *
  */
 
-bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_typ object_type) {
-    
-    // if true, means that a larger value is better
-    if (selection_get_min_max(object_type)) {
-        return fitness2 > fitness1;
-    }
-    // if false, means that a smaller value is better
-    else {
-        return fitness2 < fitness1;
-    }
+bool selection_compare_fitness(double fitness1, double fitness2,
+                               osaka_object_typ object_type) {
 
+  // if true, means that a larger value is better
+  if (selection_get_min_max(object_type)) {
+    return fitness2 > fitness1;
+  }
+  // if false, means that a smaller value is better
+  else {
+    return fitness2 < fitness1;
+  }
 }
 
 /*
@@ -148,11 +149,10 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  * PARAMETERS
  *
  *  node_str** population - tournament size population
- *  double* fitness_values_all - fitness values for the entire current population
- *  node_str* result - the node that was chosen
- *  uint32_t pop_size - size of the population
- *  uint32_t tournament_size - number of contestants in the tournament
- *  bool vis - whether or not visualization is enabled
+ *  double* fitness_values_all - fitness values for the entire current
+ * population node_str* result - the node that was chosen uint32_t pop_size -
+ * size of the population uint32_t tournament_size - number of contestants in
+ * the tournament bool vis - whether or not visualization is enabled
  *
  * RETURN
  *
@@ -168,68 +168,69 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  *
  */
 
-uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis) {
+uint32_t selection_tournament(node_str **population, double *fitness_values_all,
+                              node_str *result, uint32_t pop_size,
+                              uint32_t tournament_size, bool vis) {
 
-    // Tournament selection with replacement, individuals can
-    // be chosen more than once for the tournament selection process
+  // Tournament selection with replacement, individuals can
+  // be chosen more than once for the tournament selection process
 
-    if (vis) {
+  if (vis) {
 
-        printf("Choosing using the basic tournament selection method ---------------------------------\n\n");
+    printf("Choosing using the basic tournament selection method "
+           "---------------------------------\n\n");
+  }
+  double fitness_values[tournament_size];
+  uint32_t fitness_indices[tournament_size];
+  double max_fitness = 0;
+  uint32_t max_fitness_ind = -1;
+  bool repeat_index = false;
+  uint32_t num_chosen = 0;
+  osaka_object_typ type = OBJECT_TYPE(population[0]);
 
+  if (selection_get_min_max(type)) {
+    max_fitness = UINT32_MAX;
+  }
+
+  // choose indexes of contestants in the tournament first
+  while (num_chosen < tournament_size) {
+    uint32_t index = (uint32_t)(pop_size * (rand() / (RAND_MAX + 1.0)));
+    for (int curr = 0; curr < num_chosen; curr++) {
+      if (fitness_indices[curr] == index) {
+        // repeated index, mark as such
+        repeat_index = true;
+      }
     }
-    double fitness_values[tournament_size];
-    uint32_t fitness_indices[tournament_size];
-    double max_fitness = 0;
-    uint32_t max_fitness_ind = -1;
-    bool repeat_index = false;
-    uint32_t num_chosen = 0;
-    osaka_object_typ type = OBJECT_TYPE(population[0]);
-
-    if (selection_get_min_max(type)) {
-        max_fitness = UINT32_MAX;
+    if (repeat_index) {
+      // repeated index, need to pick another one
+    } else {
+      // not chosen yet, can add new index
+      fitness_indices[num_chosen] = index;
+      num_chosen++;
     }
+    repeat_index = false;
+  }
 
-    // choose indexes of contestants in the tournament first
-    while (num_chosen < tournament_size) {
-        uint32_t index = (uint32_t) (pop_size * (rand() / (RAND_MAX + 1.0))); 
-        for (int curr = 0; curr < num_chosen; curr++) {
-            if (fitness_indices[curr] == index) {
-                // repeated index, mark as such
-                repeat_index = true;
-            }
-        }
-        if (repeat_index) {
-            // repeated index, need to pick another one
-        }
-        else {
-            //not chosen yet, can add new index
-            fitness_indices[num_chosen] = index;
-            num_chosen++;
-        }
-        repeat_index = false;
+  for (uint32_t c = 0; c < tournament_size; c++) {
+    fitness_values[c] = fitness_values_all[fitness_indices[c]];
+    // printf("individual #%d is in the tournament, its fitness is: %lf\n",
+    // fitness_indices[c], fitness_values[c]);
+    //  update which is the current best out of those chosen thus far
+    if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
+      max_fitness = fitness_values[c];
+      max_fitness_ind = fitness_indices[c];
     }
+  }
 
-    for (uint32_t c = 0; c < tournament_size; c++) {
-        fitness_values[c] = fitness_values_all[fitness_indices[c]];
-        //printf("individual #%d is in the tournament, its fitness is: %lf\n", fitness_indices[c], fitness_values[c]);
-        // update which is the current best out of those chosen thus far
-        if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
-            max_fitness = fitness_values[c];
-            max_fitness_ind = fitness_indices[c];
-        }
+  // printf("Individual chosen was number %d in the population
+  // -------------------------------------\n\n", max_fitness_ind);
 
-    }
+  if (vis) {
 
-    //printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
-
-
-    if (vis) {
-
-        printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
-
-    }
-    result = population[max_fitness_ind];
-    return max_fitness_ind;
-
+    printf("Individual chosen was number %d in the population "
+           "-------------------------------------\n\n",
+           max_fitness_ind);
+  }
+  result = population[max_fitness_ind];
+  return max_fitness_ind;
 }

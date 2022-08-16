@@ -3,8 +3,8 @@
  Name        : mutation.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +19,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
- Description : Macro and Micro mutations that allow us to change a 
-               single individual 
+
+ Description : Macro and Micro mutations that allow us to change a
+               single individual
  ============================================================================
  */
 
@@ -72,7 +72,7 @@
  *
  */
 
-void mutation_single_unit_all_params(node_str* osaka, uint32_t ind, bool vis);
+void mutation_single_unit_all_params(node_str *osaka, uint32_t ind, bool vis);
 
 /*
  * NAME
@@ -103,6 +103,6 @@ void mutation_single_unit_all_params(node_str* osaka, uint32_t ind, bool vis);
  *
  */
 
-void mutation_single_unit_single_param(node_str* osaka, uint32_t ind);
+void mutation_single_unit_single_param(node_str *osaka, uint32_t ind);
 
 #endif /* EVOLUTION_MUTATION_H_ */

@@ -3,8 +3,8 @@
  Name        : generation.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : All functions needed for creating generations, individuals,
                and objects for an evolutionary run. Designed to be used
                as the initialization step and then not touched once
@@ -44,10 +44,11 @@
  * ROUTINES
  */
 
-
-node_str** generate_level_passes(const int num_levels, osaka_object_typ osaka_type);
-node_str* generate_individual_from_default(char** passes_string, int num_passes, osaka_object_typ osaka_type);
-node_str* generate_find_node(char* pass, osaka_object_typ osaka_type);
+node_str **generate_level_passes(const int num_levels,
+                                 osaka_object_typ osaka_type);
+node_str *generate_individual_from_default(char **passes_string, int num_passes,
+                                           osaka_object_typ osaka_type);
+node_str *generate_find_node(char *pass, osaka_object_typ osaka_type);
 
 /*
  * NAME
@@ -60,7 +61,8 @@ node_str* generate_find_node(char* pass, osaka_object_typ osaka_type);
  *
  * PARAMETERS
  *
- *  osaka_object_typ osaka_type -- tells which type of osaka object we're creating
+ *  osaka_object_typ osaka_type -- tells which type of osaka object we're
+ * creating
  *
  * RETURN
  *
@@ -76,7 +78,7 @@ node_str* generate_find_node(char* pass, osaka_object_typ osaka_type);
  *
  */
 
-node_str* generate_new_initialized_node(osaka_object_typ osaka_type);
+node_str *generate_new_initialized_node(osaka_object_typ osaka_type);
 
 /*
  * NAME
@@ -107,7 +109,8 @@ node_str* generate_new_initialized_node(osaka_object_typ osaka_type);
  *
  */
 
-node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osaka_type);
+node_str *generate_new_individual(uint32_t individual_size,
+                                  osaka_object_typ osaka_type);
 
 /*
  * NAME
@@ -140,9 +143,12 @@ node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osa
  *
  */
 
-void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t individual_size, osaka_object_typ osaka_type, bool gi, const char** levels, const int num_levels);
+void generate_new_generation(node_str **gen, uint32_t generation_size,
+                             uint32_t individual_size,
+                             osaka_object_typ osaka_type, bool gi,
+                             const char **levels, const int num_levels);
 
-void generate_free_level_passes(char*** level_passes, const int num_levels);
+void generate_free_level_passes(char ***level_passes, const int num_levels);
 
 /*
  * NAME
@@ -175,7 +181,8 @@ void generate_free_level_passes(char*** level_passes, const int num_levels);
  *
  */
 
-void generate_copy_generation(node_str** orig, node_str** copy, uint32_t generation_size);
+void generate_copy_generation(node_str **orig, node_str **copy,
+                              uint32_t generation_size);
 
 /*
  * NAME
@@ -208,7 +215,7 @@ void generate_copy_generation(node_str** orig, node_str** copy, uint32_t generat
  *
  */
 
-void generate_copy_gen_id(int* orig, int* copy, uint32_t generation_size);
+void generate_copy_gen_id(int *orig, int *copy, uint32_t generation_size);
 
 /*
  * NAME
@@ -237,7 +244,7 @@ void generate_copy_gen_id(int* orig, int* copy, uint32_t generation_size);
  *
  */
 
-void generate_free_individual(node_str* indiv);
+void generate_free_individual(node_str *indiv);
 
 /*
  * NAME
@@ -268,7 +275,8 @@ void generate_free_individual(node_str* indiv);
  *
  */
 
-void generate_free_individual_inside_array(node_str** array, uint32_t gen_size, uint32_t ind, node_str* indiv);
+void generate_free_individual_inside_array(node_str **array, uint32_t gen_size,
+                                           uint32_t ind, node_str *indiv);
 
 /*
  * NAME
@@ -298,6 +306,6 @@ void generate_free_individual_inside_array(node_str** array, uint32_t gen_size, 
  *
  */
 
-void generate_free_generation(node_str** generation, uint32_t gen_size);
+void generate_free_generation(node_str **generation, uint32_t gen_size);
 
 #endif /* EVOLUTION_GENERATION_H_ */

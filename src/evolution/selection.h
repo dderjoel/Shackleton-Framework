@@ -3,8 +3,8 @@
  Name        : selection.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Contains method for selecting individuals from a population
                to then be varied into the next population
  ============================================================================
@@ -47,7 +47,7 @@
  * ROUTINES
  */
 
- /*
+/*
  * NAME
  *
  *   selection_get_min_max
@@ -55,12 +55,13 @@
  * DESCRIPTION
  *
  *  Returns true or false depending on if a fitness metric has the quality of
- *  larger is better, or smaller is better. True means that smaller is better (cost),
- *  false means that larger is better (benefit)
+ *  larger is better, or smaller is better. True means that smaller is better
+ * (cost), false means that larger is better (benefit)
  *
  * PARAMETERS
  *
- *  osaka_object_typ object_type - what osaka object type the individuals being compared are
+ *  osaka_object_typ object_type - what osaka object type the individuals being
+ * compared are
  *
  * RETURN
  *
@@ -72,7 +73,7 @@
  *      best_fitness = fitness1;
  *  }
  *  else {
- *      best_fitness = fitness2;   
+ *      best_fitness = fitness2;
  *  }
  *
  * SIDE-EFFECT
@@ -97,7 +98,8 @@ bool selection_get_min_max(osaka_object_typ object_type);
  *
  *  double fitness1 - the fitness that is expected to be the "best"
  *  double fitness2 - the fitness that is being compared with
- *  osaka_object_typ object_type - what osaka object type the individuals being compared are
+ *  osaka_object_typ object_type - what osaka object type the individuals being
+ * compared are
  *
  * RETURN
  *
@@ -107,7 +109,7 @@ bool selection_get_min_max(osaka_object_typ object_type);
  *
  *  if (selection_compare_fitness(fitness1, fitness2, LLVM_PASS)) {
  *      max_fitness = fitness2; // fitness2 was better than fitness1
- *  } 
+ *  }
  *
  * SIDE-EFFECT
  *
@@ -115,7 +117,8 @@ bool selection_get_min_max(osaka_object_typ object_type);
  *
  */
 
-bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_typ object_type);
+bool selection_compare_fitness(double fitness1, double fitness2,
+                               osaka_object_typ object_type);
 
 /*
  * NAME
@@ -131,11 +134,10 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  * PARAMETERS
  *
  *  node_str** population - tournament size population
- *  double* fitness_values_all - fitness values for the entire current population
- *  node_str* result - the node that was chosen
- *  uint32_t pop_size - size of the population
- *  uint32_t tournament_size - number of contestants in the tournament
- *  bool vis - whether or not visualization is enabled
+ *  double* fitness_values_all - fitness values for the entire current
+ * population node_str* result - the node that was chosen uint32_t pop_size -
+ * size of the population uint32_t tournament_size - number of contestants in
+ * the tournament bool vis - whether or not visualization is enabled
  *
  * RETURN
  *
@@ -151,6 +153,8 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  *
  */
 
-uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis);
+uint32_t selection_tournament(node_str **population, double *fitness_values_all,
+                              node_str *result, uint32_t pop_size,
+                              uint32_t tournament_size, bool vis);
 
 #endif /* EVOLUTION_SELECTION_H_ */

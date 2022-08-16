@@ -3,8 +3,8 @@
  Name        : mutation.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +19,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
- Description : Macro and Micro mutations that allow us to change a 
-               single individual 
+
+ Description : Macro and Micro mutations that allow us to change a
+               single individual
  ============================================================================
  */
 
@@ -68,37 +68,40 @@
  *
  */
 
-void mutation_single_unit_all_params(node_str* osaka, uint32_t ind, bool vis) {
+void mutation_single_unit_all_params(node_str *osaka, uint32_t ind, bool vis) {
 
-    if (vis) {
-        printf("\nPerforming all params mutation on individual, node %d in that structure ---------------\n", ind);
-        printf("\nIndividual before mutation to node %d, with node to be changed marked: ----------------\n\n", ind);
-        if (ind > 1) {
-            visualization_print_individual_concise_details_to_nth(osaka, ind);
-            printf(" <--(((--> { ");
-        }
-        else {
-            printf("(((--> { ");
-        }
-        osaka_printnode_concise(osaka_nthnode(osaka, ind));
-        if (ind < osaka_listlength(osaka)) {
-            printf(" } <--)))--> ");
-            visualization_print_individual_concise_details_from_nth(osaka, ind + 1);
-        }
-        else {
-            printf(" } )))");
-        }
+  if (vis) {
+    printf("\nPerforming all params mutation on individual, node %d in that "
+           "structure ---------------\n",
+           ind);
+    printf("\nIndividual before mutation to node %d, with node to be changed "
+           "marked: ----------------\n\n",
+           ind);
+    if (ind > 1) {
+      visualization_print_individual_concise_details_to_nth(osaka, ind);
+      printf(" <--(((--> { ");
+    } else {
+      printf("(((--> { ");
     }
-
-    node_str* node_to_mutate = osaka_nthnode(osaka, ind);
-    osaka_randomizenode(node_to_mutate);
-
-    if (vis) {
-        printf("\n\nIndividual after mutation to node %d: -------------------------------------------------\n\n", ind);
-        visualization_print_individual_concise_details(osaka);
-        printf("\n");
+    osaka_printnode_concise(osaka_nthnode(osaka, ind));
+    if (ind < osaka_listlength(osaka)) {
+      printf(" } <--)))--> ");
+      visualization_print_individual_concise_details_from_nth(osaka, ind + 1);
+    } else {
+      printf(" } )))");
     }
+  }
 
+  node_str *node_to_mutate = osaka_nthnode(osaka, ind);
+  osaka_randomizenode(node_to_mutate);
+
+  if (vis) {
+    printf("\n\nIndividual after mutation to node %d: "
+           "-------------------------------------------------\n\n",
+           ind);
+    visualization_print_individual_concise_details(osaka);
+    printf("\n");
+  }
 }
 
 /*
@@ -130,6 +133,4 @@ void mutation_single_unit_all_params(node_str* osaka, uint32_t ind, bool vis) {
  *
  */
 
-void mutation_single_unit_single_param(node_str* osaka, uint32_t ind) {
-
-}
+void mutation_single_unit_single_param(node_str *osaka, uint32_t ind) {}

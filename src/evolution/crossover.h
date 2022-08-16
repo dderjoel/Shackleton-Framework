@@ -3,8 +3,8 @@
  Name        : crossover.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : All crossover functionality for 2 individuals that
                that are genetically spliced together into 2
                different individuals
@@ -76,7 +76,7 @@
  *
  */
 
-void crossover_onepoint_macro(node_str* osaka1, node_str* osaka2, bool vis);
+void crossover_onepoint_macro(node_str *osaka1, node_str *osaka2, bool vis);
 
 /*
  * NAME
@@ -108,7 +108,7 @@ void crossover_onepoint_macro(node_str* osaka1, node_str* osaka2, bool vis);
  *
  */
 
-void crossover_twopoint_basic(node_str* osaka1, node_str* osaka2, bool vis);
+void crossover_twopoint_basic(node_str *osaka1, node_str *osaka2, bool vis);
 
 /*
  * NAME
@@ -142,6 +142,6 @@ void crossover_twopoint_basic(node_str* osaka1, node_str* osaka2, bool vis);
  *
  */
 
-void crossover_twopoint_diff(node_str* osaka1, node_str* osaka2, bool vis);
+void crossover_twopoint_diff(node_str *osaka1, node_str *osaka2, bool vis);
 
 #endif /* EVOLUTION_CROSSOVER_H_ */
