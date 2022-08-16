@@ -3,8 +3,8 @@
  Name        : osaka.c
  Author      : Andrew Sloss, Hannah Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,17 +19,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
- Description : Group of functions supporting the Osaka List Structure (OLS) specifically 
-                developed for Linear Genetic Programming (LGP). This library provides a 
-                set of base functions for manipulating the OLS.
- History :
-    Andrew N. Sloss July 31st 2018
+
+ Description : Group of functions supporting the Osaka List Structure (OLS)
+ specifically developed for Linear Genetic Programming (LGP). This library
+ provides a set of base functions for manipulating the OLS. History : Andrew N.
+ Sloss July 31st 2018
         -- starting creating the design for osaka
-    
+
     Hannah M. Peeler June 3rd 2019
         -- edited to get rid of warnings during make, did so
            by changing (unsigned int) casts to (unsigned long)
@@ -87,12 +86,11 @@ uint32_t global_nth;
  *
  */
 
-uint32_t osaka_uid(void)  {
+uint32_t osaka_uid(void) {
 
-    static uint32_t uid = 0;
+  static uint32_t uid = 0;
 
-    return ++uid;
-
+  return ++uid;
 }
 
 /*
@@ -131,18 +129,21 @@ uint32_t osaka_uid(void)  {
  *
  */
 
-osaka_node_typ osaka_whatisnode(node_str *n)  {
-  
-    if (n==NULL) return EMPTY;
+osaka_node_typ osaka_whatisnode(node_str *n) {
 
-    if (LAST(n)==NULL && NEXT(n)==NULL) return ISOLATE;
+  if (n == NULL)
+    return EMPTY;
 
-    if (LAST(n)==NULL && NEXT(n)!=NULL) return HEADNODE;
+  if (LAST(n) == NULL && NEXT(n) == NULL)
+    return ISOLATE;
 
-    if (LAST(n)!=NULL && NEXT(n)==NULL) return TAILNODE;
+  if (LAST(n) == NULL && NEXT(n) != NULL)
+    return HEADNODE;
 
-    return INTERMEDIATE;
+  if (LAST(n) != NULL && NEXT(n) == NULL)
+    return TAILNODE;
 
+  return INTERMEDIATE;
 }
 
 /*
@@ -152,7 +153,7 @@ osaka_node_typ osaka_whatisnode(node_str *n)  {
  *
  * DESCRIPTION
  *
- *  Internal function which creates an OLS node that has the last_ptr, 
+ *  Internal function which creates an OLS node that has the last_ptr,
  *  next_ptr and object_ptr all set to NULL and object_type is set to NOTSET.
  *
  * PARAMETERS
@@ -179,33 +180,32 @@ osaka_node_typ osaka_whatisnode(node_str *n)  {
  *
  */
 
-
 node_str *__osaka_createnode(osaka_object_typ ot) {
 
-    node_str *n;
+  node_str *n;
 
-    n = malloc(sizeof(node_str));
+  n = malloc(sizeof(node_str));
 
-    if (n == NULL)  {
-        printf ("error: failed to alloc memory for node_str [file:\'%s\',line:%d]\n",__FILE__,__LINE__);
-        exit(0);
-    }
+  if (n == NULL) {
+    printf("error: failed to alloc memory for node_str [file:\'%s\',line:%d]\n",
+           __FILE__, __LINE__);
+    exit(0);
+  }
 
-    UID(n)=osaka_uid();
-    NEXT(n)=NULL;
-    LAST(n)=NULL;
-    NEXT_LINK(n)=NULL;
-    LAST_LINK(n)=NULL;
-    OBJECT_TYPE(n)=NOTSET;
-    OBJECT(n)=NULL;
+  UID(n) = osaka_uid();
+  NEXT(n) = NULL;
+  LAST(n) = NULL;
+  NEXT_LINK(n) = NULL;
+  LAST_LINK(n) = NULL;
+  OBJECT_TYPE(n) = NOTSET;
+  OBJECT(n) = NULL;
 
-    if(ot>=0 && ot<MAXTYPE) {
-        OBJECT_TYPE(n)=ot;
-        OBJECT(n)=object_table_function[OBJECT_TYPE(n)].osaka_createobject();
-    }
+  if (ot >= 0 && ot < MAXTYPE) {
+    OBJECT_TYPE(n) = ot;
+    OBJECT(n) = object_table_function[OBJECT_TYPE(n)].osaka_createobject();
+  }
 
-    return n;
-
+  return n;
 }
 
 /*
@@ -215,16 +215,16 @@ node_str *__osaka_createnode(osaka_object_typ ot) {
  *
  * DESCRIPTION
  *
- *  This function finds the tail node of the OLS. When the tail is found 
- *  the pointer is returned of the tail node.  
+ *  This function finds the tail node of the OLS. When the tail is found
+ *  the pointer is returned of the tail node.
  *
  * PARAMETERS
  *
  *  node_str *r - root anchor for the list
- * 
+ *
  * RETURN
  *
- *  node_str * - tail node is returned 
+ *  node_str * - tail node is returned
  *
  * EXAMPLE
  *
@@ -232,20 +232,19 @@ node_str *__osaka_createnode(osaka_object_typ ot) {
  *
  * SIDE-EFFECT
  *
- *  asserts if the root node is NULL. 
+ *  asserts if the root node is NULL.
  *
  */
 
-node_str *osaka_findtailnode(node_str *root)  {
+node_str *osaka_findtailnode(node_str *root) {
 
-    assert(root!=NULL);
+  assert(root != NULL);
 
-    while (NEXT(root)!=NULL) {
-        root=NEXT(root);
-    }
+  while (NEXT(root) != NULL) {
+    root = NEXT(root);
+  }
 
-    return root;
-
+  return root;
 }
 
 /*
@@ -277,14 +276,13 @@ node_str *osaka_findtailnode(node_str *root)  {
 
 node_str *osaka_findheadnode(node_str *n) {
 
-    assert(n!=NULL);
+  assert(n != NULL);
 
-    while(LAST(n)!=NULL) {
-        n = LAST(n);
-    }
+  while (LAST(n) != NULL) {
+    n = LAST(n);
+  }
 
-    return n;
-
+  return n;
 }
 
 /*
@@ -294,8 +292,8 @@ node_str *osaka_findheadnode(node_str *n) {
  *
  * DESCRIPTION
  *
- *   This function adds a single node to the tail. Takes the root of the list and goes
- *   to the end of the list and appends the node.
+ *   This function adds a single node to the tail. Takes the root of the list
+ * and goes to the end of the list and appends the node.
  *
  * PARAMETERS
  *
@@ -316,22 +314,21 @@ node_str *osaka_findheadnode(node_str *n) {
  *
  */
 
-node_str *osaka_addnodetotail(node_str *r,node_str *n)  {
+node_str *osaka_addnodetotail(node_str *r, node_str *n) {
 
-    if (n==NULL){
-        return r;
-    }
-    node_str *tail;
-    assert(r!=NULL);
-
-    tail=osaka_findtailnode(r);
-
-    NEXT(tail)=n;
-    LAST(n)=tail;
-    NEXT(n)=NULL; // makes it only a node addition
-
+  if (n == NULL) {
     return r;
+  }
+  node_str *tail;
+  assert(r != NULL);
 
+  tail = osaka_findtailnode(r);
+
+  NEXT(tail) = n;
+  LAST(n) = tail;
+  NEXT(n) = NULL; // makes it only a node addition
+
+  return r;
 }
 
 /*
@@ -341,8 +338,8 @@ node_str *osaka_addnodetotail(node_str *r,node_str *n)  {
  *
  * DESCRIPTION
  *
- *   This function adds a single node to the head. Takes the root of the list and
- *   appends the new node to the head of the list.
+ *   This function adds a single node to the head. Takes the root of the list
+ * and appends the new node to the head of the list.
  *
  * PARAMETERS
  *
@@ -363,17 +360,16 @@ node_str *osaka_addnodetotail(node_str *r,node_str *n)  {
  *
  */
 
-node_str *osaka_addnodetohead(node_str *r,node_str *n)  {
+node_str *osaka_addnodetohead(node_str *r, node_str *n) {
 
-    assert(n!=NULL);
-    assert(r!=NULL);
+  assert(n != NULL);
+  assert(r != NULL);
 
-    LAST(r)=n;
-    NEXT(n)=r;
-    LAST(n)=NULL; // makes it only a node addition
+  LAST(r) = n;
+  NEXT(n) = r;
+  LAST(n) = NULL; // makes it only a node addition
 
-    return n;
-
+  return n;
 }
 
 /*
@@ -383,8 +379,8 @@ node_str *osaka_addnodetohead(node_str *r,node_str *n)  {
  *
  * DESCRIPTION
  *
- *   This function creates a node and places it either at the head or tail. If the root
- *   is empty the function returns a node.
+ *   This function creates a node and places it either at the head or tail. If
+ * the root is empty the function returns a node.
  *
  * PARAMETERS
  *
@@ -409,21 +405,25 @@ node_str *osaka_addnodetohead(node_str *r,node_str *n)  {
  *
  */
 
-node_str *osaka_createnode(node_str *r,append_typ app_ty,osaka_object_typ ot) {
+node_str *osaka_createnode(node_str *r, append_typ app_ty,
+                           osaka_object_typ ot) {
 
-    node_str *n;
+  node_str *n;
 
-    n = __osaka_createnode(ot);
+  n = __osaka_createnode(ot);
 
-    if (osaka_whatisnode(r)!=EMPTY) {
-        switch (app_ty) {
-            case HEAD: return osaka_addnodetohead(r,n); break;
-            case TAIL: return osaka_addnodetotail(r,n); break;
-        }
+  if (osaka_whatisnode(r) != EMPTY) {
+    switch (app_ty) {
+    case HEAD:
+      return osaka_addnodetohead(r, n);
+      break;
+    case TAIL:
+      return osaka_addnodetotail(r, n);
+      break;
     }
+  }
 
-    return n;
-
+  return n;
 }
 
 /*
@@ -455,27 +455,25 @@ node_str *osaka_createnode(node_str *r,append_typ app_ty,osaka_object_typ ot) {
 
 void osaka_printnode(node_str *n) {
 
-    assert(n!=NULL);
-    printf("\n  object-independent items:\n");
-    printf("node         : 0x%8.8lX\n",(unsigned long)n);
-    printf("uid          : %d\n",UID(n));
-    printf("object_type  : %d\n",OBJECT_TYPE(n));
-    printf("object ptr   : 0x%8.8lX\n",(unsigned long)OBJECT(n));
-    printf("next ptr >   : 0x%8.8lX\n",(unsigned long)NEXT(n));
-    printf("last ptr <   : 0x%8.8lX\n",(unsigned long)LAST(n));
+  assert(n != NULL);
+  printf("\n  object-independent items:\n");
+  printf("node         : 0x%8.8lX\n", (unsigned long)n);
+  printf("uid          : %d\n", UID(n));
+  printf("object_type  : %d\n", OBJECT_TYPE(n));
+  printf("object ptr   : 0x%8.8lX\n", (unsigned long)OBJECT(n));
+  printf("next ptr >   : 0x%8.8lX\n", (unsigned long)NEXT(n));
+  printf("last ptr <   : 0x%8.8lX\n", (unsigned long)LAST(n));
 
-    if (OBJECT_TYPE(n)!=NOTSET) {
-        if(OBJECT_TYPE(n)>=0 && OBJECT_TYPE(n)<MAXTYPE) {
-            printf("\n  object-specific items: \n");
-            object_table_function[OBJECT_TYPE(n)].osaka_printobject(OBJECT(n));
-            printf("\n");
-        }
-        else  {
-            printf ("error: writing unknown object type\n");
-            exit(0);
-        }
+  if (OBJECT_TYPE(n) != NOTSET) {
+    if (OBJECT_TYPE(n) >= 0 && OBJECT_TYPE(n) < MAXTYPE) {
+      printf("\n  object-specific items: \n");
+      object_table_function[OBJECT_TYPE(n)].osaka_printobject(OBJECT(n));
+      printf("\n");
+    } else {
+      printf("error: writing unknown object type\n");
+      exit(0);
     }
-
+  }
 }
 
 /*
@@ -507,19 +505,17 @@ void osaka_printnode(node_str *n) {
 
 void osaka_printnode_concise(node_str *n) {
 
-    assert(n!=NULL);
+  assert(n != NULL);
 
-    if (OBJECT_TYPE(n)!=NOTSET) {
-        if(OBJECT_TYPE(n)>=0 && OBJECT_TYPE(n)<MAXTYPE) {
-            printf("UID : %d ; ", UID(n));
-            object_table_function[OBJECT_TYPE(n)].osaka_printobject(OBJECT(n));
-        }
-        else  {
-            printf ("error: writing unknown object type\n");
-            exit(0);
-        }
+  if (OBJECT_TYPE(n) != NOTSET) {
+    if (OBJECT_TYPE(n) >= 0 && OBJECT_TYPE(n) < MAXTYPE) {
+      printf("UID : %d ; ", UID(n));
+      object_table_function[OBJECT_TYPE(n)].osaka_printobject(OBJECT(n));
+    } else {
+      printf("error: writing unknown object type\n");
+      exit(0);
     }
-
+  }
 }
 
 /*
@@ -529,7 +525,8 @@ void osaka_printnode_concise(node_str *n) {
  *
  * DESCRIPTION
  *
- *  This function loads a char* variable with a description of the value of the node
+ *  This function loads a char* variable with a description of the value of the
+ * node
  *
  * PARAMETERS
  *
@@ -550,20 +547,19 @@ void osaka_printnode_concise(node_str *n) {
  *
  */
 
-void osaka_describenode(char* desc, node_str *n) {
+void osaka_describenode(char *desc, node_str *n) {
 
-    assert(n!=NULL);
+  assert(n != NULL);
 
-    if (OBJECT_TYPE(n)!=NOTSET) {
-        if(OBJECT_TYPE(n)>=0 && OBJECT_TYPE(n)<MAXTYPE) {
-            object_table_function[OBJECT_TYPE(n)].osaka_describeobject(desc, OBJECT(n));
-        }
-        else  {
-            printf ("error: writing unknown object type\n");
-            exit(0);
-        }
+  if (OBJECT_TYPE(n) != NOTSET) {
+    if (OBJECT_TYPE(n) >= 0 && OBJECT_TYPE(n) < MAXTYPE) {
+      object_table_function[OBJECT_TYPE(n)].osaka_describeobject(desc,
+                                                                 OBJECT(n));
+    } else {
+      printf("error: writing unknown object type\n");
+      exit(0);
     }
-
+  }
 }
 
 /*
@@ -596,13 +592,12 @@ void osaka_describenode(char* desc, node_str *n) {
 
 void osaka_printnodearray(node_str *n) {
 
-    while (n != NULL) {
-        osaka_printnode(n);
-        n = NEXT(n);
-    }
+  while (n != NULL) {
+    osaka_printnode(n);
+    n = NEXT(n);
+  }
 
-    return;
-
+  return;
 }
 
 /*
@@ -634,15 +629,14 @@ void osaka_printnodearray(node_str *n) {
  *
  */
 
-void osaka_prefix_mapto(node_str *n,void (*fun)(node_str *n)) {
+void osaka_prefix_mapto(node_str *n, void (*fun)(node_str *n)) {
 
-    if (n==NULL) {
-        return;
-    }
+  if (n == NULL) {
+    return;
+  }
 
-    fun(n);
-    osaka_prefix_mapto(NEXT(n),fun);
-
+  fun(n);
+  osaka_prefix_mapto(NEXT(n), fun);
 }
 
 /*
@@ -665,22 +659,20 @@ void osaka_prefix_mapto(node_str *n,void (*fun)(node_str *n)) {
  *
  *
  */
- 
 
-bool recurse_applytonode(node_str *root,bool (*fun)(node_str *n)) {
-  
-    if (root==NULL) {
-        return true;
-    }
+bool recurse_applytonode(node_str *root, bool (*fun)(node_str *n)) {
 
-    global_nth++;
-  
-    if (!fun(root)) {
-        return false;
-    }
-    
-    return recurse_applytonode(NEXT(root),fun);
+  if (root == NULL) {
+    return true;
+  }
 
+  global_nth++;
+
+  if (!fun(root)) {
+    return false;
+  }
+
+  return recurse_applytonode(NEXT(root), fun);
 }
 
 /*
@@ -712,16 +704,15 @@ bool recurse_applytonode(node_str *root,bool (*fun)(node_str *n)) {
  *
  */
 
-void osaka_postfix_mapto(node_str *n,void (*fun)(node_str *n))  {
-  
-    if (n==NULL) {
-        return;
-    }
+void osaka_postfix_mapto(node_str *n, void (*fun)(node_str *n)) {
 
-    osaka_postfix_mapto(NEXT(n),fun);
+  if (n == NULL) {
+    return;
+  }
 
-    fun(n);
+  osaka_postfix_mapto(NEXT(n), fun);
 
+  fun(n);
 }
 
 /*
@@ -731,7 +722,8 @@ void osaka_postfix_mapto(node_str *n,void (*fun)(node_str *n))  {
  *
  * DESCRIPTION
  *
- *  osaka_listlength takes a list and returns the length. Return zero if list has no nodes.
+ *  osaka_listlength takes a list and returns the length. Return zero if list
+ * has no nodes.
  *
  * PARAMETERS
  *
@@ -751,19 +743,17 @@ void osaka_postfix_mapto(node_str *n,void (*fun)(node_str *n))  {
  *
  */
 
-uint32_t osaka_listlength(node_str *r)  {
+uint32_t osaka_listlength(node_str *r) {
 
-    uint32_t i = 0;
+  uint32_t i = 0;
 
-    while (r!=NULL) {
-        r = NEXT(r);
-        i++;
-    }
+  while (r != NULL) {
+    r = NEXT(r);
+    i++;
+  }
 
-    return i;
-
+  return i;
 }
-
 
 /*
  * NAME
@@ -792,14 +782,13 @@ uint32_t osaka_listlength(node_str *r)  {
  *
  */
 
-void osaka_freenode(node_str *n)  {
+void osaka_freenode(node_str *n) {
 
-    assert(n!=NULL);
+  assert(n != NULL);
 
-    object_table_function[OBJECT_TYPE(n)].osaka_deleteobject(OBJECT(n));
+  object_table_function[OBJECT_TYPE(n)].osaka_deleteobject(OBJECT(n));
 
-    free(n);
-
+  free(n);
 }
 
 /*
@@ -809,7 +798,7 @@ void osaka_freenode(node_str *n)  {
  *
  * DESCRIPTION
  *
- *  Takes in a node_ptr and randomizes all the parameters inside 
+ *  Takes in a node_ptr and randomizes all the parameters inside
  *  that node_ptr's object
  *
  * PARAMETERS
@@ -831,30 +820,24 @@ void osaka_freenode(node_str *n)  {
  *
  */
 
-
 void osaka_randomizenode(node_str *n) {
 
+  if (n == NULL) {
+    printf("error: cannot randomize a NULL node");
+    exit(0);
+  }
 
-    if (n == NULL)  {
-        printf ("error: cannot randomize a NULL node");
-        exit(0);
-    }
-
-    object_table_function[OBJECT_TYPE(n)].osaka_randomizeobject(OBJECT(n));
-
+  object_table_function[OBJECT_TYPE(n)].osaka_randomizeobject(OBJECT(n));
 }
 
+void osaka_setnode(node_str *n, char *pass) {
 
-void osaka_setnode(node_str *n, char* pass) {
+  if (n == NULL) {
+    printf("error: cannot randomize a NULL node");
+    exit(0);
+  }
 
-
-    if (n == NULL)  {
-        printf ("error: cannot randomize a NULL node");
-        exit(0);
-    }
-
-    object_table_function[OBJECT_TYPE(n)].osaka_setobject(OBJECT(n), pass);
-
+  object_table_function[OBJECT_TYPE(n)].osaka_setobject(OBJECT(n), pass);
 }
 
 /*
@@ -885,17 +868,15 @@ void osaka_setnode(node_str *n, char* pass) {
  *
  */
 
-
 uint32_t osaka_fitness(node_str *n) {
 
+  if (n == NULL) {
+    printf(
+        "error: cannot calculate fitness of an indiv starting at a NULL node");
+    exit(0);
+  }
 
-    if (n == NULL)  {
-        printf ("error: cannot calculate fitness of an indiv starting at a NULL node");
-        exit(0);
-    }
-
-    //return object_table_function[OBJECT_TYPE(n)].osaka_fitnessobject(n);
-
+  // return object_table_function[OBJECT_TYPE(n)].osaka_fitnessobject(n);
 }
 
 /*
@@ -926,21 +907,20 @@ uint32_t osaka_fitness(node_str *n) {
  *
  */
 
-node_str *osaka_nthnode(node_str *r,uint32_t nth) {
+node_str *osaka_nthnode(node_str *r, uint32_t nth) {
 
-    assert(r!=NULL);
-    assert(nth!=0);
+  assert(r != NULL);
+  assert(nth != 0);
 
-    while(r!=NULL)  {
-        --nth;
-        if (nth==0) {
-            return r;
-        }
-        r = NEXT(r);
+  while (r != NULL) {
+    --nth;
+    if (nth == 0) {
+      return r;
     }
+    r = NEXT(r);
+  }
 
-    return NULL;
-
+  return NULL;
 }
 
 /*
@@ -972,49 +952,47 @@ node_str *osaka_nthnode(node_str *r,uint32_t nth) {
 
 node_str *osaka_deletenode(node_str *n) {
 
-    node_str *t,*l;
+  node_str *t, *l;
 
-    assert(n!=NULL);
+  assert(n != NULL);
 
-    switch(osaka_whatisnode(n)) {
-        case EMPTY:
-            return NULL;
-            break;
-        case ISOLATE:
-            //if(debug) printf ("--osaka: deleting ISOLATE node \n");
-            osaka_freenode(n);
-            return NULL;
-            break;
-        case HEADNODE:
-            //if(debug) printf ("--osaka: deleting HEADNODE\n");
-            t = NEXT(n);
-            LAST(t) = NULL;
-            osaka_freenode(n);
-            return t;
-            break;
-        case TAILNODE:
-            //if(debug) printf ("--osaka: deleting TAILNODE \n");
-            t = LAST(n);
-            NEXT(t) = NULL;
-            osaka_freenode(n);
-            return osaka_findheadnode(t);
-            break;
-        case INTERMEDIATE:
-            //if(debug) printf ("--osaka: deleting INTERMEDIATE node \n");
-            l = LAST(n);
-            t = NEXT(n);
-            NEXT(l) = t;
-            LAST(t) = l;
-            osaka_freenode(n);
-            return osaka_findheadnode(l);
-            break;
-    }
-
-    assert(1==0);
+  switch (osaka_whatisnode(n)) {
+  case EMPTY:
     return NULL;
+    break;
+  case ISOLATE:
+    // if(debug) printf ("--osaka: deleting ISOLATE node \n");
+    osaka_freenode(n);
+    return NULL;
+    break;
+  case HEADNODE:
+    // if(debug) printf ("--osaka: deleting HEADNODE\n");
+    t = NEXT(n);
+    LAST(t) = NULL;
+    osaka_freenode(n);
+    return t;
+    break;
+  case TAILNODE:
+    // if(debug) printf ("--osaka: deleting TAILNODE \n");
+    t = LAST(n);
+    NEXT(t) = NULL;
+    osaka_freenode(n);
+    return osaka_findheadnode(t);
+    break;
+  case INTERMEDIATE:
+    // if(debug) printf ("--osaka: deleting INTERMEDIATE node \n");
+    l = LAST(n);
+    t = NEXT(n);
+    NEXT(l) = t;
+    LAST(t) = l;
+    osaka_freenode(n);
+    return osaka_findheadnode(l);
+    break;
+  }
 
+  assert(1 == 0);
+  return NULL;
 }
-
 
 /*
  * NAME
@@ -1044,40 +1022,39 @@ node_str *osaka_deletenode(node_str *n) {
  *
  */
 
-uint32_t osaka_serialize(node_str *r,char *filepath)  {
+uint32_t osaka_serialize(node_str *r, char *filepath) {
 
-    uint32_t x=0;
-    FILE *handle;
+  uint32_t x = 0;
+  FILE *handle;
 
-    //assert(r!=NULL);
+  // assert(r!=NULL);
 
-    handle=fopen(filepath,"wb");
+  handle = fopen(filepath, "wb");
 
-    if(handle==NULL)  {
-        printf("error: couldn't open \'%s\' at file:%s line:%d function:%s\n",filepath,__FILE__,__LINE__,__FUNCTION__);
+  if (handle == NULL) {
+    printf("error: couldn't open \'%s\' at file:%s line:%d function:%s\n",
+           filepath, __FILE__, __LINE__, __FUNCTION__);
+    exit(0);
+  }
+
+  while (r != NULL) {
+    fwrite(r, sizeof(node_str), 1, handle);
+    if (OBJECT_TYPE(r) != NOTSET) {
+      if (OBJECT_TYPE(r) >= 0 && OBJECT_TYPE(r) < MAXTYPE) {
+        object_table_function[OBJECT_TYPE(r)].osaka_writeobject(handle,
+                                                                OBJECT(r));
+      } else {
+        printf("error: writing unknown object type\n");
         exit(0);
+      }
     }
 
-    while(r!=NULL)  {
-        fwrite(r,sizeof(node_str),1,handle);
-        if(OBJECT_TYPE(r)!=NOTSET)  {
-            if(OBJECT_TYPE(r)>=0 && OBJECT_TYPE(r)<MAXTYPE) {
-                object_table_function[OBJECT_TYPE(r)].osaka_writeobject(handle,OBJECT(r));
-            }
-            else  {
-                printf ("error: writing unknown object type\n");
-                exit(0);
-            }
-        }
-      
-        x++;
-        r=NEXT(r);
-    
-    }
+    x++;
+    r = NEXT(r);
+  }
 
-    fclose(handle);
-    return x;
-
+  fclose(handle);
+  return x;
 }
 
 /*
@@ -1109,47 +1086,47 @@ uint32_t osaka_serialize(node_str *r,char *filepath)  {
 
 node_str *osaka_deserialize(char *filepath) {
 
-    node_str *root=NULL,*tmp;
-    FILE *handle;
+  node_str *root = NULL, *tmp;
+  FILE *handle;
 
-    assert(filepath!=NULL);
+  assert(filepath != NULL);
 
-    root=osaka_createnode(root,TAIL,NOTSET); // this will be discarded
+  root = osaka_createnode(root, TAIL, NOTSET); // this will be discarded
 
-    handle=fopen(filepath,"rb");
+  handle = fopen(filepath, "rb");
 
-    if(handle==NULL)  {
-        printf("error: couldn't open \'%s\' at file:%s line:%d function:%s\n",filepath,__FILE__,__LINE__,__FUNCTION__);
+  if (handle == NULL) {
+    printf("error: couldn't open \'%s\' at file:%s line:%d function:%s\n",
+           filepath, __FILE__, __LINE__, __FUNCTION__);
+    exit(0);
+  }
+
+  while (!feof(handle)) {
+    tmp = __osaka_createnode(NOTSET);
+    fread(tmp, sizeof(node_str), 1, handle);
+
+    if (OBJECT_TYPE(tmp) != NOTSET) {
+      if (OBJECT_TYPE(tmp) >= 0 && OBJECT_TYPE(tmp) < MAXTYPE) {
+        OBJECT(tmp) =
+            object_table_function[OBJECT_TYPE(tmp)].osaka_readobject(handle);
+      } else {
+        printf("error: reading unknown object type\n");
         exit(0);
+      }
     }
 
-    while(!feof(handle))  {
-        tmp = __osaka_createnode(NOTSET);
-        fread(tmp,sizeof(node_str),1,handle);
+    root = osaka_addnodetotail(root, tmp);
+  }
 
-        if(OBJECT_TYPE(tmp)!=NOTSET)  {
-            if(OBJECT_TYPE(tmp)>=0 && OBJECT_TYPE(tmp)<MAXTYPE) {
-               OBJECT(tmp)=object_table_function[OBJECT_TYPE(tmp)].osaka_readobject(handle);
-            }
-            else  {
-                printf ("error: reading unknown object type\n");
-                exit(0);
-            }
-        }
-        
-        root=osaka_addnodetotail(root,tmp);
-    }
+  // printf ("debug: pre list length %d\n",osaka_listlength(root));
 
-    //printf ("debug: pre list length %d\n",osaka_listlength(root));
+  root = osaka_deletenode(root);
+  root = osaka_deletenode(osaka_findtailnode(root));
 
-    root=osaka_deletenode(root);
-    root=osaka_deletenode(osaka_findtailnode(root));
+  // printf ("debug: post list length %d\n",osaka_listlength(root));
 
-    //printf ("debug: post list length %d\n",osaka_listlength(root));
-
-    fclose(handle);
-    return root;
-
+  fclose(handle);
+  return root;
 }
 
 /*
@@ -1180,37 +1157,38 @@ node_str *osaka_deserialize(char *filepath) {
  *
  */
 
-bool osaka_compare(node_str *n0, node_str *n1)  {
-    while(n0!=NULL && n1!=NULL) {
-        if(OBJECT_TYPE(n0)!=OBJECT_TYPE(n1))  { 
-            return false;
-        }
-        if (UID(n0)!=UID(n1)) {
-            return false;
-        }
-        if (OBJECT_TYPE(n0) == 3 || OBJECT_TYPE(n0) == 5) {
-            if (!object_table_function[OBJECT_TYPE(n0)].osaka_compareobject(OBJECT(n0), OBJECT(n1))) {
-                //printf("llvm pass not equal: %s(%d) != %s(%d)\n", PASS(OBJECT(n0)), PASS_INDEX(OBJECT(n0)), PASS(OBJECT(n1)), PASS_INDEX(OBJECT(n1)));
-                return false;
-            }
-        }
-
-        n0=NEXT(n0);
-        n1=NEXT(n1);
+bool osaka_compare(node_str *n0, node_str *n1) {
+  while (n0 != NULL && n1 != NULL) {
+    if (OBJECT_TYPE(n0) != OBJECT_TYPE(n1)) {
+      return false;
+    }
+    if (UID(n0) != UID(n1)) {
+      return false;
+    }
+    if (OBJECT_TYPE(n0) == 3 || OBJECT_TYPE(n0) == 5) {
+      if (!object_table_function[OBJECT_TYPE(n0)].osaka_compareobject(
+              OBJECT(n0), OBJECT(n1))) {
+        // printf("llvm pass not equal: %s(%d) != %s(%d)\n", PASS(OBJECT(n0)),
+        // PASS_INDEX(OBJECT(n0)), PASS(OBJECT(n1)), PASS_INDEX(OBJECT(n1)));
+        return false;
+      }
     }
 
-    return (n0==n1);
+    n0 = NEXT(n0);
+    n1 = NEXT(n1);
+  }
 
+  return (n0 == n1);
 }
 
 /*
  * NAME
  *
- *  osaka_consistencyofnode  
+ *  osaka_consistencyofnode
  *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -1229,49 +1207,49 @@ bool osaka_compare(node_str *n0, node_str *n1)  {
 
 bool osaka_consistencyofnode(node_str *n) {
 
-    switch(osaka_whatisnode(n)) {
-        case EMPTY: 
-            return true; 
-            break;
-        case ISOLATE: 
-            return true; 
-            break;
-        case HEADNODE:
-            if (LAST(n)==NULL && NEXT(n)!=NULL && LAST(NEXT(n))==n) {
-                return true;
-            }
-            return false;
-            break;
-        case TAILNODE:  
-            if (NEXT(n)==NULL && LAST(n)!=NULL && NEXT(LAST(n))==n) {
-                return true;
-            }
-            return false;
-            break;
-        case INTERMEDIATE:
-            if (NEXT(LAST(n))==n && LAST(NEXT(n))==n) {
-                return true;
-            }
-            return false;
-            break;
-        default:
-            printf("error: node type not recognised file:\'%s\' line: %d\n",__FILE__,__LINE__);
-            exit(EXIT_SUCCESS);
-            break;
+  switch (osaka_whatisnode(n)) {
+  case EMPTY:
+    return true;
+    break;
+  case ISOLATE:
+    return true;
+    break;
+  case HEADNODE:
+    if (LAST(n) == NULL && NEXT(n) != NULL && LAST(NEXT(n)) == n) {
+      return true;
     }
-    
     return false;
+    break;
+  case TAILNODE:
+    if (NEXT(n) == NULL && LAST(n) != NULL && NEXT(LAST(n)) == n) {
+      return true;
+    }
+    return false;
+    break;
+  case INTERMEDIATE:
+    if (NEXT(LAST(n)) == n && LAST(NEXT(n)) == n) {
+      return true;
+    }
+    return false;
+    break;
+  default:
+    printf("error: node type not recognised file:\'%s\' line: %d\n", __FILE__,
+           __LINE__);
+    exit(EXIT_SUCCESS);
+    break;
+  }
 
+  return false;
 }
-    
+
 /*
  * NAME
  *
  *  osaka_consistencycheck
- *  
+ *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -1286,22 +1264,21 @@ bool osaka_consistencyofnode(node_str *n) {
  *
  *
  */
-   
-bool osaka_consistencycheck(node_str *r)  {
 
-    global_nth=0;
-    return recurse_applytonode(r,osaka_consistencyofnode);
+bool osaka_consistencycheck(node_str *r) {
 
+  global_nth = 0;
+  return recurse_applytonode(r, osaka_consistencyofnode);
 }
 
 /*
  * NAME
  *
  *  osaka_copylist
- *  
+ *
  * DESCRIPTION
  *
- *  Constructs a replica of a list and returns a return to the replicated 
+ *  Constructs a replica of a list and returns a return to the replicated
  *  list.
  *
  * PARAMETERS
@@ -1318,55 +1295,54 @@ bool osaka_consistencycheck(node_str *r)  {
  *
  * SIDE-EFFECT
  *
- *  Allocates memory for the data structure. 
+ *  Allocates memory for the data structure.
  *
  */
 
 node_str *osaka_copylist(node_str *r) {
 
-    node_str *c=NULL,*cr=NULL,*nc=NULL;
-    
-    while(r!=NULL)  {
-        c=malloc(sizeof(node_str));
-        assert(c!=NULL);
-        memcpy(c,r,sizeof(node_str));
+  node_str *c = NULL, *cr = NULL, *nc = NULL;
 
-        if (nc==NULL) {
-            nc=cr=c;
-            NEXT(c)=NULL;
-            LAST(c)=NULL;
-        }
-        else  {
-            NEXT(nc)=c;
-            LAST(c)=nc;
-            NEXT(c)=NULL;
-            nc=c;
-        }
-          
-        if (OBJECT_TYPE(r)!=NOTSET) {
-            OBJECT(c)=object_table_function[OBJECT_TYPE(r)].osaka_copyobject(OBJECT(r));
-        }
+  while (r != NULL) {
+    c = malloc(sizeof(node_str));
+    assert(c != NULL);
+    memcpy(c, r, sizeof(node_str));
 
-        r=NEXT(r);
+    if (nc == NULL) {
+      nc = cr = c;
+      NEXT(c) = NULL;
+      LAST(c) = NULL;
+    } else {
+      NEXT(nc) = c;
+      LAST(c) = nc;
+      NEXT(c) = NULL;
+      nc = c;
     }
 
-    return cr; // return the new root;
+    if (OBJECT_TYPE(r) != NOTSET) {
+      OBJECT(c) =
+          object_table_function[OBJECT_TYPE(r)].osaka_copyobject(OBJECT(r));
+    }
 
+    r = NEXT(r);
+  }
+
+  return cr; // return the new root;
 }
 
 /*
  * NAME
  *
- *  osaka_innerfree  
+ *  osaka_innerfree
  *
  * DESCRIPTION
  *
- *  This function frees a payload object memory. Designed to be used as 
+ *  This function frees a payload object memory. Designed to be used as
  *  conjection with the osaka_outerfree() function call.
  *
  * PARAMETERS
  *
- *  node_str * - root 
+ *  node_str * - root
  *
  * RETURN
  *
@@ -1382,26 +1358,25 @@ node_str *osaka_copylist(node_str *r) {
  *
  */
 
-void xosaka_innerfree(node_str *n)  {
+void xosaka_innerfree(node_str *n) {
 
-    assert(OBJECT(n)!=NULL); // node cannot be set and have no point to object
-    free(OBJECT(n));
-
+  assert(OBJECT(n) != NULL); // node cannot be set and have no point to object
+  free(OBJECT(n));
 }
-   
+
 /*
  * NAME
  *
- *  osaka_freelist  
+ *  osaka_freelist
  *
  * DESCRIPTION
  *
- *  This function frees a single node of memory. Designed to be used as 
+ *  This function frees a single node of memory. Designed to be used as
  *  part of a recursive function call.
  *
  * PARAMETERS
  *
- *  node_str * - root 
+ *  node_str * - root
  *
  * RETURN
  *
@@ -1417,29 +1392,29 @@ void xosaka_innerfree(node_str *n)  {
  *
  */
 
-void xosaka_outerfree(node_str *n)  {
-  
-    if(n==NULL) return;
-    
-    if(OBJECT_TYPE(n)!=NOTSET)
+void xosaka_outerfree(node_str *n) {
+
+  if (n == NULL)
+    return;
+
+  if (OBJECT_TYPE(n) != NOTSET)
     xosaka_innerfree(n);
 
-    free(n);
-
+  free(n);
 }
 
 /*
  * NAME
  *
- *  osaka_freelist  
+ *  osaka_freelist
  *
  * DESCRIPTION
  *
- *  This function recursively frees the nodes of a list. 
+ *  This function recursively frees the nodes of a list.
  *
  * PARAMETERS
  *
- *  node_str * - root 
+ *  node_str * - root
  *
  * RETURN
  *
@@ -1457,10 +1432,9 @@ void xosaka_outerfree(node_str *n)  {
 
 node_str *osaka_freelist(node_str *r) {
 
-    osaka_postfix_mapto(r,xosaka_outerfree); // free list
+  osaka_postfix_mapto(r, xosaka_outerfree); // free list
 
-    return NULL;
-
+  return NULL;
 }
 
 /*
@@ -1489,17 +1463,17 @@ node_str *osaka_freelist(node_str *r) {
  * SIDE-EFFECT
  *
  *  prints out information to the console
- * 
+ *
  */
 
 void osaka_print_available_object_types() {
-    printf("Here are the available object types for the Osaka Structure: \n\n");
-    printf("\t[1] SIMPLE\n");
-    printf("\t[2] ASSEMBLER\n");
-    printf("\t[3] OSAKA_STRING\n");
-    printf("\t[4] LLVM_PASS\n");
-    printf("\t[5] BINARY_UP_TO_512\n");
-    printf("\t[6] GI_LLVM_PASS\n");
+  printf("Here are the available object types for the Osaka Structure: \n\n");
+  printf("\t[1] SIMPLE\n");
+  printf("\t[2] ASSEMBLER\n");
+  printf("\t[3] OSAKA_STRING\n");
+  printf("\t[4] LLVM_PASS\n");
+  printf("\t[5] BINARY_UP_TO_512\n");
+  printf("\t[6] GI_LLVM_PASS\n");
 }
 
 /*
@@ -1509,9 +1483,9 @@ void osaka_print_available_object_types() {
  *
  * DESCRIPTION
  *
- *  Initialize the osaka library. Debug can be either turned on or off via 
- *  initialization. The initialization process tests out the library 
- *  implementation before returning control. Call this function before 
+ *  Initialize the osaka library. Debug can be either turned on or off via
+ *  initialization. The initialization process tests out the library
+ *  implementation before returning control. Call this function before
  *  using the osaka library.
  *
  * PARAMETERS
@@ -1532,21 +1506,21 @@ void osaka_print_available_object_types() {
  * SIDE-EFFECT
  *
  *  limited side-effects
- * 
+ *
  */
 
-bool osaka_init(bool debug_mode)  {
+bool osaka_init(bool debug_mode) {
 
-    debug = debug_mode;
+  debug = debug_mode;
 
-    printf ("-- initalizing OLS ... \n");
+  printf("-- initalizing OLS ... \n");
 
-    if(!osaka_test_cycler(LOUD))  {
-        printf("error: OLS test pass %s !!!\n",osaka_test_cycler(LOUD)?"true":"false");
-        exit(0);
-    }
-    
-    printf ("-- OLS successfully initialized\n");
-    return true;
+  if (!osaka_test_cycler(LOUD)) {
+    printf("error: OLS test pass %s !!!\n",
+           osaka_test_cycler(LOUD) ? "true" : "false");
+    exit(0);
+  }
 
+  printf("-- OLS successfully initialized\n");
+  return true;
 }

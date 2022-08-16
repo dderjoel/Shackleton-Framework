@@ -3,8 +3,8 @@
  Name        : osaka.h
  Author      : Andrew Sloss, Hannah Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,16 +19,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
- Description : Group of functions supporting the Osaka list specifically developed for Linear
-                Genetic Programming (LGP).
- History :
-    Andrew N. Sloss July 31st 2018
+
+ Description : Group of functions supporting the Osaka list specifically
+ developed for Linear Genetic Programming (LGP). History : Andrew N. Sloss July
+ 31st 2018
         -- starting creating the design for osaka
-    
+
     Hannah Peeler June 3rd 2019
         -- began editing for use within Project Shackleton Framework
  ============================================================================
@@ -41,50 +40,49 @@
  * IMPORT
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "../module/modules.h"
 #include "../support/utility.h"
-
 /*
  * DATATYPES
  */
 
-typedef enum    {
-    EMPTY = 0,
-    ISOLATE = 1,
-    HEADNODE = 2,
-    TAILNODE = 3,
-    INTERMEDIATE = 4
+typedef enum {
+  EMPTY = 0,
+  ISOLATE = 1,
+  HEADNODE = 2,
+  TAILNODE = 3,
+  INTERMEDIATE = 4
 } osaka_node_typ;
 
-typedef enum    {
-    NOTSET = -1,
-    SIMPLE = 0,
-    ASSEMBLER = 1,
-    OSAKA_STRING = 2,
-    LLVM_PASS = 3,
-	BINARY_UP_TO_512 = 4,
-	GI_LLVM_PASS = 5
+typedef enum {
+  NOTSET = -1,
+  SIMPLE = 0,
+  ASSEMBLER = 1,
+  OSAKA_STRING = 2,
+  LLVM_PASS = 3,
+  BINARY_UP_TO_512 = 4,
+  GI_LLVM_PASS = 5
 } osaka_object_typ;
 
-typedef enum    {
-    HEAD = 1,
-    TAIL = 2,
+typedef enum {
+  HEAD = 1,
+  TAIL = 2,
 } append_typ;
 
 typedef struct node_str {
-    uint32_t uid;
-    osaka_object_typ objtype;
-    void *object_ptr;
-    struct node_str *last_ptr;
-    struct node_str *next_ptr;
-    struct node_str *last_link;
-    struct node_str *next_link;
+  uint32_t uid;
+  osaka_object_typ objtype;
+  void *object_ptr;
+  struct node_str *last_ptr;
+  struct node_str *next_ptr;
+  struct node_str *last_link;
+  struct node_str *next_link;
 } node_str;
 
 /*
@@ -99,7 +97,9 @@ typedef struct node_str {
 #define OBJECT_TYPE(s) s->objtype
 #define UID(s) s->uid
 
-#define DEBUG(s)  if (debug) printf(s);
+#define DEBUG(s)                                                               \
+  if (debug)                                                                   \
+    printf(s);
 
 /*
  * ROUTINES
@@ -181,16 +181,16 @@ osaka_node_typ osaka_whatisnode(node_str *n);
  *
  * DESCRIPTION
  *
- *  This function finds the tail node of the OLS. When the tail is found 
- *  the pointer is returned of the tail node.  
+ *  This function finds the tail node of the OLS. When the tail is found
+ *  the pointer is returned of the tail node.
  *
  * PARAMETERS
  *
  *  node_str *r - root anchor for the list
- * 
+ *
  * RETURN
  *
- *  node_str * - tail node is returned 
+ *  node_str * - tail node is returned
  *
  * EXAMPLE
  *
@@ -198,7 +198,7 @@ osaka_node_typ osaka_whatisnode(node_str *n);
  *
  * SIDE-EFFECT
  *
- *  asserts if the root node is NULL. 
+ *  asserts if the root node is NULL.
  *
  */
 
@@ -240,8 +240,8 @@ node_str *osaka_findheadnode(node_str *n);
  *
  * DESCRIPTION
  *
- *   This function adds a single node to the tail. Takes the root of the list and goes
- *   to the end of the list and appends the node.
+ *   This function adds a single node to the tail. Takes the root of the list
+ * and goes to the end of the list and appends the node.
  *
  * PARAMETERS
  *
@@ -262,7 +262,7 @@ node_str *osaka_findheadnode(node_str *n);
  *
  */
 
-node_str *osaka_addnodetotail(node_str *r,node_str *n);
+node_str *osaka_addnodetotail(node_str *r, node_str *n);
 
 /*
  * NAME
@@ -271,8 +271,8 @@ node_str *osaka_addnodetotail(node_str *r,node_str *n);
  *
  * DESCRIPTION
  *
- *   This function adds a single node to the head. Takes the root of the list and
- *   appends the new node to the head of the list.
+ *   This function adds a single node to the head. Takes the root of the list
+ * and appends the new node to the head of the list.
  *
  * PARAMETERS
  *
@@ -293,7 +293,7 @@ node_str *osaka_addnodetotail(node_str *r,node_str *n);
  *
  */
 
-node_str *osaka_addnodetohead(node_str *r,node_str *n);
+node_str *osaka_addnodetohead(node_str *r, node_str *n);
 
 /*
  * NAME
@@ -302,8 +302,8 @@ node_str *osaka_addnodetohead(node_str *r,node_str *n);
  *
  * DESCRIPTION
  *
- *   This function creates a node and places it either at the head or tail. If the root
- *   is empty the function returns a node.
+ *   This function creates a node and places it either at the head or tail. If
+ * the root is empty the function returns a node.
  *
  * PARAMETERS
  *
@@ -328,7 +328,7 @@ node_str *osaka_addnodetohead(node_str *r,node_str *n);
  *
  */
 
-node_str *osaka_createnode(node_str *r,append_typ app_ty,osaka_object_typ ot);
+node_str *osaka_createnode(node_str *r, append_typ app_ty, osaka_object_typ ot);
 
 /*
  * NAME
@@ -395,7 +395,8 @@ void osaka_printnode_concise(node_str *n);
  *
  * DESCRIPTION
  *
- *  This function loads a char* variable with a description of the value of the node
+ *  This function loads a char* variable with a description of the value of the
+ * node
  *
  * PARAMETERS
  *
@@ -416,7 +417,7 @@ void osaka_printnode_concise(node_str *n);
  *
  */
 
-void osaka_describenode(char* desc, node_str *n);
+void osaka_describenode(char *desc, node_str *n);
 
 /*
  * NAME
@@ -477,7 +478,7 @@ void osaka_printnodearray(node_str *n);
  *
  */
 
-void osaka_prefix_mapto(node_str *n,void (*fun)(node_str *n));
+void osaka_prefix_mapto(node_str *n, void (*fun)(node_str *n));
 
 /*
  * NAME
@@ -499,10 +500,8 @@ void osaka_prefix_mapto(node_str *n,void (*fun)(node_str *n));
  *
  *
  */
- 
 
-bool recurse_applytonode(node_str *root,bool (*fun)(node_str *n));
-
+bool recurse_applytonode(node_str *root, bool (*fun)(node_str *n));
 
 /*
  * NAME
@@ -533,7 +532,7 @@ bool recurse_applytonode(node_str *root,bool (*fun)(node_str *n));
  *
  */
 
-void osaka_postfix_mapto(node_str *n,void (*fun)(node_str *n));
+void osaka_postfix_mapto(node_str *n, void (*fun)(node_str *n));
 
 /*
  * NAME
@@ -542,7 +541,8 @@ void osaka_postfix_mapto(node_str *n,void (*fun)(node_str *n));
  *
  * DESCRIPTION
  *
- *  osaka_listlength takes a list and returns the length. Return zero if list has no nodes.
+ *  osaka_listlength takes a list and returns the length. Return zero if list
+ * has no nodes.
  *
  * PARAMETERS
  *
@@ -600,7 +600,7 @@ void osaka_freenode(node_str *n);
  *
  * DESCRIPTION
  *
- *  Takes in a node_ptr and randomizes all the parameters inside 
+ *  Takes in a node_ptr and randomizes all the parameters inside
  *  that node_ptr's object
  *
  * PARAMETERS
@@ -622,10 +622,9 @@ void osaka_freenode(node_str *n);
  *
  */
 
-
 void osaka_randomizenode(node_str *n);
 
-void osaka_setnode(node_str *n, char* pass);
+void osaka_setnode(node_str *n, char *pass);
 
 /*
  * NAME
@@ -654,7 +653,6 @@ void osaka_setnode(node_str *n, char* pass);
  *  none
  *
  */
-
 
 uint32_t osaka_fitness(node_str *n);
 
@@ -686,7 +684,7 @@ uint32_t osaka_fitness(node_str *n);
  *
  */
 
-node_str *osaka_nthnode(node_str *r,uint32_t nth);
+node_str *osaka_nthnode(node_str *r, uint32_t nth);
 
 /*
  * NAME
@@ -721,10 +719,10 @@ node_str *osaka_deletenode(node_str *n);
  * NAME
  *
  *  osaka_serialize
- *  
+ *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -740,16 +738,16 @@ node_str *osaka_deletenode(node_str *n);
  *
  */
 
-uint32_t osaka_serialize(node_str *r,char *filepath);
+uint32_t osaka_serialize(node_str *r, char *filepath);
 
 /*
  * NAME
  *
  *  osaka_deserialize
- *  
+ *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -771,10 +769,10 @@ node_str *osaka_deserialize(char *filepath);
  * NAME
  *
  *  osaka_compare
- *  
+ *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -791,15 +789,15 @@ node_str *osaka_deserialize(char *filepath);
  */
 
 bool osaka_compare(node_str *n0, node_str *n1);
-    
+
 /*
  * NAME
  *
  *  osaka_consistencycheck
- *  
+ *
  * DESCRIPTION
  *
- * 
+ *
  *
  * PARAMETERS
  *
@@ -814,17 +812,17 @@ bool osaka_compare(node_str *n0, node_str *n1);
  *
  *
  */
-   
+
 bool osaka_consistencycheck(node_str *r);
 
 /*
  * NAME
  *
  *  osaka_copylist
- *  
+ *
  * DESCRIPTION
  *
- *  Constructs a replica of a list and returns a return to the replicated 
+ *  Constructs a replica of a list and returns a return to the replicated
  *  list.
  *
  * PARAMETERS
@@ -841,7 +839,7 @@ bool osaka_consistencycheck(node_str *r);
  *
  * SIDE-EFFECT
  *
- *  Allocates memory for the data structure. 
+ *  Allocates memory for the data structure.
  *
  */
 
@@ -850,15 +848,15 @@ node_str *osaka_copylist(node_str *r);
 /*
  * NAME
  *
- *  osaka_freelist  
+ *  osaka_freelist
  *
  * DESCRIPTION
  *
- *  This function recursively frees the nodes of a list. 
+ *  This function recursively frees the nodes of a list.
  *
  * PARAMETERS
  *
- *  node_str * - root 
+ *  node_str * - root
  *
  * RETURN
  *
@@ -902,7 +900,7 @@ node_str *osaka_freelist(node_str *r);
  * SIDE-EFFECT
  *
  *  prints out information to the console
- * 
+ *
  */
 
 void osaka_print_available_object_types();
@@ -914,9 +912,9 @@ void osaka_print_available_object_types();
  *
  * DESCRIPTION
  *
- *  Initialize the osaka library. Debug can be either turned on or off via 
- *  initialization. The initialization process tests out the library 
- *  implementation before returning control. Call this function before 
+ *  Initialize the osaka library. Debug can be either turned on or off via
+ *  initialization. The initialization process tests out the library
+ *  implementation before returning control. Call this function before
  *  using the osaka library.
  *
  * PARAMETERS
@@ -937,7 +935,7 @@ void osaka_print_available_object_types();
  * SIDE-EFFECT
  *
  *  limited side-effects
- * 
+ *
  */
 
 bool osaka_init(bool debug_mode);
