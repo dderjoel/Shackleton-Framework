@@ -547,7 +547,7 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
                 //printf("\tsetting visualization from file - %s",line);
                 temp = strtok(NULL, delim);
                 temp[strlen(temp) - 1] = '\0';
-                str2int(tourn_size, temp, 10);
+                str2int(func_num, temp, 10);
             }
             /*else if (strcmp(temp, "osaka_type:") == 0) {
                 //printf("\tsetting osaka data type from file - %s",line);
