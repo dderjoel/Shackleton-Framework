@@ -3,8 +3,8 @@
  Name        : utility.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : File for any functions that can be used
                across the project for making code more
                reusable
@@ -40,10 +40,10 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -51,10 +51,10 @@
  */
 
 typedef enum {
-    STR2INT_SUCCESS,
-    STR2INT_OVERFLOW,
-    STR2INT_UNDERFLOW,
-    STR2INT_INCONVERTIBLE
+  STR2INT_SUCCESS,
+  STR2INT_OVERFLOW,
+  STR2INT_UNDERFLOW,
+  STR2INT_INCONVERTIBLE
 } str2int_errno;
 
 /*
@@ -121,7 +121,7 @@ str2int_errno str2int(uint32_t *out, char *s, uint32_t base);
  *
  */
 
-void swap(char* temp1, char* temp2);
+void swap(char *temp1, char *temp2);
 
 /*
  * NAME
@@ -182,7 +182,7 @@ void reverse(char str[], uint32_t length);
  *
  */
 
-char* itoa(uint32_t num, char* str, uint32_t base);
+char *itoa(uint32_t num, char *str, uint32_t base);
 
 /*
  * NAME
@@ -211,7 +211,7 @@ char* itoa(uint32_t num, char* str, uint32_t base);
  *
  */
 
-void strupr(char* orig);
+void strupr(char *orig);
 
 /*
  * NAME
@@ -240,7 +240,7 @@ void strupr(char* orig);
  *
  */
 
-cJSON* getJSON(char* filename);
+cJSON *getJSON(char *filename);
 
 /*
  * NAME
@@ -278,9 +278,9 @@ char *randomString(uint32_t length);
  *
  * DESCRIPTION
  *
- *  Given a parameters file that is predetermined to be in 
+ *  Given a parameters file that is predetermined to be in
  *  src/files/, will use the parameter values in that file
- *  to be the parameters for 
+ *  to be the parameters for
  *
  * PARAMETERS
  *
@@ -297,7 +297,8 @@ char *randomString(uint32_t length);
  *
  * EXAMPLE
  *
- * set_params_from_file(num_generations, num_population_size, percent_crossover, percent_mutation, tournament_size, visualization);
+ * set_params_from_file(num_generations, num_population_size, percent_crossover,
+ * percent_mutation, tournament_size, visualization);
  *
  * SIDE-EFFECT
  *
@@ -305,10 +306,13 @@ char *randomString(uint32_t length);
  *
  */
 
-void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file);
+void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size,
+                          uint32_t *perc_cross, uint32_t *perc_mut,
+                          uint32_t *perc_elite, uint32_t *tourn_size, bool *vis,
+                          char *param_file);
 
-double calc_var(double* array, double mean, int length);
-bool is_in_list(int num, int* list, int length);
-double median(u_int64_t *list, const  int len);
+double calc_var(double *array, double mean, int length);
+bool is_in_list(int num, int *list, int length);
+double median(u_int64_t *list, const int len);
 
 #endif /* SUPPORT_UTILITY_H_ */

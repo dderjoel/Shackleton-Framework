@@ -3,8 +3,8 @@
  Name        : visualization.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Helper method for visualizing what is happening
                at any given time. Includes options to cache generations
                as we go and output individual nodes
@@ -68,11 +68,10 @@
  *
  */
 
-void visualization_print_individual_verbose(node_str* indiv) {
+void visualization_print_individual_verbose(node_str *indiv) {
 
-    // only use internal methods through osaka
-    osaka_printnodearray(indiv);
-
+  // only use internal methods through osaka
+  osaka_printnodearray(indiv);
 }
 
 /*
@@ -103,18 +102,16 @@ void visualization_print_individual_verbose(node_str* indiv) {
  *
  */
 
-void visualization_print_individual_concise_addresses(node_str* indiv) {
+void visualization_print_individual_concise_addresses(node_str *indiv) {
 
-    printf("{ %p }", indiv);
+  printf("{ %p }", indiv);
 
-    // only print pointer with <---> to represent connections
-    while (NEXT(indiv) != NULL) {
+  // only print pointer with <---> to represent connections
+  while (NEXT(indiv) != NULL) {
 
-        indiv = NEXT(indiv);
-        printf(" <---> { %p }", indiv);
-
-    }
-
+    indiv = NEXT(indiv);
+    printf(" <---> { %p }", indiv);
+  }
 }
 
 /*
@@ -145,22 +142,20 @@ void visualization_print_individual_concise_addresses(node_str* indiv) {
  *
  */
 
-void visualization_print_individual_concise_details(node_str* indiv) {
+void visualization_print_individual_concise_details(node_str *indiv) {
 
-    printf("{ ");
+  printf("{ ");
+  osaka_printnode_concise(indiv);
+  printf(" }");
+
+  // using internal methods of osaka, with <---> representing connections
+  while (NEXT(indiv) != NULL) {
+
+    indiv = NEXT(indiv);
+    printf(" <---> { ");
     osaka_printnode_concise(indiv);
     printf(" }");
-
-    // using internal methods of osaka, with <---> representing connections
-    while (NEXT(indiv) != NULL) {
-
-        indiv = NEXT(indiv);
-        printf(" <---> { ");
-        osaka_printnode_concise(indiv);
-        printf(" }");
-
-    }
-
+  }
 }
 
 /*
@@ -192,26 +187,25 @@ void visualization_print_individual_concise_details(node_str* indiv) {
  *
  */
 
-void visualization_print_individual_concise_details_to_nth(node_str* indiv, uint32_t nth) {
+void visualization_print_individual_concise_details_to_nth(node_str *indiv,
+                                                           uint32_t nth) {
 
-    printf("{ ");
+  printf("{ ");
+  osaka_printnode_concise(indiv);
+  printf(" }");
+
+  uint32_t curr = 2;
+
+  // using internal methods of osaka, with <---> representing connections
+  while (NEXT(indiv) != NULL && curr < nth) {
+
+    printf(" <---> { ");
+    indiv = NEXT(indiv);
     osaka_printnode_concise(indiv);
     printf(" }");
 
-    uint32_t curr = 2;
-
-    // using internal methods of osaka, with <---> representing connections
-    while (NEXT(indiv) != NULL && curr < nth) {
-
-        printf(" <---> { ");
-        indiv = NEXT(indiv);
-        osaka_printnode_concise(indiv);
-        printf(" }");
-
-        curr++;
-
-    }
-
+    curr++;
+  }
 }
 
 /*
@@ -243,24 +237,23 @@ void visualization_print_individual_concise_details_to_nth(node_str* indiv, uint
  *
  */
 
-void visualization_print_individual_concise_details_from_nth(node_str* indiv, uint32_t nth) {
+void visualization_print_individual_concise_details_from_nth(node_str *indiv,
+                                                             uint32_t nth) {
 
-    indiv = osaka_nthnode(indiv, nth);
+  indiv = osaka_nthnode(indiv, nth);
 
-    printf("{ ");
+  printf("{ ");
+  osaka_printnode_concise(indiv);
+  printf(" }");
+
+  // using internal methods of osaka, with <---> representing connections
+  while (NEXT(indiv) != NULL) {
+
+    printf(" <---> { ");
+    indiv = NEXT(indiv);
     osaka_printnode_concise(indiv);
     printf(" }");
-
-    // using internal methods of osaka, with <---> representing connections
-    while (NEXT(indiv) != NULL) {
-
-        printf(" <---> { ");
-        indiv = NEXT(indiv);
-        osaka_printnode_concise(indiv);
-        printf(" }");
-
-    }
-
+  }
 }
 
 /*
@@ -285,7 +278,8 @@ void visualization_print_individual_concise_details_from_nth(node_str* indiv, ui
  *
  * EXAMPLE
  *
- * visualization_print_individual_concise_details_from_nth_to_mth(osaka_indiv, 2, 6)
+ * visualization_print_individual_concise_details_from_nth_to_mth(osaka_indiv,
+ * 2, 6)
  *
  * SIDE-EFFECT
  *
@@ -293,68 +287,79 @@ void visualization_print_individual_concise_details_from_nth(node_str* indiv, ui
  *
  */
 
-void visualization_print_individual_concise_details_from_nth_to_mth(node_str* indiv, uint32_t nth, uint32_t mth) {
+void visualization_print_individual_concise_details_from_nth_to_mth(
+    node_str *indiv, uint32_t nth, uint32_t mth) {
 
-    indiv = osaka_nthnode(indiv, nth);
+  indiv = osaka_nthnode(indiv, nth);
 
-    printf("{ ");
+  printf("{ ");
+  osaka_printnode_concise(indiv);
+  printf(" }");
+
+  uint32_t curr = 1;
+
+  // using internal methods of osaka, with <---> representing connections
+  while (NEXT(indiv) != NULL && curr < nth) {
+
+    printf(" <---> { ");
+    indiv = NEXT(indiv);
     osaka_printnode_concise(indiv);
     printf(" }");
 
-    uint32_t curr = 1;
-
-    // using internal methods of osaka, with <---> representing connections
-    while (NEXT(indiv) != NULL && curr < nth) {
-
-        printf(" <---> { ");
-        indiv = NEXT(indiv);
-        osaka_printnode_concise(indiv);
-        printf(" }");
-
-        curr++;
-
-    }
-
+    curr++;
+  }
 }
 
-void vis_print_parents(bool vis, node_str** offsprings) {
-    //if vis, print out contestant information
-    if (vis) {
-        printf("Contestant 1 starts at node %d\n", UID(offsprings[0]));
-        visualization_print_individual_concise_details(offsprings[0]);
-        printf("\n\nContestant 2 starts at node %d\n\n", UID(offsprings[1]));
-        visualization_print_individual_concise_details(offsprings[1]);
-        printf("\n");
-    }
+void vis_print_parents(bool vis, node_str **offsprings) {
+  // if vis, print out contestant information
+  if (vis) {
+    printf("Contestant 1 starts at node %d\n", UID(offsprings[0]));
+    visualization_print_individual_concise_details(offsprings[0]);
+    printf("\n\nContestant 2 starts at node %d\n\n", UID(offsprings[1]));
+    visualization_print_individual_concise_details(offsprings[1]);
+    printf("\n");
+  }
 }
 
-void vis_best_node(bool vis, node_str* final_node) {
-    if (vis) {
-        printf("Best node: ---------------------------------------------------------------------------\n\n");
-        visualization_print_individual_concise_details(final_node);
-        printf("\n\n--------------------------------------------------------------------------------------\n\n");
-    }
+void vis_best_node(bool vis, node_str *final_node) {
+  if (vis) {
+    printf("Best node: "
+           "-------------------------------------------------------------------"
+           "--------\n\n");
+    visualization_print_individual_concise_details(final_node);
+    printf("\n\n---------------------------------------------------------------"
+           "-----------------------\n\n");
+  }
 }
 
-void vis_print_gen(bool vis, bool end_of_gen, node_str** current_generation, uint32_t gen_idx, uint32_t pop_size) {
-    if (!vis) {
-        return;
+void vis_print_gen(bool vis, bool end_of_gen, node_str **current_generation,
+                   uint32_t gen_idx, uint32_t pop_size) {
+  if (!vis) {
+    return;
+  }
+  char msg[200];
+  for (int i = 0; i < pop_size; i++) {
+    if (end_of_gen) {
+      sprintf(msg,
+              "------------------- Printing Individual %d at end of Generation "
+              "%d --------------------\n\n",
+              i + 1, gen_idx + 1);
+    } else {
+      sprintf(msg,
+              "----------------------- Printing Individual %d before beginning "
+              "-----------------------\n\n",
+              i + 1);
     }
-    char msg[200];
-    for (int i = 0; i < pop_size; i++) {
-        if (end_of_gen) {
-            sprintf(msg, "------------------- Printing Individual %d at end of Generation %d --------------------\n\n", i + 1, gen_idx + 1);
-        } else {
-            sprintf(msg, "----------------------- Printing Individual %d before beginning -----------------------\n\n", i + 1);
-        }
-        printf("%s", msg);
-        visualization_print_individual_concise_details(current_generation[i]);
-        printf("\n\n");
-    }
+    printf("%s", msg);
+    visualization_print_individual_concise_details(current_generation[i]);
+    printf("\n\n");
+  }
 }
 
 void vis_itr(bool vis, int it, int gen) {
-    if (vis) {
-        printf("---------------------------- Iteration %d of Generation %d ----------------------------\n", it + 1, gen + 1);
-    }
+  if (vis) {
+    printf("---------------------------- Iteration %d of Generation %d "
+           "----------------------------\n",
+           it + 1, gen + 1);
+  }
 }

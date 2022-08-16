@@ -3,8 +3,8 @@
  Name        : llvm.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Integration and use with LLVM is a main goal of this
                project. This file contains helper functions for using
                some of the main LLVM capabilities and for the fitness
@@ -56,17 +56,18 @@
  *
  *  Forms an optimization command of a set sequence of llvm optimization passes.
  *  The outputted command is ready to be run using the system() method or when
- *  copied into a terminal. There is an option of using an llvm_passes individual
- *  or to use a string array manually. The default is an osaka individual if it
- *  is specified
+ *  copied into a terminal. There is an option of using an llvm_passes
+ * individual or to use a string array manually. The default is an osaka
+ * individual if it is specified
  *
  * PARAMETERS
  *
- *  node_str* indiv - if applicable, a link to the head of an individual of llvm_passes
- *  char** passes - alternatively, passes can be set manually in a string array and passed over
- *  uint32_t passes_size - size of string array if the array is being used
- *  char* file - the .ll file that the passes will be applied to
- *  char* command - the variable in the which the fully formed command will be stored
+ *  node_str* indiv - if applicable, a link to the head of an individual of
+ * llvm_passes char** passes - alternatively, passes can be set manually in a
+ * string array and passed over uint32_t passes_size - size of string array if
+ * the array is being used char* file - the .ll file that the passes will be
+ * applied to char* command - the variable in the which the fully formed command
+ * will be stored
  *
  * RETURN
  *
@@ -82,7 +83,8 @@
  *
  */
 
-void llvm_form_opt_command(node_str* indiv, char** passes, uint32_t passes_size, char* input_file, char* output_file, char* command);
+void llvm_form_opt_command(node_str *indiv, char **passes, uint32_t passes_size,
+                           char *input_file, char *output_file, char *command);
 
 /*
  * NAME
@@ -114,7 +116,7 @@ void llvm_form_opt_command(node_str* indiv, char** passes, uint32_t passes_size,
  *
  */
 
-void llvm_form_run_command(char* file, char* command);
+void llvm_form_run_command(char *file, char *command);
 
 /*
  * NAME
@@ -147,7 +149,8 @@ void llvm_form_run_command(char* file, char* command);
  *
  */
 
-void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* test_file, char* command, const char *id);
+void llvm_form_build_ll_command(char **src_files, uint32_t num_src_files,
+                                char *test_file, char *command, const char *id);
 
 /*
  * NAME
@@ -179,7 +182,7 @@ void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* 
  *
  */
 
-void llvm_form_exec_code_command(char* file, char* command);
+void llvm_form_exec_code_command(char *file, char *command);
 
 /*
  * NAME
@@ -212,7 +215,7 @@ void llvm_form_exec_code_command(char* file, char* command);
  *
  */
 
-void llvm_form_exec_code_command_from_ll(char* file, char* command);
+void llvm_form_exec_code_command_from_ll(char *file, char *command);
 
 /*
  * NAME
@@ -222,7 +225,7 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command);
  * DESCRIPTION
  *
  *  Given an array of source files (.c or .cpp files) and a test
- *  file, it will create a terminal command that builds these files and 
+ *  file, it will create a terminal command that builds these files and
  *  then runs the resulting executable bitcode
  *
  * PARAMETERS
@@ -230,8 +233,9 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command);
  *  char** src_files - the .c or .cpp files that we are testing
  *  uint32_t num_src_files - the number of files included in the source
  *  char* test_file - the file that contains the tests to be run
- *  char* build_command - the variable that will hold the final command for building/compiling
- *  char* run_command - the variable that will hold the final command for running the code
+ *  char* build_command - the variable that will hold the final command for
+ * building/compiling char* run_command - the variable that will hold the final
+ * command for running the code
  *
  * RETURN
  *
@@ -247,7 +251,9 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command);
  *
  */
 
-void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test_file, char* build_command, char* run_command, const char* id);
+void llvm_form_test_command(char **src_files, uint32_t num_src_files,
+                            char *test_file, char *build_command,
+                            char *run_command, const char *id);
 
 /*
  * NAME
@@ -276,7 +282,7 @@ void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test
  *
  */
 
-uint32_t llvm_run_command(char* command);
+uint32_t llvm_run_command(char *command);
 
 /*
  * NAME
@@ -305,6 +311,6 @@ uint32_t llvm_run_command(char* command);
  *
  */
 
-uint32_t llvm_clean_up(char *file, const char* id, bool cache);
+uint32_t llvm_clean_up(char *file, const char *id, bool cache);
 
 #endif /* SUPPORT_LLVM_H_ */

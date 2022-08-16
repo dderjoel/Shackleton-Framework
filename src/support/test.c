@@ -3,8 +3,8 @@
  Name        : test.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Contains tests for specific functionalities
                used in the Shackleton framework
  ============================================================================
@@ -70,29 +70,31 @@
 
 void test_basic_printing(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
 
-    // test is completely disabled if visualization are not enabled
-    if (vis) {
+  // test is completely disabled if visualization are not enabled
+  if (vis) {
 
-        // must create an individual to print
-        node_str* indiv = generate_new_individual(indiv_size, ot);
+    // must create an individual to print
+    node_str *indiv = generate_new_individual(indiv_size, ot);
 
-        printf("Verbose printing ---------------------------------------------------------------------\n");
-        visualization_print_individual_verbose(indiv);
+    printf("Verbose printing "
+           "-------------------------------------------------------------------"
+           "--\n");
+    visualization_print_individual_verbose(indiv);
 
-        printf("\nConcise printing with addresses ------------------------------------------------------\n\n");
-        visualization_print_individual_concise_addresses(indiv);
+    printf("\nConcise printing with addresses "
+           "------------------------------------------------------\n\n");
+    visualization_print_individual_concise_addresses(indiv);
 
-        printf("\n\nConcise printing with details: -------------------------------------------------------\n\n");
-        visualization_print_individual_concise_details(indiv);
+    printf("\n\nConcise printing with details: "
+           "-------------------------------------------------------\n\n");
+    visualization_print_individual_concise_details(indiv);
 
-        // newlines only for formatting reasons
-        printf("\n\n");
+    // newlines only for formatting reasons
+    printf("\n\n");
 
-        // always free individual at the end
-        generate_free_individual(indiv);
-
-    }
-
+    // always free individual at the end
+    generate_free_individual(indiv);
+  }
 }
 
 /*
@@ -123,84 +125,92 @@ void test_basic_printing(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
  *
  */
 
-void test_llvm_form_opt_command_indiv(char* file) {
+void test_llvm_form_opt_command_indiv(char *file) {
 
-    char file_name[30];
-    char base_name[60];
-    char output_base[70];
-    char input_file[60];
-    char command[10000];
-    node_str* indiv;
+  char file_name[30];
+  char base_name[60];
+  char output_base[70];
+  char input_file[60];
+  char command[10000];
+  node_str *indiv;
 
-    char output_file1[60];
-    char output_file2[60];
-    char output_file3[60];
-    char output_file4[60];
+  char output_file1[60];
+  char output_file2[60];
+  char output_file3[60];
+  char output_file4[60];
 
-    strcpy(file_name, file);
-    char* p = strchr(file_name, '.');
+  strcpy(file_name, file);
+  char *p = strchr(file_name, '.');
 
-    if (!p) {
-        printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
-        exit(0);
-    }
-    *p = 0;
+  if (!p) {
+    printf("File must have valid extension such as .c or .cpp.\n\nAborting "
+           "code\n\n");
+    exit(0);
+  }
+  *p = 0;
 
-    strcpy(base_name, "src/files/llvm/");
-    strcpy(output_base, "src/files/llvm/junk_output/");
+  strcpy(base_name, "src/files/llvm/");
+  strcpy(output_base, "src/files/llvm/junk_output/");
 
-    strcpy(input_file, base_name);
-    strcat(input_file, file_name);
-    strcat(input_file, ".ll");
+  strcpy(input_file, base_name);
+  strcat(input_file, file_name);
+  strcat(input_file, ".ll");
 
-    strcpy(output_file1, output_base);
-    strcat(output_file1, file_name);
-    strcat(output_file1, "1.ll");
+  strcpy(output_file1, output_base);
+  strcat(output_file1, file_name);
+  strcat(output_file1, "1.ll");
 
-    strcpy(output_file2, output_base);
-    strcat(output_file2, file_name);
-    strcat(output_file2, "2.ll");
+  strcpy(output_file2, output_base);
+  strcat(output_file2, file_name);
+  strcat(output_file2, "2.ll");
 
-    strcpy(output_file3, output_base);
-    strcat(output_file3, file_name);
-    strcat(output_file3, "3.ll");
+  strcpy(output_file3, output_base);
+  strcat(output_file3, file_name);
+  strcat(output_file3, "3.ll");
 
-    strcpy(output_file4, output_base);
-    strcat(output_file4, file_name);
-    strcat(output_file4, "4.ll");
+  strcpy(output_file4, output_base);
+  strcat(output_file4, file_name);
+  strcat(output_file4, "4.ll");
 
-    printf("\n\n ---------------------------------- About to form and run 1st command ---------------------------------- \n\n");
-    indiv = generate_new_individual(10, LLVM_PASS);
-    llvm_form_opt_command(indiv, NULL, 0, input_file, output_file1, command);
-    printf("\nThis is the first command: %s\n\n", command);
-    llvm_run_command(command);
-    generate_free_individual(indiv);
-    printf("\n\n --------------------------------------- Done running 1st command -------------------------------------- \n\n");
+  printf("\n\n ---------------------------------- About to form and run 1st "
+         "command ---------------------------------- \n\n");
+  indiv = generate_new_individual(10, LLVM_PASS);
+  llvm_form_opt_command(indiv, NULL, 0, input_file, output_file1, command);
+  printf("\nThis is the first command: %s\n\n", command);
+  llvm_run_command(command);
+  generate_free_individual(indiv);
+  printf("\n\n --------------------------------------- Done running 1st "
+         "command -------------------------------------- \n\n");
 
-    printf("\n\n ---------------------------------- About to form and run 2nd command ---------------------------------- \n\n");
-    indiv = generate_new_individual(10, LLVM_PASS);
-    llvm_form_opt_command(indiv, NULL, 0, input_file, output_file2, command);
-    printf("This is the second command: %s\n\n", command);
-    llvm_run_command(command);
-    generate_free_individual(indiv);
-    printf("\n\n --------------------------------------- Done running 2nd command -------------------------------------- \n\n");
+  printf("\n\n ---------------------------------- About to form and run 2nd "
+         "command ---------------------------------- \n\n");
+  indiv = generate_new_individual(10, LLVM_PASS);
+  llvm_form_opt_command(indiv, NULL, 0, input_file, output_file2, command);
+  printf("This is the second command: %s\n\n", command);
+  llvm_run_command(command);
+  generate_free_individual(indiv);
+  printf("\n\n --------------------------------------- Done running 2nd "
+         "command -------------------------------------- \n\n");
 
-    printf("\n\n ---------------------------------- About to form and run 3rd command ---------------------------------- \n\n");
-    indiv = generate_new_individual(10, LLVM_PASS);
-    llvm_form_opt_command(indiv, NULL, 0, input_file, output_file3, command);
-    printf("This is the third command: %s\n\n", command);
-    llvm_run_command(command);
-    generate_free_individual(indiv);
-    printf("\n\n --------------------------------------- Done running 3rd command -------------------------------------- \n\n");
+  printf("\n\n ---------------------------------- About to form and run 3rd "
+         "command ---------------------------------- \n\n");
+  indiv = generate_new_individual(10, LLVM_PASS);
+  llvm_form_opt_command(indiv, NULL, 0, input_file, output_file3, command);
+  printf("This is the third command: %s\n\n", command);
+  llvm_run_command(command);
+  generate_free_individual(indiv);
+  printf("\n\n --------------------------------------- Done running 3rd "
+         "command -------------------------------------- \n\n");
 
-    printf("\n\n ---------------------------------- About to form and run 4th command ---------------------------------- \n\n");
-    indiv = generate_new_individual(10, LLVM_PASS);
-    llvm_form_opt_command(indiv, NULL, 0, input_file, output_file4, command);
-    printf("This is the fourth command: %s\n\n", command);
-    llvm_run_command(command);
-    generate_free_individual(indiv);
-    printf("\n\n --------------------------------------- Done running 4th command -------------------------------------- \n\n");
-
+  printf("\n\n ---------------------------------- About to form and run 4th "
+         "command ---------------------------------- \n\n");
+  indiv = generate_new_individual(10, LLVM_PASS);
+  llvm_form_opt_command(indiv, NULL, 0, input_file, output_file4, command);
+  printf("This is the fourth command: %s\n\n", command);
+  llvm_run_command(command);
+  generate_free_individual(indiv);
+  printf("\n\n --------------------------------------- Done running 4th "
+         "command -------------------------------------- \n\n");
 }
 
 /*
@@ -231,33 +241,34 @@ void test_llvm_form_opt_command_indiv(char* file) {
  *
  */
 
-void test_llvm_form_exec_code_command(char* file) {
+void test_llvm_form_exec_code_command(char *file) {
 
-    char command[10000];
+  char command[10000];
 
-    uint32_t result;
+  uint32_t result;
 
-    time_t time1, time2;
-    clock_t clock1, clock2;
-    struct timeval start, end; 
+  time_t time1, time2;
+  clock_t clock1, clock2;
+  struct timeval start, end;
 
-    llvm_form_exec_code_command(file, command);
-    printf("\nCommand: %s\n\n", command);
+  llvm_form_exec_code_command(file, command);
+  printf("\nCommand: %s\n\n", command);
 
-    printf("Running the command now\n\n");
+  printf("Running the command now\n\n");
 
-    gettimeofday(&start, NULL);
+  gettimeofday(&start, NULL);
 
-    result = system(command);
+  result = system(command);
 
-    gettimeofday(&end, NULL);
+  gettimeofday(&end, NULL);
 
-    double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-    time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+  double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
 
-    printf("Done running, the command took %f seconds to run, according to gettimeofday()\n\n", time_taken);
-    printf("The number returned by system was %d\n\n", result>>8);
-
+  printf("Done running, the command took %f seconds to run, according to "
+         "gettimeofday()\n\n",
+         time_taken);
+  printf("The number returned by system was %d\n\n", result >> 8);
 }
 
 /*
@@ -273,8 +284,8 @@ void test_llvm_form_exec_code_command(char* file) {
  *
  * PARAMETERS
  *
- *  char** src_files - an array of .cpp or .c files that have the functionality to be tested
- *  char* test_file - the file that contains the tests to be run
+ *  char** src_files - an array of .cpp or .c files that have the functionality
+ * to be tested char* test_file - the file that contains the tests to be run
  *
  * RETURN
  *
@@ -292,39 +303,43 @@ void test_llvm_form_exec_code_command(char* file) {
 
 void test_llvm_form_test_command() {
 
-    char build_command[5000];
-    char run_command[500];
+  char build_command[5000];
+  char run_command[500];
 
-    strcpy(build_command, "");
-    strcpy(run_command, "");
+  strcpy(build_command, "");
+  strcpy(run_command, "");
 
-    uint32_t build_result;
-    uint32_t run_result;
+  uint32_t build_result;
+  uint32_t run_result;
 
-    struct timeval start, end; 
+  struct timeval start, end;
 
-    char* src_files[1];
-    src_files[0] = "add.cpp";
+  char *src_files[1];
+  src_files[0] = "add.cpp";
 
-    llvm_form_test_command(src_files, 1, "test.cpp", build_command, run_command, NULL);
-    
-    printf("\n------ Build Command: %s\n", build_command);
-    printf("------ Running the build command now\n");
-    build_result = system(build_command);
-    printf("------ Build command returned with a result of %d\n\n", build_result>>8);
+  llvm_form_test_command(src_files, 1, "test.cpp", build_command, run_command,
+                         NULL);
 
-    printf("------ Run Command: %s\n", run_command);
-    printf("------ Running the run command now\n");
-    gettimeofday(&start, NULL);
-    run_result = system(run_command);
-    gettimeofday(&end, NULL);
-    printf("------ Run command returned with a result of %d\n\n", run_result>>8);
+  printf("\n------ Build Command: %s\n", build_command);
+  printf("------ Running the build command now\n");
+  build_result = system(build_command);
+  printf("------ Build command returned with a result of %d\n\n",
+         build_result >> 8);
 
-    double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-    time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+  printf("------ Run Command: %s\n", run_command);
+  printf("------ Running the run command now\n");
+  gettimeofday(&start, NULL);
+  run_result = system(run_command);
+  gettimeofday(&end, NULL);
+  printf("------ Run command returned with a result of %d\n\n",
+         run_result >> 8);
 
-    printf("Done running, the run command took %f seconds to run, according to gettimeofday()\n\n", time_taken);
+  double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
 
+  printf("Done running, the run command took %f seconds to run, according to "
+         "gettimeofday()\n\n",
+         time_taken);
 }
 
 /*
@@ -357,18 +372,20 @@ void test_llvm_form_test_command() {
  *
  */
 
-void test_onepoint_crossover(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
+void test_onepoint_crossover(uint32_t indiv_size, osaka_object_typ ot,
+                             bool vis) {
 
-    const char* placeholder[1] = {""};
-    node_str* my_generation[2];
-    generate_new_generation(my_generation, 2, indiv_size, ot, false, placeholder, 0);
+  const char *placeholder[1] = {""};
+  node_str *my_generation[2];
+  generate_new_generation(my_generation, 2, indiv_size, ot, false, placeholder,
+                          0);
 
-    // perform twopoint crossover where the points do not have to be the same across both individuals
-    crossover_onepoint_macro(my_generation[0], my_generation[1], vis);
+  // perform twopoint crossover where the points do not have to be the same
+  // across both individuals
+  crossover_onepoint_macro(my_generation[0], my_generation[1], vis);
 
-    // always free the generation
-    generate_free_generation(my_generation, 2);
-
+  // always free the generation
+  generate_free_generation(my_generation, 2);
 }
 
 /*
@@ -378,7 +395,7 @@ void test_onepoint_crossover(uint32_t indiv_size, osaka_object_typ ot, bool vis)
  *
  * DESCRIPTION
  *
- *  Tests that one can create a generation of a given size, type, and 
+ *  Tests that one can create a generation of a given size, type, and
  *  individual size and can visualize that
  *
  * PARAMETERS
@@ -402,32 +419,37 @@ void test_onepoint_crossover(uint32_t indiv_size, osaka_object_typ ot, bool vis)
  *
  */
 
-void test_making_generation(uint32_t gen_size, uint32_t indiv_size, osaka_object_typ ot, bool vis) {
+void test_making_generation(uint32_t gen_size, uint32_t indiv_size,
+                            osaka_object_typ ot, bool vis) {
 
-    // create generation of variable size of osaka structures
-    const char* placeholder[1] = {""};
-    node_str* my_generation[gen_size];
-    generate_new_generation(my_generation, gen_size, indiv_size, ot, false, placeholder, 0);
+  // create generation of variable size of osaka structures
+  const char *placeholder[1] = {""};
+  node_str *my_generation[gen_size];
+  generate_new_generation(my_generation, gen_size, indiv_size, ot, false,
+                          placeholder, 0);
 
-    // print every individual in the generation
-    if (vis) {
+  // print every individual in the generation
+  if (vis) {
 
-        printf("Creating a new generation of size %d, with individuals of size %d ---------------------\n", gen_size, indiv_size);
+    printf("Creating a new generation of size %d, with individuals of size %d "
+           "---------------------\n",
+           gen_size, indiv_size);
 
-        for (uint32_t n = 0; n < gen_size; n++) {
-        
-            printf("\nIndividual %d -------------------------------------------------------------------------\n", n+1);
-            osaka_printnodearray(my_generation[n]);
+    for (uint32_t n = 0; n < gen_size; n++) {
 
-        }
-
-        printf("\nGeneration successfully created and printed above-------------------------------------\n\n");
-
+      printf("\nIndividual %d "
+             "-----------------------------------------------------------------"
+             "--------\n",
+             n + 1);
+      osaka_printnodearray(my_generation[n]);
     }
 
-    // always free the generation
-    generate_free_generation(my_generation, gen_size);
+    printf("\nGeneration successfully created and printed "
+           "above-------------------------------------\n\n");
+  }
 
+  // always free the generation
+  generate_free_generation(my_generation, gen_size);
 }
 
 /*
@@ -462,24 +484,26 @@ void test_making_generation(uint32_t gen_size, uint32_t indiv_size, osaka_object
 
 void test_basic_mutation(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
 
-    // initialize a generation with only 1 individual
-    const char* placeholder[1] = {""};
-    node_str* my_generation[1];
-    generate_new_generation(my_generation, 1, indiv_size, ot, false, placeholder, 0);
+  // initialize a generation with only 1 individual
+  const char *placeholder[1] = {""};
+  node_str *my_generation[1];
+  generate_new_generation(my_generation, 1, indiv_size, ot, false, placeholder,
+                          0);
 
-    // changes all the parameters of a randomly chosen node in the individual
-    uint32_t new_item = (uint32_t) (osaka_listlength(my_generation[0]) * (rand() / (RAND_MAX + 1.0)) + 1);
-    mutation_single_unit_all_params(my_generation[0], new_item, vis);
+  // changes all the parameters of a randomly chosen node in the individual
+  uint32_t new_item = (uint32_t)(osaka_listlength(my_generation[0]) *
+                                     (rand() / (RAND_MAX + 1.0)) +
+                                 1);
+  mutation_single_unit_all_params(my_generation[0], new_item, vis);
 
-    // always free the generation at the end
-    generate_free_generation(my_generation, 1);
+  // always free the generation at the end
+  generate_free_generation(my_generation, 1);
 
-    if (vis) {
+  if (vis) {
 
-        printf("\nTesting of basic mutation complete ---------------------------------------------------\n\n");
-
-    }
-
+    printf("\nTesting of basic mutation complete "
+           "---------------------------------------------------\n\n");
+  }
 }
 
 /*
@@ -489,7 +513,7 @@ void test_basic_mutation(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
  *
  * DESCRIPTION
  *
- *  Tests that one can create a generation of a given size, type, and 
+ *  Tests that one can create a generation of a given size, type, and
  *  individual size and can visualize that
  *
  * PARAMETERS
@@ -512,19 +536,21 @@ void test_basic_mutation(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
  *
  */
 
-void test_crossover_twopoint_diff(uint32_t indiv_size, osaka_object_typ ot, bool vis) {
+void test_crossover_twopoint_diff(uint32_t indiv_size, osaka_object_typ ot,
+                                  bool vis) {
 
-    // create generation with only 2 individuals
-    const char* placeholder[1] = {""};
-    node_str* my_generation[2];
-    generate_new_generation(my_generation, 2, indiv_size, ot, false, placeholder, 0);
+  // create generation with only 2 individuals
+  const char *placeholder[1] = {""};
+  node_str *my_generation[2];
+  generate_new_generation(my_generation, 2, indiv_size, ot, false, placeholder,
+                          0);
 
-    // perform twopoint crossover where the points do not have to be the same across both individuals
-    crossover_twopoint_diff(my_generation[0], my_generation[1], vis);
+  // perform twopoint crossover where the points do not have to be the same
+  // across both individuals
+  crossover_twopoint_diff(my_generation[0], my_generation[1], vis);
 
-    // always free the generation
-    generate_free_generation(my_generation, 2);
-
+  // always free the generation
+  generate_free_generation(my_generation, 2);
 }
 
 /*
@@ -557,56 +583,57 @@ void test_crossover_twopoint_diff(uint32_t indiv_size, osaka_object_typ ot, bool
  *
  */
 
-void test_copy_generation(uint32_t pop_size, uint32_t indiv_size, osaka_object_typ ot, bool vis) {
+void test_copy_generation(uint32_t pop_size, uint32_t indiv_size,
+                          osaka_object_typ ot, bool vis) {
 
-    const char* placeholder[1] = {""};
+  const char *placeholder[1] = {""};
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing copying of a generation ------------------------------------------------------\n\n");
+    printf("Testing copying of a generation "
+           "------------------------------------------------------\n\n");
+  }
 
+  node_str *orig_gen[pop_size];
+  node_str *new_gen[pop_size];
+
+  generate_new_generation(orig_gen, pop_size, indiv_size, ot, false,
+                          placeholder, 0);
+
+  if (vis) {
+
+    for (int i = 0; i < pop_size; i++) {
+
+      printf("Individual %d of original population: "
+             "-------------------------------------------------\n",
+             i);
+      visualization_print_individual_verbose(orig_gen[i]);
+      printf("\n");
     }
+  }
 
-    node_str* orig_gen[pop_size];
-    node_str* new_gen[pop_size];
+  generate_copy_generation(orig_gen, new_gen, pop_size);
 
-    generate_new_generation(orig_gen, pop_size, indiv_size, ot, false, placeholder, 0);
+  if (vis) {
 
-    if (vis) {
-        
-        for (int i = 0; i < pop_size; i++) {
+    for (int i = 0; i < pop_size; i++) {
 
-            printf("Individual %d of original population: -------------------------------------------------\n", i);
-            visualization_print_individual_verbose(orig_gen[i]);
-            printf("\n");
-
-        }
-
+      printf("Individual %d of copied population: "
+             "---------------------------------------------------\n",
+             i);
+      visualization_print_individual_verbose(new_gen[i]);
+      printf("\n");
     }
+  }
 
-    generate_copy_generation(orig_gen, new_gen, pop_size);
+  if (vis) {
 
-    if (vis) {
-        
-        for (int i = 0; i < pop_size; i++) {
+    printf("Testing of copying generations complete "
+           "----------------------------------------------\n\n");
+  }
 
-            printf("Individual %d of copied population: ---------------------------------------------------\n", i);
-            visualization_print_individual_verbose(new_gen[i]);
-            printf("\n");
-
-        }
-
-    }
-
-    if (vis) {
-
-        printf("Testing of copying generations complete ----------------------------------------------\n\n");
-
-    }
-
-    generate_free_generation(orig_gen, pop_size);
-    generate_free_generation(new_gen, pop_size);
-
+  generate_free_generation(orig_gen, pop_size);
+  generate_free_generation(new_gen, pop_size);
 }
 
 /*
@@ -641,62 +668,75 @@ void test_copy_generation(uint32_t pop_size, uint32_t indiv_size, osaka_object_t
  *
  */
 
-void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files) {
+void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size,
+                               uint32_t tourn_size, osaka_object_typ ot,
+                               bool vis, char *file, char **src_files,
+                               uint32_t num_src_files) {
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing tournament selection ---------------------------------------------------------\n\n");
+    printf("Testing tournament selection "
+           "---------------------------------------------------------\n\n");
+  }
 
+  const char *placeholder[1] = {""};
+  node_str *winner = NULL;
+  uint32_t winner_ind = 0;
+  double fitness_values[pop_size];
+
+  node_str *gen[pop_size];
+  generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
+
+  for (uint32_t k = 0; k < pop_size; k++) {
+    fitness_values[k] = fitness_top(
+        gen[k], false, file, src_files, num_src_files, false, NULL, NULL, NULL,
+        40, 0, false); // edited to fit with Summer 2021 edits. Second to last
+                       // parameter may cause issues
+    printf("\n%f\n", fitness_values[k]);
+
+    fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL,
+                NULL, NULL, 40, 0,
+                false); // edited to fit with Summer 2021 edits. Second to last
+                        // parameter may cause issues
+  }
+
+  if (vis) {
+
+    printf("------------------------- Printing the entire generation "
+           "-----------------------------\n\n");
+
+    for (int i = 0; i < pop_size; i++) {
+
+      printf("Individual %d: "
+             "-----------------------------------------------------------------"
+             "-------\n\n",
+             i);
+      visualization_print_individual_concise_details(gen[i]);
+      printf("\n\n");
     }
+  }
 
-    const char* placeholder[1] = {""};
-    node_str* winner = NULL;
-    uint32_t winner_ind = 0;
-    double fitness_values[pop_size];
+  winner_ind = selection_tournament(gen, fitness_values, winner, pop_size,
+                                    tourn_size, vis);
+  winner = gen[winner_ind];
 
-    node_str* gen[pop_size];
-    generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
+  if (vis) {
 
-    for (uint32_t k = 0; k < pop_size; k++) {
-        fitness_values[k] = fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL, NULL, NULL, 40, 0, false); // edited to fit with Summer 2021 edits. Second to last parameter may cause issues
-        printf("\n%f\n", fitness_values[k]);
+    printf("Winner was node %d: "
+           "-------------------------------------------------------------------"
+           "\n\n",
+           winner_ind);
+    visualization_print_individual_concise_details(winner);
+    printf("\n\n");
+  }
 
-        fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL, NULL, NULL, 40, 0, false); // edited to fit with Summer 2021 edits. Second to last parameter may cause issues
-    }
+  generate_free_generation(gen, pop_size);
 
-    if (vis) {
-        
-        printf("------------------------- Printing the entire generation -----------------------------\n\n");
+  if (vis) {
 
-        for (int i = 0; i < pop_size; i++) {
-
-            printf("Individual %d: ------------------------------------------------------------------------\n\n", i);
-            visualization_print_individual_concise_details(gen[i]);
-            printf("\n\n");
-
-        }
-
-    }    
-
-    winner_ind = selection_tournament(gen, fitness_values, winner, pop_size, tourn_size, vis);
-    winner = gen[winner_ind];
-
-    if (vis) {
-
-        printf("Winner was node %d: -------------------------------------------------------------------\n\n", winner_ind);
-        visualization_print_individual_concise_details(winner);
-        printf("\n\n");
-        
-    }
-
-    generate_free_generation(gen, pop_size);
-
-    if (vis) {
-
-        printf("Testing of tournament selection complete ---------------------------------------------\n\n");
-
-    }
-
+    printf("Testing of tournament selection complete "
+           "---------------------------------------------\n\n");
+  }
 }
 
 /*
@@ -731,83 +771,108 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
  *
  */
 
-void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files) {
+void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size,
+                                        uint32_t tourn_size,
+                                        osaka_object_typ ot, bool vis,
+                                        char *file, char **src_files,
+                                        uint32_t num_src_files) {
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing tournament selection multiple times ------------------------------------------\n\n");
+    printf("Testing tournament selection multiple times "
+           "------------------------------------------\n\n");
+  }
 
-    }
+  const char *placeholder[1] = {""};
+  node_str *winner1 = NULL;
+  node_str *winner2 = NULL;
+  node_str *winner3 = NULL;
+  node_str *winner4 = NULL;
+  node_str *winner5 = NULL;
 
-    const char* placeholder[1] = {""};
-    node_str* winner1 = NULL;
-    node_str* winner2 = NULL;
-    node_str* winner3 = NULL;
-    node_str* winner4 = NULL;
-    node_str* winner5 = NULL;
+  uint32_t winner1_ind = 0;
+  uint32_t winner2_ind = 0;
+  uint32_t winner3_ind = 0;
+  uint32_t winner4_ind = 0;
+  uint32_t winner5_ind = 0;
 
-    uint32_t winner1_ind = 0;
-    uint32_t winner2_ind = 0;
-    uint32_t winner3_ind = 0;
-    uint32_t winner4_ind = 0;
-    uint32_t winner5_ind = 0;
+  node_str *gen[pop_size];
+  double fitness_values[pop_size];
+  generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
 
-    node_str* gen[pop_size];
-    double fitness_values[pop_size];
-    generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
+  for (uint32_t k = 0; k < pop_size; k++) {
+    fitness_values[k] = fitness_top(
+        gen[k], false, file, src_files, num_src_files, false, NULL, NULL, NULL,
+        40, 0, false); // edited to fit with Summer 2021 edits. Second to last
+                       // parameter may cause issues
+  }
 
-    for (uint32_t k = 0; k < pop_size; k++) {
-        fitness_values[k] = fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL, NULL, NULL, 40, 0, false); // edited to fit with Summer 2021 edits. Second to last parameter may cause issues
-    }
+  winner1_ind = selection_tournament(gen, fitness_values, winner1, pop_size,
+                                     tourn_size, vis);
+  winner2_ind = selection_tournament(gen, fitness_values, winner2, pop_size,
+                                     tourn_size, vis);
+  winner3_ind = selection_tournament(gen, fitness_values, winner3, pop_size,
+                                     tourn_size, vis);
+  winner4_ind = selection_tournament(gen, fitness_values, winner4, pop_size,
+                                     tourn_size, vis);
+  winner5_ind = selection_tournament(gen, fitness_values, winner5, pop_size,
+                                     tourn_size, vis);
 
-    winner1_ind = selection_tournament(gen, fitness_values, winner1, pop_size, tourn_size, vis);
-    winner2_ind = selection_tournament(gen, fitness_values, winner2, pop_size, tourn_size, vis);
-    winner3_ind = selection_tournament(gen, fitness_values, winner3, pop_size, tourn_size, vis);
-    winner4_ind = selection_tournament(gen, fitness_values, winner4, pop_size, tourn_size, vis);
-    winner5_ind = selection_tournament(gen, fitness_values, winner5, pop_size, tourn_size, vis);
+  winner1 = gen[winner1_ind];
+  winner2 = gen[winner2_ind];
+  winner3 = gen[winner3_ind];
+  winner4 = gen[winner4_ind];
+  winner5 = gen[winner5_ind];
 
-    winner1 = gen[winner1_ind];
-    winner2 = gen[winner2_ind];
-    winner3 = gen[winner3_ind];
-    winner4 = gen[winner4_ind];
-    winner5 = gen[winner5_ind];
+  if (vis) {
 
-    if (vis) {
+    printf("Winners that were selected: "
+           "----------------------------------------------------------\n\n");
 
-        printf("Winners that were selected: ----------------------------------------------------------\n\n");
+    printf("Node %d: "
+           "-------------------------------------------------------------------"
+           "---------\n\n",
+           UID(winner1));
+    visualization_print_individual_concise_details(winner1);
+    printf("\n\n");
 
-        printf("Node %d: ----------------------------------------------------------------------------\n\n", UID(winner1));
-        visualization_print_individual_concise_details(winner1);
-        printf("\n\n");
+    printf("Node %d: "
+           "-------------------------------------------------------------------"
+           "---------\n\n",
+           UID(winner2));
+    visualization_print_individual_concise_details(winner2);
+    printf("\n\n");
 
-        printf("Node %d: ----------------------------------------------------------------------------\n\n", UID(winner2));
-        visualization_print_individual_concise_details(winner2);
-        printf("\n\n");
+    printf("Node %d: "
+           "-------------------------------------------------------------------"
+           "---------\n\n",
+           UID(winner3));
+    visualization_print_individual_concise_details(winner3);
+    printf("\n\n");
 
-        printf("Node %d: ----------------------------------------------------------------------------\n\n", UID(winner3));
-        visualization_print_individual_concise_details(winner3);
-        printf("\n\n");
+    printf("Node %d: "
+           "-------------------------------------------------------------------"
+           "---------\n\n",
+           UID(winner4));
+    visualization_print_individual_concise_details(winner4);
+    printf("\n\n");
 
-        printf("Node %d: ----------------------------------------------------------------------------\n\n", UID(winner4));
-        visualization_print_individual_concise_details(winner4);
-        printf("\n\n");
+    printf("Node %d: "
+           "-------------------------------------------------------------------"
+           "---------\n\n",
+           UID(winner5));
+    visualization_print_individual_concise_details(winner5);
+    printf("\n\n");
+  }
 
-        printf("Node %d: ----------------------------------------------------------------------------\n\n", UID(winner5));
-        visualization_print_individual_concise_details(winner5);
-        printf("\n\n");
+  generate_free_generation(gen, pop_size);
 
-    }
+  if (vis) {
 
-    generate_free_generation(gen, pop_size);
-
-    if (vis) {
-
-        printf("Testing of tournament selection multiple complete ------------------------------------\n\n");
-
-    }
-
+    printf("Testing of tournament selection multiple complete "
+           "------------------------------------\n\n");
+  }
 }
-
 
 /*
  * NAME
@@ -839,69 +904,72 @@ void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, 
  *
  */
 
-void test_generate_free_individual_inside_array(uint32_t pop_size, uint32_t indiv_size, osaka_object_typ ot, bool vis) {
+void test_generate_free_individual_inside_array(uint32_t pop_size,
+                                                uint32_t indiv_size,
+                                                osaka_object_typ ot, bool vis) {
+
+  if (vis) {
+
+    printf("Testing freeing individuals inside an array "
+           "------------------------------------------\n\n");
+  }
+
+  const char *placeholder[1] = {""};
+  uint32_t copy_size = pop_size;
+
+  node_str *gen[pop_size];
+  generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
+
+  if (vis) {
+
+    for (int i = 0; i < copy_size; i++) {
+
+      printf("------------------ Printing Individual %d before removing any "
+             "indivs ------------------\n\n",
+             i);
+      visualization_print_individual_concise_details(gen[i]);
+      printf("\n\n");
+    }
+  }
+
+  while (copy_size > 0) {
+
+    uint32_t indiv_to_remove_ind =
+        (uint32_t)(copy_size * (rand() / (RAND_MAX + 1.0)));
+    node_str *indiv_to_remove = gen[indiv_to_remove_ind];
 
     if (vis) {
 
-        printf("Testing freeing individuals inside an array ------------------------------------------\n\n");
-    
+      printf("\nGoing to remove individual %d: "
+             "--------------------------------------------------------\n\n",
+             indiv_to_remove_ind);
+      visualization_print_individual_concise_details(indiv_to_remove);
+      printf("\n\n");
     }
 
-    const char* placeholder[1] = {""};
-    uint32_t copy_size = pop_size;
+    generate_free_individual_inside_array(gen, copy_size, indiv_to_remove_ind,
+                                          gen[indiv_to_remove_ind]);
 
-    node_str* gen[pop_size];
-    generate_new_generation(gen, pop_size, indiv_size, ot, false, placeholder, 0);
+    copy_size = copy_size - 1;
 
     if (vis) {
 
-        for (int i = 0; i < copy_size; i++) {
-        
-            printf("------------------ Printing Individual %d before removing any indivs ------------------\n\n", i);
-            visualization_print_individual_concise_details(gen[i]);
-            printf("\n\n");
+      for (int i = 0; i < copy_size; i++) {
 
-        }
-
+        printf("--------------------- Printing Individual %d after removing "
+               "indiv ---------------------\n\n",
+               i + 1);
+        visualization_print_individual_concise_details(gen[i]);
+        printf("\n\n");
+      }
     }
+  }
 
-    while (copy_size > 0) {
+  if (vis) {
 
-        uint32_t indiv_to_remove_ind = (uint32_t) (copy_size * (rand() / (RAND_MAX + 1.0)));
-        node_str* indiv_to_remove = gen[indiv_to_remove_ind];
-
-        if (vis) {
-
-            printf("\nGoing to remove individual %d: --------------------------------------------------------\n\n", indiv_to_remove_ind);
-            visualization_print_individual_concise_details(indiv_to_remove);
-            printf("\n\n");
-
-        }
-
-        generate_free_individual_inside_array(gen, copy_size, indiv_to_remove_ind, gen[indiv_to_remove_ind]);
-
-        copy_size = copy_size - 1;
-
-        if (vis) {
-
-            for (int i = 0; i < copy_size; i++) {
-            
-                printf("--------------------- Printing Individual %d after removing indiv ---------------------\n\n", i + 1);
-                visualization_print_individual_concise_details(gen[i]);
-                printf("\n\n");
-
-            }
-
-        }
-
-    }
-
-    if (vis) {
-
-        printf("Testing freeing individuals inside an array complete ---------------------------------\n\n");
-
-    }
-
+    printf("Testing freeing individuals inside an array complete "
+           "---------------------------------\n\n");
+  }
 }
 
 /*
@@ -919,10 +987,10 @@ void test_generate_free_individual_inside_array(uint32_t pop_size, uint32_t indi
  *  uint32_t num_gens -- number of generations to be created/gone through
  *  uint32_t indiv_size -- number of nodes in a single individual
  *  uint32_t tourn_size -- size of tournaments
- *  uint32_t mut_perc -- percentage chance of being mutated during each generation
- *  uint32_t cross_perc -- percentage chance of being a part of a crossover during each generation
- *  osaka_object_typ ot -- osaka object type to be used in the run
- *  bool vis -- whether or not visualization is enabled
+ *  uint32_t mut_perc -- percentage chance of being mutated during each
+ * generation uint32_t cross_perc -- percentage chance of being a part of a
+ * crossover during each generation osaka_object_typ ot -- osaka object type to
+ * be used in the run bool vis -- whether or not visualization is enabled
  *
  * RETURN
  *
@@ -930,7 +998,8 @@ void test_generate_free_individual_inside_array(uint32_t pop_size, uint32_t indi
  *
  * EXAMPLE
  *
- * test_evolution_basic_crossover_and_mutation(20, 50, 2, 5, 25, LLVM_PASS, true);
+ * test_evolution_basic_crossover_and_mutation(20, 50, 2, 5, 25, LLVM_PASS,
+ * true);
  *
  * SIDE-EFFECT
  *
@@ -938,32 +1007,36 @@ void test_generate_free_individual_inside_array(uint32_t pop_size, uint32_t indi
  *
  */
 
-void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file) {
+void test_evolution_basic_crossover_and_mutation(
+    uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size,
+    uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc,
+    osaka_object_typ ot, bool vis, char *file) {
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing the master basic evolution method --------------------------------------------\n\n");
-    
-    }
+    printf("Testing the master basic evolution method "
+           "--------------------------------------------\n\n");
+  }
 
-    //node_str* best_indiv = evolution_basic_crossover_and_mutation(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file);
+  // node_str* best_indiv = evolution_basic_crossover_and_mutation(num_gens,
+  // pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file);
 
-    if (vis) {
+  if (vis) {
 
-        printf("Best individual that was passed back to the test: ------------------------------------\n\n");
-        //visualization_print_individual_concise_details(best_indiv);
-        printf("\n\n--------------------------------------------------------------------------------------\n\n");
+    printf("Best individual that was passed back to the test: "
+           "------------------------------------\n\n");
+    // visualization_print_individual_concise_details(best_indiv);
+    printf("\n\n---------------------------------------------------------------"
+           "-----------------------\n\n");
+  }
 
-    }
+  if (vis) {
 
-    if (vis) {
+    printf("Testing the master basic evolution method complete "
+           "-----------------------------------\n\n");
+  }
 
-        printf("Testing the master basic evolution method complete -----------------------------------\n\n");
-
-    }
-
-    //generate_free_individual(best_indiv);
-
+  // generate_free_individual(best_indiv);
 }
 
 /*
@@ -981,10 +1054,10 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
  *  uint32_t num_gens -- number of generations to be created/gone through
  *  uint32_t indiv_size -- number of nodes in a single individual
  *  uint32_t tourn_size -- size of tournaments
- *  uint32_t mut_perc -- percentage chance of being mutated during each generation
- *  uint32_t cross_perc -- percentage chance of being a part of a crossover during each generation
- *  osaka_object_typ ot -- osaka object type to be used in the run
- *  bool vis -- whether or not visualization is enabled
+ *  uint32_t mut_perc -- percentage chance of being mutated during each
+ * generation uint32_t cross_perc -- percentage chance of being a part of a
+ * crossover during each generation osaka_object_typ ot -- osaka object type to
+ * be used in the run bool vis -- whether or not visualization is enabled
  *
  * RETURN
  *
@@ -992,7 +1065,8 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
  *
  * EXAMPLE
  *
- * test_evolution_basic_crossover_and_mutation_with_replacement(20, 50, 2, 5, 25, LLVM_PASS, true);
+ * test_evolution_basic_crossover_and_mutation_with_replacement(20, 50, 2, 5,
+ * 25, LLVM_PASS, true);
  *
  * SIDE-EFFECT
  *
@@ -1000,33 +1074,45 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
  *
  */
 
-void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi) {
+void test_evolution_basic_crossover_and_mutation_with_replacement(
+    uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size,
+    uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc,
+    uint32_t elite_perc, osaka_object_typ ot, bool vis, char *file,
+    char **src_files, uint32_t num_src_files, bool cache, double *track_fitness,
+    bool gi) {
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing the master basic evolution method --------------------------------------------\n\n");
-    
-    }
+    printf("Testing the master basic evolution method "
+           "--------------------------------------------\n\n");
+  }
 
-    const char* placeholder[1] = {""};
-    //node_str* best_indiv = evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, elite_perc, ot, vis, file, src_files, num_src_files, cache, track_fitness, NULL, placeholder, 0, gi);
-    int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, elite_perc, ot, vis, file, src_files, num_src_files, cache, track_fitness, NULL, placeholder, 0, gi);
-    /*if (vis) {
+  const char *placeholder[1] = {""};
+  // node_str* best_indiv =
+  // evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size,
+  // indiv_size, tourn_size, mut_perc, cross_perc, elite_perc, ot, vis, file,
+  // src_files, num_src_files, cache, track_fitness, NULL, placeholder, 0, gi);
+  int gen_evolved = evolution_basic_crossover_and_mutation_with_replacement(
+      num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc,
+      elite_perc, ot, vis, file, src_files, num_src_files, cache, track_fitness,
+      NULL, placeholder, 0, gi);
+  /*if (vis) {
 
-        printf("Best individual that was passed back to the test: ------------------------------------\n\n");
-        visualization_print_individual_concise_details(best_indiv);
-        printf("\n\n--------------------------------------------------------------------------------------\n\n");
+      printf("Best individual that was passed back to the test:
+  ------------------------------------\n\n");
+      visualization_print_individual_concise_details(best_indiv);
+      printf("\n\n--------------------------------------------------------------------------------------\n\n");
 
-    }
+  }
 
-    if (vis) {
+  if (vis) {
 
-        printf("Testing the master basic evolution method complete -----------------------------------\n\n");
+      printf("Testing the master basic evolution method complete
+  -----------------------------------\n\n");
 
-    }
+  }
 
-    generate_free_individual(best_indiv);*/
-
+  generate_free_individual(best_indiv);*/
 }
 
 /*
@@ -1056,11 +1142,7 @@ void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
  *
  */
 
-void test_system() {
-
-    system("clang --version");
-
-}
+void test_system() { system("clang --version"); }
 
 /*
  * NAME
@@ -1077,10 +1159,10 @@ void test_system() {
  *  uint32_t num_gens -- number of generations to be created/gone through
  *  uint32_t indiv_size -- number of nodes in a single individual
  *  uint32_t tourn_size -- size of tournaments
- *  uint32_t mut_perc -- percentage chance of being mutated during each generation
- *  uint32_t cross_perc -- percentage chance of being a part of a crossover during each generation
- *  osaka_object_typ ot -- osaka object type to be used in the run
- *  bool vis -- whether or not visualization is enabled
+ *  uint32_t mut_perc -- percentage chance of being mutated during each
+ * generation uint32_t cross_perc -- percentage chance of being a part of a
+ * crossover during each generation osaka_object_typ ot -- osaka object type to
+ * be used in the run bool vis -- whether or not visualization is enabled
  *
  * RETURN
  *
@@ -1096,31 +1178,40 @@ void test_system() {
  *
  */
 
-void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, bool gi) {
+void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size,
+                 uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc,
+                 uint32_t elite_perc, osaka_object_typ ot, bool vis, char *file,
+                 char **src_files, uint32_t num_src_files, bool cache,
+                 double *track_fitness, bool gi) {
 
-    //* Main Shackleton tests 
-    //test_basic_printing(indiv_size, ot, vis);
-    //test_onepoint_crossover(5, ot, vis);
-    //test_crossover_twopoint_diff(10, ot, vis);
-    //test_making_generation(2, 10, ot, vis);
-    //test_basic_mutation(8, ot, vis);
-    //test_copy_generation(1, 4, ot, vis);
-    //test_selection_tournament(4, 4, 2, ot, vis, file, src_files, num_src_files);
-    //test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file, src_files, num_src_files);
-    //test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
-    test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, elite_perc, ot, vis, file, src_files, num_src_files, cache, track_fitness, gi);
-    //*/
+  //* Main Shackleton tests
+  // test_basic_printing(indiv_size, ot, vis);
+  // test_onepoint_crossover(5, ot, vis);
+  // test_crossover_twopoint_diff(10, ot, vis);
+  // test_making_generation(2, 10, ot, vis);
+  // test_basic_mutation(8, ot, vis);
+  // test_copy_generation(1, 4, ot, vis);
+  // test_selection_tournament(4, 4, 2, ot, vis, file, src_files,
+  // num_src_files); test_selection_tournament_multiple(pop_size, 5, tourn_size,
+  // ot, vis, file, src_files, num_src_files);
+  // test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
+  test_evolution_basic_crossover_and_mutation_with_replacement(
+      num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc,
+      elite_perc, ot, vis, file, src_files, num_src_files, cache, track_fitness,
+      gi);
+  //*/
 
-    //* LLVM specific tests
-    //test_llvm_form_opt_command_indiv("hello.cpp");
-    //test_llvm_form_exec_code_command(file);
-    //test_llvm_form_test_command();
-    //test_system();
-    //*/
+  //* LLVM specific tests
+  // test_llvm_form_opt_command_indiv("hello.cpp");
+  // test_llvm_form_exec_code_command(file);
+  // test_llvm_form_test_command();
+  // test_system();
+  //*/
 
-    /* Possibly invalid tests
-    test_evolution_basic_crossover_and_mutation(num_gens, pop_size, 20, tourn_size, mut_perc, cross_perc, ot, vis, file);
-    test_evolution_basic_crossover_and_mutation(2, 4, 20, 2, 50, 75, ot, vis, file);
-    */
-
+  /* Possibly invalid tests
+  test_evolution_basic_crossover_and_mutation(num_gens, pop_size, 20,
+  tourn_size, mut_perc, cross_perc, ot, vis, file);
+  test_evolution_basic_crossover_and_mutation(2, 4, 20, 2, 50, 75, ot, vis,
+  file);
+  */
 }

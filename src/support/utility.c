@@ -3,8 +3,8 @@
  Name        : utility.c
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : File for any functions that can be used
                across the project for making code more
                reusable
@@ -71,37 +71,32 @@
 
 str2int_errno str2int(uint32_t *out, char *s, uint32_t base) {
 
-    char *end = s+strlen(s);
+  char *end = s + strlen(s);
 
-    if (s[0] == '\0' || isspace(s[0])) {
+  if (s[0] == '\0' || isspace(s[0])) {
 
-        return STR2INT_INCONVERTIBLE;
+    return STR2INT_INCONVERTIBLE;
+  }
 
-    }
+  errno = 0;
+  long l = strtol(s, &end, base);
 
-    errno = 0;
-    long l = strtol(s, &end, base);
+  /* Both checks are needed because INT_MAX == LONG_MAX is possible. */
+  if (l > INT_MAX || (errno == ERANGE && l == LONG_MAX)) {
+    printf("overflow\n");
+    return STR2INT_OVERFLOW;
+  }
+  if (l < INT_MIN || (errno == ERANGE && l == LONG_MIN)) {
+    printf("underflow\n");
+    return STR2INT_UNDERFLOW;
+  }
+  if (*end != '\0') {
+    printf("inconvertible\n");
+    return STR2INT_INCONVERTIBLE;
+  }
 
-    /* Both checks are needed because INT_MAX == LONG_MAX is possible. */
-    if (l > INT_MAX || (errno == ERANGE && l == LONG_MAX)) {
-        printf("overflow\n");
-        return STR2INT_OVERFLOW;
-
-    }
-    if (l < INT_MIN || (errno == ERANGE && l == LONG_MIN)) {
-        printf("underflow\n");
-        return STR2INT_UNDERFLOW;
-
-    }
-    if (*end != '\0') {
-        printf("inconvertible\n");
-        return STR2INT_INCONVERTIBLE;
-
-    }
-
-    *out = l;
-    return STR2INT_SUCCESS;
-
+  *out = l;
+  return STR2INT_SUCCESS;
 }
 
 /*
@@ -132,14 +127,13 @@ str2int_errno str2int(uint32_t *out, char *s, uint32_t base) {
  *
  */
 
-void swap(char* temp1, char* temp2) {
+void swap(char *temp1, char *temp2) {
 
-    char* temp;
-    *temp = *temp1;
-    *temp1 = *temp2;
-    *temp2 = *temp;
-
-} 
+  char *temp;
+  *temp = *temp1;
+  *temp1 = *temp2;
+  *temp2 = *temp;
+}
 
 /*
  * NAME
@@ -171,18 +165,16 @@ void swap(char* temp1, char* temp2) {
 
 void reverse(char str[], uint32_t length) {
 
-    uint32_t start = 0; 
-    uint32_t end = length -1;
+  uint32_t start = 0;
+  uint32_t end = length - 1;
 
-    while (start < end) {
+  while (start < end) {
 
-        swap((str+start), (str+end)); 
-        start++; 
-        end--; 
-    
-    } 
-
-} 
+    swap((str + start), (str + end));
+    start++;
+    end--;
+  }
+}
 
 /*
  * NAME
@@ -213,52 +205,48 @@ void reverse(char str[], uint32_t length) {
  *
  */
 
-char* itoa(uint32_t num, char* str, uint32_t base) {
+char *itoa(uint32_t num, char *str, uint32_t base) {
 
-    uint32_t i = 0; 
-    bool isNegative = false; 
-  
-    /* Handle 0 explicitely, otherwise empty string is printed for 0 */
-    if (num == 0) {
+  uint32_t i = 0;
+  bool isNegative = false;
 
-        str[i++] = '0'; 
-        str[i] = '\0'; 
-        return str; 
-    
-    } 
-  
-    // In standard itoa(), negative numbers are handled only with  
-    // base 10. Otherwise numbers are considered unsigned. 
-    if (num < 0 && base == 10) {
+  /* Handle 0 explicitely, otherwise empty string is printed for 0 */
+  if (num == 0) {
 
-        isNegative = true; 
-        num = -num; 
-    
-    } 
-  
-    // Process individual digits 
-    while (num != 0) {
+    str[i++] = '0';
+    str[i] = '\0';
+    return str;
+  }
 
-        uint32_t rem = num % base; 
-        str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0'; 
-        num = num/base; 
-    
-    } 
-  
-    // If number is negative, append '-' 
-    if (isNegative) {
+  // In standard itoa(), negative numbers are handled only with
+  // base 10. Otherwise numbers are considered unsigned.
+  if (num < 0 && base == 10) {
 
-        str[i++] = '-'; 
-    }
+    isNegative = true;
+    num = -num;
+  }
 
-    str[i] = '\0'; // Append string terminator 
-  
-    // Reverse the string 
-    reverse(str, i); 
-  
-    return str; 
-    
-} 
+  // Process individual digits
+  while (num != 0) {
+
+    uint32_t rem = num % base;
+    str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+    num = num / base;
+  }
+
+  // If number is negative, append '-'
+  if (isNegative) {
+
+    str[i++] = '-';
+  }
+
+  str[i] = '\0'; // Append string terminator
+
+  // Reverse the string
+  reverse(str, i);
+
+  return str;
+}
 
 /*
  * NAME
@@ -287,22 +275,19 @@ char* itoa(uint32_t num, char* str, uint32_t base) {
  *
  */
 
-void strupr(char* orig) {
+void strupr(char *orig) {
 
-    uint32_t i = 0;
- 
-	while (orig[i] != '\0') {
+  uint32_t i = 0;
 
-    	if (orig[i] >= 'a' && orig[i] <= 'z') {
+  while (orig[i] != '\0') {
 
-        	orig[i] = orig[i] - 32;
-    	
-        }
+    if (orig[i] >= 'a' && orig[i] <= 'z') {
 
-      	i++;
-	
+      orig[i] = orig[i] - 32;
     }
 
+    i++;
+  }
 }
 
 /*
@@ -332,40 +317,37 @@ void strupr(char* orig) {
  *
  */
 
-cJSON* getJSON(char* filename) {
+cJSON *getJSON(char *filename) {
 
-    // variables for reading parameter file
-    FILE *json;
-    char* line = NULL;
-    size_t len = 0;
-    size_t read;
+  // variables for reading parameter file
+  FILE *json;
+  char *line = NULL;
+  size_t len = 0;
+  size_t read;
 
-    char file[5000];
-    strcpy(file, "");
+  char file[5000];
+  strcpy(file, "");
 
-    // open parameters file for reading
-    json = fopen(filename, "r");
+  // open parameters file for reading
+  json = fopen(filename, "r");
 
-    if (json == NULL) {
+  if (json == NULL) {
 
-        exit(EXIT_FAILURE);
-    
-    }
-    
-    // only nead to read the lines as they are
-    while ((read = getline(&line, &len, json)) != -1) {
-    
-        strcat(file, line);
-   
-    }
+    exit(EXIT_FAILURE);
+  }
 
-    // do the parsing and close all other variables
-    cJSON *root = cJSON_Parse(file);
-    free(line);
-    fclose(json);
+  // only nead to read the lines as they are
+  while ((read = getline(&line, &len, json)) != -1) {
 
-    return root;
+    strcat(file, line);
+  }
 
+  // do the parsing and close all other variables
+  cJSON *root = cJSON_Parse(file);
+  free(line);
+  fclose(json);
+
+  return root;
 }
 
 /*
@@ -397,30 +379,27 @@ cJSON* getJSON(char* filename) {
 
 char *randomString(uint32_t length) {
 
-    static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.-#'?!";        
-    char *randomString = NULL;
+  static char charset[] =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.-#'?!";
+  char *randomString = NULL;
 
-    if (length) {
+  if (length) {
 
-        randomString = malloc(sizeof(char) * (length + 1));
+    randomString = malloc(sizeof(char) * (length + 1));
 
-        if (randomString) {
+    if (randomString) {
 
-            for (uint32_t n = 0; n < length; n++) {   
+      for (uint32_t n = 0; n < length; n++) {
 
-                uint32_t key = rand() % (uint32_t)(sizeof(charset) - 1);
-                randomString[n] = charset[key];
+        uint32_t key = rand() % (uint32_t)(sizeof(charset) - 1);
+        randomString[n] = charset[key];
+      }
 
-            }
-
-            randomString[length] = '\0';
-
-        }
-
+      randomString[length] = '\0';
     }
+  }
 
-    return randomString;
-
+  return randomString;
 }
 
 /*
@@ -430,9 +409,9 @@ char *randomString(uint32_t length) {
  *
  * DESCRIPTION
  *
- *  Given a parameters file that is predetermined to be in 
+ *  Given a parameters file that is predetermined to be in
  *  src/files/, will use the parameter values in that file
- *  to be the parameters for 
+ *  to be the parameters for
  *
  * PARAMETERS
  *
@@ -450,7 +429,8 @@ char *randomString(uint32_t length) {
  *
  * EXAMPLE
  *
- * set_params_from_file(num_generations, num_population_size, percent_crossover, percent_mutation, tournament_size, visualization);
+ * set_params_from_file(num_generations, num_population_size, percent_crossover,
+ * percent_mutation, tournament_size, visualization);
  *
  * SIDE-EFFECT
  *
@@ -458,133 +438,128 @@ char *randomString(uint32_t length) {
  *
  */
 
-void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file) { //added 6/4/2021
-//void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *tourn_size, bool *vis) {
+void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size,
+                          uint32_t *perc_cross, uint32_t *perc_mut,
+                          uint32_t *perc_elite, uint32_t *tourn_size, bool *vis,
+                          char *param_file) { // added 6/4/2021
+  // void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t
+  // *perc_cross, uint32_t *perc_mut, uint32_t *tourn_size, bool *vis) {
 
-    FILE *file;
-    char* line = NULL;
-    size_t len = 0;
-    size_t read;
+  FILE *file;
+  char *line = NULL;
+  size_t len = 0;
+  size_t read;
 
-    char filename[100]; 
-    //strcpy(filename, "src/files/parameters.txt");
-    strcpy(filename, "src/files/params/");
-    strcat(filename, param_file);
+  char filename[100];
+  // strcpy(filename, "src/files/parameters.txt");
+  strcpy(filename, "src/files/params/");
+  strcat(filename, param_file);
 
-    file = fopen(filename, "r");
+  file = fopen(filename, "r");
 
-    if (file == NULL) {
-        printf("file %s does not exist.\n", filename);
-        exit(EXIT_FAILURE);
-    }
-    
-    // printf("Start reading file: \n");
-    // read osaka.h line by line
-    while ((read = getline(&line, &len, file)) != -1) {
+  if (file == NULL) {
+    printf("file %s does not exist.\n", filename);
+    exit(EXIT_FAILURE);
+  }
 
-        char* temp;
-        char delim[] = " ";
-        
-        temp = strtok(line, delim);
+  // printf("Start reading file: \n");
+  // read osaka.h line by line
+  while ((read = getline(&line, &len, file)) != -1) {
 
-        while (temp != NULL) {
+    char *temp;
+    char delim[] = " ";
 
-            if (strcmp(temp, "num_generations:") == 0) {
-                //printf("\tsetting num_generations from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(num_gen, temp, 10);
-                //printf(" = %d\n", *num_gen);
-            }
-            else if (strcmp(temp, "num_population_size:") == 0) {
-                //printf("\tsetting num_population_size from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(pop_size, temp, 10);
-                //printf(" = %d\n", *pop_size);
-            }
-            else if (strcmp(temp, "percent_crossover:") == 0) {
-                //printf("\tsetting percent_crossover from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(perc_cross, temp, 10);
-                //printf(" = %d\n", *perc_cross);
-            }
-            else if (strcmp(temp, "percent_mutation:") == 0) {
-                //printf("\tsetting percent_mutation from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(perc_mut, temp, 10);
-                //printf(" = %d\n", *perc_mut);
-            }
-            else if (strcmp(temp, "percent_elite:") == 0) {
-                //printf("\tsetting percent_elite from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(perc_elite, temp, 10);
-                //printf(" = %d\n", *perc_elite);
-            }
-            else if (strcmp(temp, "tournament_size:") == 0) {
-                //printf("\tsetting tournament_size from file");
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(tourn_size, temp, 10);
-                //printf(" = %d\n", *tourn_size);
-            }
-            else if (strcmp(temp, "visualization:") == 0) {
-                //printf("\tsetting visualization from file - %s",line);
-                temp = strtok(NULL, delim);
-                if (strcmp(temp, "true") == 0) {
-                    *vis = true;
-                    printf(" = true\n");
-                }
-                else {
-                    *vis = false;
-                    printf(" = false\n");
-                }
-            }
-            /*else if (strcmp(temp, "osaka_type:") == 0) {
-                //printf("\tsetting osaka data type from file - %s",line);
-                temp = strtok(NULL, delim);
-                temp[strlen(temp) - 1] = '\0';
-                str2int(ot, temp, 10);
-                ot = (osaka_object_typ) ot;
-                //printf(" = %d\n", *tourn_size);
-            }*/
-            else {
-                temp = strtok(NULL, delim);
-            }
+    temp = strtok(line, delim);
 
+    while (temp != NULL) {
+
+      if (strcmp(temp, "num_generations:") == 0) {
+        // printf("\tsetting num_generations from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(num_gen, temp, 10);
+        // printf(" = %d\n", *num_gen);
+      } else if (strcmp(temp, "num_population_size:") == 0) {
+        // printf("\tsetting num_population_size from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(pop_size, temp, 10);
+        // printf(" = %d\n", *pop_size);
+      } else if (strcmp(temp, "percent_crossover:") == 0) {
+        // printf("\tsetting percent_crossover from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(perc_cross, temp, 10);
+        // printf(" = %d\n", *perc_cross);
+      } else if (strcmp(temp, "percent_mutation:") == 0) {
+        // printf("\tsetting percent_mutation from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(perc_mut, temp, 10);
+        // printf(" = %d\n", *perc_mut);
+      } else if (strcmp(temp, "percent_elite:") == 0) {
+        // printf("\tsetting percent_elite from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(perc_elite, temp, 10);
+        // printf(" = %d\n", *perc_elite);
+      } else if (strcmp(temp, "tournament_size:") == 0) {
+        // printf("\tsetting tournament_size from file");
+        temp = strtok(NULL, delim);
+        temp[strlen(temp) - 1] = '\0';
+        str2int(tourn_size, temp, 10);
+        // printf(" = %d\n", *tourn_size);
+      } else if (strcmp(temp, "visualization:") == 0) {
+        // printf("\tsetting visualization from file - %s",line);
+        temp = strtok(NULL, delim);
+        if (strcmp(temp, "true") == 0) {
+          *vis = true;
+          printf(" = true\n");
+        } else {
+          *vis = false;
+          printf(" = false\n");
         }
-
+      }
+      /*else if (strcmp(temp, "osaka_type:") == 0) {
+          //printf("\tsetting osaka data type from file - %s",line);
+          temp = strtok(NULL, delim);
+          temp[strlen(temp) - 1] = '\0';
+          str2int(ot, temp, 10);
+          ot = (osaka_object_typ) ot;
+          //printf(" = %d\n", *tourn_size);
+      }*/
+      else {
+        temp = strtok(NULL, delim);
+      }
     }
+  }
 
-    // free line and close file, return true for success
-    free(line);
-    fclose(file);
-
+  // free line and close file, return true for success
+  free(line);
+  fclose(file);
 }
 
-double calc_var(double* array, double mean, int length) {
-    double square_sum = 0.0;
-    for (int i = 0; i < length; i++) {
-        square_sum += (array[i] - mean) * (array[i] - mean);
-    }
-    double var = square_sum / (length - 1);
-    return var;
+double calc_var(double *array, double mean, int length) {
+  double square_sum = 0.0;
+  for (int i = 0; i < length; i++) {
+    square_sum += (array[i] - mean) * (array[i] - mean);
+  }
+  double var = square_sum / (length - 1);
+  return var;
 }
 
-bool is_in_list(int num, int* list, int length) {
-    for (int i = 0; i < length; i++) {
-        if (num == list[i]) {
-            return true;
-        }
+bool is_in_list(int num, int *list, int length) {
+  for (int i = 0; i < length; i++) {
+    if (num == list[i]) {
+      return true;
     }
-    return false;
+  }
+  return false;
 }
 
-
-/** based on  https://www.tutorialspoint.com/c-program-to-find-the-median-of-a-given-list */
+/** based on
+ * https://www.tutorialspoint.com/c-program-to-find-the-median-of-a-given-list
+ */
 double median(u_int64_t list[], const int len) {
 
   /* Sorting */
