@@ -60,20 +60,29 @@ SRC_FILES := \
 	$(SRCDIR)/support/build_llvm.c \
 	$(SRCDIR)/passes/llvm_pass_dflt.c
                  
-OBJS := $(SRC_FILES:c=o)
+OBJS     := $(SRC_FILES:c=o)
+LIB_MS   := ./MeasureSuite/libmeasuresuite.a
+INCLUDES := -I src -I ./MeasureSuite/src/include
 
 all: osaka ensure_directories
 
 osaka: shackleton
-shackleton: $(OBJS)
-	cc -o ${@} $(^) $(DIR)/main.c
-	cp ${@} $(DIR)/bin/init
+
+shackleton: $(OBJS) $(LIB_MS)
+	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm
+
+$(LIB_MS):
+	make -C ./MeasureSuite/ NO_AL=1 libmeasuresuite.a
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output
 
-%.o: %.c
-	cc -c $^ -o $@
+%.o: %.c makefile
+	cc -g $(INCLUDES) -c $< -o $@
 
 clean :
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
+
+run: shackleton
+	./shackleton -llvm_optimize -test_file=mwe-fiat/main.c -source_file=fiat.txt
+
