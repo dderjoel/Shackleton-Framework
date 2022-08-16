@@ -319,19 +319,16 @@ void select_parents(uint32_t* contestant1_ind, uint32_t* contestant2_ind, node_s
     //printf("inside select parents\n"); //todo
     uint32_t c1 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
     uint32_t c2 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
-    //printf("got here line 322\n"); //todo
     // contestants cannot be the same individual, the indices must be different
     while (c1 == c2) {
         c2 = selection_tournament(copy_gen, fitness_values, NULL, copy_size, tourn_size, vis);
     }
-    //printf("got here line 327\n"); //todo
     // swap if contestant1 comes before contestant2, swap so deletion order is correct
     if (c1 < c2) {
         uint32_t swap_ind = c1;
         c1 = c2;
         c2 = swap_ind;
     }
-    //printf("got here line 334\n");
     // get actual individuals using the indices
     //*contestant1 = osaka_copylist(copy_gen[c1]);
     //*contestant2 = osaka_copylist(copy_gen[c2]);
@@ -341,7 +338,6 @@ void select_parents(uint32_t* contestant1_ind, uint32_t* contestant2_ind, node_s
 
     *contestant1_ind = c1;
     *contestant2_ind = c2;
-    //printf("got here line 344\n"); //todo
     //printf("Done selecting parents, contestant1_ind=%d, contestant2_ind=%d\n", c1, c2);
 }
 
@@ -495,8 +491,6 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
     node_str* ofs_best[2];
     int best_id[2];
 
-    //printf("got here line 497\n"); //todo
-
     for (uint32_t itr = 0; itr < ((pop_size - num_elites - num_new_random) / 2); itr++) {
         //printf("About to fill in position %d and %d\n", num_elites + num_new_random + itr, num_elites + num_new_random + itr + ((pop_size-num_elites-num_new_random) / 2));
         vis_itr(vis, itr, g);
@@ -528,7 +522,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                                 pop_size, num_elites, num_new_random, itr);
         //printf("after update_generation\n");
     }
-    printf("Done creating mutants\n");
+    //printf("Done creating mutants\n");
 }
 
 void log_all_indiv_info(bool cache, DataNode** all_indiv, char* main_folder, int num_runs, int max_id) {
@@ -710,7 +704,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
 
     // variables used for selecting offspring
     int num_offspring = 6;  // HAS TO BE GREATER THAN 2: 2 offsprings will be identical to parents, and num_offspring-2 new individuals
-    uint32_t num_runs = 40;
+    uint32_t num_runs = 60;
     bool fitness_with_var = false;
 
     cache_create_new_run_folder(cache, main_folder, cache_id);
@@ -748,7 +742,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
     vis_print_gen(vis, false, current_generation, -1, pop_size);
 
     for (uint32_t g = 0; g < num_gens; g++) {
-        printf("----------------------------------- Generation %d -----------------------------------\n\n", g + 1);
+        printf("\n----------------------------------- Generation %d -----------------------------------\n", g + 1);
         //printf("start of generation, cache_id: %s\n", cache_id);
         //cache_create_new_gen_folder(cache, main_folder, g);
         // at the start of every generation, copy over the last generation
@@ -796,16 +790,15 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
 
         // refresh fitness values for the current_generation
         for (uint32_t k = 0; k < pop_size; k++) {
-            /*
-            printf("-------------------------------------------------------------------------------\n");
-            printf("Refresh fitness for individual %d of %d in generation %d of %d, ID=%d (max_id=%d)\n", k+1, pop_size, g+1, num_gens, current_gen_id[k], max_id);
-            printf("-------------------------------------------------------------------------------\n");
-            */
+            
+            //printf("-------------------------------------------------------------------------------\n");
+            //printf("Refresh fitness for individual %d of %d in generation %d of %d, ID=%d (max_id=%d)\n", k+1, pop_size, g+1, num_gens, current_gen_id[k], max_id);
+            //printf("-------------------------------------------------------------------------------\n");
+            
             cache_file_name(cache, main_folder, cache_file, g, k);
             indiv_data = all_indiv[current_gen_id[k]];
             fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, g, fitness_with_var); // Added 6/18/2021
             node_increment_gen(indiv_data);
-            //printf("Fitness=%lf\n", fitness_values[k]);
         }
         select_elites(pop_size, num_elites, fitness_values, current_gen_id, elite_indx, elite_id);
         // print out and export the ID and fitness information

@@ -76,12 +76,13 @@ bool selection_get_min_max(osaka_object_typ object_type) {
 
     // determines if the fitness value is preferred to be
     // higher or lower.
-    bool fitness_max_or_min[5] = {
+    bool fitness_max_or_min[6] = {
         false,       // a larger fitness value for SIMPLE is better
         false,       // a larger fitness value for ASSEMBLER is better
         false,       // a larger fitness value for OSAKA_STRING is better
         true,        // a smaller fitness value for LLVM_PASS is better
-        false        // a larger fitness value for BINARY_UP_TO_512 is better
+        false,       // a larger fitness value for BINARY_UP_TO_512 is better
+        true         // a smaller fitness value for GI_LLVM_PASS is better
     };
 
     return fitness_max_or_min[object_type];
@@ -178,8 +179,8 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
     }
     double fitness_values[tournament_size];
     uint32_t fitness_indices[tournament_size];
-    double max_fitness = 0;
-    uint32_t max_fitness_ind = 0;
+    double max_fitness = -1;
+    uint32_t max_fitness_ind = -1;
     bool repeat_index = false;
     uint32_t num_chosen = 0;
     osaka_object_typ type = OBJECT_TYPE(population[0]);
@@ -190,7 +191,7 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
 
     // choose indexes of contestants in the tournament first
     while (num_chosen < tournament_size) {
-        uint32_t index = (uint32_t) (pop_size * (rand() / (RAND_MAX + 1.0))); 
+        uint32_t index = (uint32_t) (pop_size * (rand() / (RAND_MAX + 1.0)));
         for (int curr = 0; curr < num_chosen; curr++) {
             if (fitness_indices[curr] == index) {
                 // repeated index, mark as such
@@ -204,34 +205,24 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
         }
         repeat_index = false;
     }
-    //printf("got here line 213, tournament_size=%d\n", tournament_size);
 
     for (uint32_t c = 0; c < tournament_size; c++) {
-        //printf("got here line 216, c=%d\n", c);
         fitness_values[c] = fitness_values_all[fitness_indices[c]];
         //printf("individual #%d is in the tournament, its fitness is: %lf\n", fitness_indices[c], fitness_values[c]);
         // update which is the current best out of those chosen thus far
-        //printf("got here line 214, fitness_values[c]=%f, max_fitness=%f\n", fitness_values[c], max_fitness);
 
-        bool cond = rand() > 0.5;  //ATTENTION: TEMP FIX
-        //bool cond = selection_compare_fitness(fitness_values[c], max_fitness, type);
+        //bool cond = rand() > 0.5;  //ATTENTION: TEMP FIX
+        bool cond = selection_compare_fitness(fitness_values[c], max_fitness, type);
         if (cond) {
             max_fitness = fitness_values[c];
             max_fitness_ind = fitness_indices[c];
         }
-        //printf("got here line 225, max_fitness_ind=%d\n", max_fitness_ind);
     }
-
-    //printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
-
 
     if (vis) {
-
         printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
-
     }
-    result = population[max_fitness_ind];
-    
+    //result = population[max_fitness_ind];
     return max_fitness_ind;
 
 }

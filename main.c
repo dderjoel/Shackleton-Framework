@@ -153,7 +153,7 @@ int main(uint32_t argc, char* argv[]) {
     // --------------------------------------------------------------------------------
 
     printf("\n------------------------------------------------------ Run of Project Shackleton complete ------------------------------------------------------\n\n");
-    printf("Shackleton runtime: %fsec\n", shackleton_time);  //added 6/4/4021
+    printf("Shackleton runtime: %fsec\n", shackleton_time);  //added 6/4/2021
 
     return 0;
 
@@ -167,7 +167,7 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
                 printf("\nYou have elected to view the options for the Shackleton tool. The information given with this prompt is a quick guide to the important"
                             " aspects of the tool and its possible inputs and flags\n\nHere are the possible flags that can be given to the tool and a short description for each:\n\n");
                 printf("\t-help\t\t\t: What got you to these statements! Offers information on inputs to the command line interface for this tool.\n");
-                printf("\t-parameters_file\t: Specifies that an input file at src/files/parameters.txt will be used to change some of the parameters for evolution.\n");
+                printf("\t-parameters_file\t: Specifies that an input file at src/files/params/parameters.txt will be used to change some of the parameters for evolution.\n");
                 printf("\t-test\t\t\t: Enables the testing script for Shackleton to be run. Will be run regardless of other parameters specified.\n");
                 printf("\t-llvm_optimize\t\t: Specifies that the LLVM integrated portion of the tool will be used to optimize LLVM using evolution.\n\t\t\t\t  This option automatically sets the object type needed to LLVM_PASS\n");
                 printf("\t-cache\t\t\t: Caches information for each evolutionary run into files. This means something different depending on the object type being used.\n\n");

@@ -1,0 +1,7 @@
+num_generations: 10
+num_population_size: 20
+percent_crossover: 30
+percent_mutation: 30
+percent_elite: 15
+tournament_size: 2
+visualization: false
