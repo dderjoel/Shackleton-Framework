@@ -3,8 +3,8 @@
  Name        : editor_tool/support/edit.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Main .h file for editing the existing files of Shackleton
                to add a new object type
  ============================================================================
@@ -36,10 +36,10 @@
  */
 
 #include "../../support/utility.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 /*
  * ROUTINES
@@ -74,7 +74,7 @@
  *
  */
 
-bool edit_osaka_h_read(char* name, char* content);
+bool edit_osaka_h_read(char *name, char *content);
 
 /*
  * NAME
@@ -84,7 +84,7 @@ bool edit_osaka_h_read(char* name, char* content);
  * DESCRIPTION
  *
  *  Takes the existing osaka.h file and creates a new
- *  version with all the existing information as well as 
+ *  version with all the existing information as well as
  *  a new item in the osaka_object_type enum object
  *
  * PARAMETERS
@@ -105,7 +105,7 @@ bool edit_osaka_h_read(char* name, char* content);
  *
  */
 
-void edit_osaka_h(char* name);
+void edit_osaka_h(char *name);
 
 /*
  * NAME
@@ -136,7 +136,7 @@ void edit_osaka_h(char* name);
  *
  */
 
-bool edit_modules_h_read(char* name, char* content);
+bool edit_modules_h_read(char *name, char *content);
 
 /*
  * NAME
@@ -167,7 +167,7 @@ bool edit_modules_h_read(char* name, char* content);
  *
  */
 
-void edit_modules_h(char* name);
+void edit_modules_h(char *name);
 
 /*
  * NAME
@@ -176,7 +176,7 @@ void edit_modules_h(char* name);
  *
  * DESCRIPTION
  *
- *  Creates the new item to be added to the 
+ *  Creates the new item to be added to the
  *  object_table_function array
  *
  * PARAMETERS
@@ -199,7 +199,7 @@ void edit_modules_h(char* name);
  *
  */
 
-void edit_modules_c_get_item(char* name, char* item, uint32_t index);
+void edit_modules_c_get_item(char *name, char *item, uint32_t index);
 
 /*
  * NAME
@@ -230,7 +230,7 @@ void edit_modules_c_get_item(char* name, char* item, uint32_t index);
  *
  */
 
-bool edit_modules_c_read(char* name, char* content);
+bool edit_modules_c_read(char *name, char *content);
 
 /*
  * NAME
@@ -245,7 +245,7 @@ bool edit_modules_c_read(char* name, char* content);
  *        that has the new enum number, enum string (autogen_<name>),
  *        createobject, deleteobject, printobect, writeobject,
  *        readobject, and copyobject methods
- *      - increase of MAXTYPE by 1 
+ *      - increase of MAXTYPE by 1
  *
  * PARAMETERS
  *
@@ -265,7 +265,7 @@ bool edit_modules_c_read(char* name, char* content);
  *
  */
 
-void edit_modules_c(char* name);
+void edit_modules_c(char *name);
 
 /*
  * NAME
@@ -296,7 +296,7 @@ void edit_modules_c(char* name);
  *
  */
 
-void edit_add_build_statement(char* name, char* stmt);
+void edit_add_build_statement(char *name, char *stmt);
 
 /*
  * NAME
@@ -327,7 +327,7 @@ void edit_add_build_statement(char* name, char* stmt);
  *
  */
 
-bool edit_makefile_read(char* name, char* content);
+bool edit_makefile_read(char *name, char *content);
 
 /*
  * NAME
@@ -360,7 +360,7 @@ bool edit_makefile_read(char* name, char* content);
  *
  */
 
-void edit_makefile(char* name);
+void edit_makefile(char *name);
 
 /*
  * NAME
@@ -391,7 +391,7 @@ void edit_makefile(char* name);
  *
  */
 
-void edit_fitness_new_h_method(char* name, char* content);
+void edit_fitness_new_h_method(char *name, char *content);
 
 /*
  * NAME
@@ -422,7 +422,7 @@ void edit_fitness_new_h_method(char* name, char* content);
  *
  */
 
-bool edit_fitness_h_read(char* name, char* content);
+bool edit_fitness_h_read(char *name, char *content);
 
 /*
  * NAME
@@ -453,7 +453,7 @@ bool edit_fitness_h_read(char* name, char* content);
  *
  */
 
-void edit_fitness_h(char* name);
+void edit_fitness_h(char *name);
 
 /*
  * NAME
@@ -484,7 +484,7 @@ void edit_fitness_h(char* name);
  *
  */
 
-bool edit_fitness_c_read(char* name, char* content);
+bool edit_fitness_c_read(char *name, char *content);
 
 /*
  * NAME
@@ -515,7 +515,7 @@ bool edit_fitness_c_read(char* name, char* content);
  *
  */
 
-void edit_fitness_c(char* name);
+void edit_fitness_c(char *name);
 
 /*
  * NAME
@@ -550,6 +550,6 @@ void edit_fitness_c(char* name);
  *
  */
 
-void edit_existing_files(char* name);
+void edit_existing_files(char *name);
 
 #endif /* EDITOR_TOOL_SUPPORT_EDIT_H_ */

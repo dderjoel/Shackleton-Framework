@@ -3,8 +3,8 @@
  Name        : editor_tool/support/create.h
  Author      : Hannah M. Peeler
  Version     : 1.0
- Copyright   : 
- 
+ Copyright   :
+
     Copyright 2019 Arm Inc., Andrew Sloss, Hannah Peeler
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Please refer to 
+    Please refer to
     https://github.com/ARM-software/Shackleton-Framework/blob/master/LICENSE.TXT
     for a full overview of the license covering this work.
-    
+
  Description : Main file for creating the new .c and .h files
                required for adding a new object type to Shackleton
  ============================================================================
@@ -36,10 +36,10 @@
  */
 
 #include "edit.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 /*
  * ROUTINES
@@ -74,7 +74,7 @@
  *
  */
 
-void header_module_h(char* name, char* header);
+void header_module_h(char *name, char *header);
 
 /*
  * NAME
@@ -105,7 +105,7 @@ void header_module_h(char* name, char* header);
  *
  */
 
-void header_module_c(char* name, char* c_header);
+void header_module_c(char *name, char *c_header);
 
 /*
  * NAME
@@ -136,9 +136,7 @@ void header_module_c(char* name, char* c_header);
  *
  */
 
-
-
-void create_includes_c(char* name, char* includes);
+void create_includes_c(char *name, char *includes);
 
 /*
  * NAME
@@ -169,7 +167,7 @@ void create_includes_c(char* name, char* includes);
  *
  */
 
-void create_includes_h(char* name, char* includes);
+void create_includes_h(char *name, char *includes);
 
 /*
  * NAME
@@ -201,7 +199,7 @@ void create_includes_h(char* name, char* includes);
  *
  */
 
-void create_new_structs(char* name, char* new_structs, cJSON* root);
+void create_new_structs(char *name, char *new_structs, cJSON *root);
 
 /*
  * NAME
@@ -233,7 +231,7 @@ void create_new_structs(char* name, char* new_structs, cJSON* root);
  *
  */
 
-void create_new_type(char* name, char* object, cJSON* root);
+void create_new_type(char *name, char *object, cJSON *root);
 
 /*
  * NAME
@@ -265,7 +263,7 @@ void create_new_type(char* name, char* object, cJSON* root);
  *
  */
 
-void create_macros(char* name, char* macros, cJSON* root);
+void create_macros(char *name, char *macros, cJSON *root);
 
 /*
  * NAME
@@ -295,7 +293,7 @@ void create_macros(char* name, char* macros, cJSON* root);
  *
  */
 
-void create_uid(char* name, char* methods);
+void create_uid(char *name, char *methods);
 
 /*
  * NAME
@@ -327,7 +325,7 @@ void create_uid(char* name, char* methods);
  *
  */
 
-void create_valid_value_methods(char* name, char* methods, cJSON* root);
+void create_valid_value_methods(char *name, char *methods, cJSON *root);
 
 /*
  * NAME
@@ -358,7 +356,7 @@ void create_valid_value_methods(char* name, char* methods, cJSON* root);
  *
  */
 
-void create_createobject(char* name, char* methods, cJSON* params_json);
+void create_createobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -391,7 +389,7 @@ void create_createobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_randomizeobject(char* name, char* methods, cJSON* params_json);
+void create_randomizeobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -422,7 +420,7 @@ void create_randomizeobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_printobject(char* name, char* methods, cJSON* params_json);
+void create_printobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -453,7 +451,7 @@ void create_printobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_deleteobject(char* name, char* methods, cJSON* params_json);
+void create_deleteobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -484,7 +482,7 @@ void create_deleteobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_writeobject(char* name, char* methods, cJSON* params_json);
+void create_writeobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -515,7 +513,7 @@ void create_writeobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_readobject(char* name, char* methods, cJSON* params_json);
+void create_readobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -546,7 +544,7 @@ void create_readobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_copyobject(char* name, char* methods, cJSON* params_json);
+void create_copyobject(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -578,7 +576,7 @@ void create_copyobject(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_methods_c(char* name, char* methods, cJSON* params_json);
+void create_methods_c(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -610,7 +608,7 @@ void create_methods_c(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_methods_end_h(char* name, char* methods, cJSON* params_json);
+void create_methods_end_h(char *name, char *methods, cJSON *params_json);
 
 /*
  * NAME
@@ -619,7 +617,7 @@ void create_methods_end_h(char* name, char* methods, cJSON* params_json);
  *
  * DESCRIPTION
  *
- *  This function creates the new .c file for 
+ *  This function creates the new .c file for
  *  a new object type
  *
  * PARAMETERS
@@ -641,7 +639,7 @@ void create_methods_end_h(char* name, char* methods, cJSON* params_json);
  *
  */
 
-void create_c_file(char* name, cJSON* params_json);
+void create_c_file(char *name, cJSON *params_json);
 
 /*
  * NAME
@@ -650,7 +648,7 @@ void create_c_file(char* name, cJSON* params_json);
  *
  * DESCRIPTION
  *
- *  This function creates the new .h file for 
+ *  This function creates the new .h file for
  *  a new object type
  *
  * PARAMETERS
@@ -672,7 +670,7 @@ void create_c_file(char* name, cJSON* params_json);
  *
  */
 
-void create_h_file(char* name, cJSON* params_json);
+void create_h_file(char *name, cJSON *params_json);
 
 /*
  * NAME
@@ -703,6 +701,6 @@ void create_h_file(char* name, cJSON* params_json);
  *
  */
 
-void create_new_module(char* name, char* params_json);
+void create_new_module(char *name, char *params_json);
 
 #endif /* EDITOR_TOOL_SUPPORT_CREATE_H_ */
