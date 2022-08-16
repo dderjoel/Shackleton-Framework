@@ -27,6 +27,7 @@
  ============================================================================
  */
 
+#include <stdbool.h>
 typedef enum { QUIET = 0, LOUD = 1 } osaka_test_typ;
 
 bool osaka_test_cycler(osaka_test_typ mode);
