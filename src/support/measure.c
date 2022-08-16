@@ -42,10 +42,9 @@ double run_with_measuresuite(int num_runs, bool fitness_with_var,
 
   double mean = sum / num_runs;
 
-  if (fitness_with_var) {
-    fitness += calc_var(all_runtime, mean, num_runs);
-  }
-  printf("measured fitness: %lf\n", fitness);
+  //if (fitness_with_var) {
+  //  fitness += calc_var(all_runtime, mean, num_runs);
+  //}
 
   return mean;
 }
