@@ -68,7 +68,7 @@ all: osaka ensure_directories
 
 osaka: shackleton
 shackleton: $(OBJS) $(LIB_MS)
-	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm -lassemblyline 
+	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm
 
 $(LIB_MS):
 	make -C ./MeasureSuite/ NO_AL=1 libmeasuresuite.a
