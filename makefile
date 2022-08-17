@@ -64,6 +64,9 @@ OBJS     := $(SRC_FILES:c=o)
 LIB_MS   := ./MeasureSuite/libmeasuresuite.a
 INCLUDES := -I src -I ./MeasureSuite/src/include
 
+#default function number
+FUN_NUM  ?= 0
+
 all: osaka ensure_directories
 
 osaka: shackleton
@@ -85,4 +88,7 @@ clean :
 
 run: shackleton
 	echo n | ./shackleton -test_file=mwe-fiat/main.c -source_file=fiat.txt -obj_type=6 -cache
+
+run_by_number: shackleton
+	echo n | ./shackleton -test_file=mwe-fiat/main.c -source_file=fiat.txt -obj_type=6 -cache -func_num=$(FUN_NUM)
 
