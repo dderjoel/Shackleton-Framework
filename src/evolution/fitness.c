@@ -888,8 +888,6 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
     track_fitness[i] = fitness; // Added 6/8/2021
 
-    track_fitness[i] = fitness; // Added 6/8/2021
-
     fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness, func_num);
   }
 }
