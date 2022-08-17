@@ -187,10 +187,10 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
                 printf("\t[2] num_population_size = %d\t\t-- The number of individuals in the population per generation\n", num_population_size);
                 printf("\t[3] percent_crossover = %d\t\t-- The percent chance that any one individual will have crossover applied to it\n", percent_crossover);
                 printf("\t[4] percent_mutation = %d\t\t-- The percent chance that any one individual will have mutation applied to it\n", percent_mutation);
-                printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);  //Added 6/14/2021
+                printf("\t[5] percent_elite = %d\t\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);  //Added 6/14/2021
                 printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
                 printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n", visualization ? "true" : "false");
-                printf("\t[8] function_number = %d\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+                printf("\t[8] function_number = %d\t\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
                 printf("These are all the options that are built into the command line interface for the Shackleton tool. If you have more questions about the inner"
                                         " workings of the tool and everything that goes into the implemention, please refer to the README documents contained in the github"
                                         " repository which can be found at: https://github.com/ARM-software/Shackleton-Framework. \n\n");
@@ -211,10 +211,10 @@ void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, ui
     printf("\t[2] num_population_size = %d\t\t-- The number of individuals in the population per generation\n", num_population_size);
     printf("\t[3] percent_crossover = %d\t\t-- The percent chance that any one individual will have crossover applied to it\n", percent_crossover);
     printf("\t[4] percent_mutation = %d\t\t-- The percent chance that any one individual will have mutation applied to it\n", percent_mutation);
-    printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);
+    printf("\t[5] percent_elite = %d\t\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);
     printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
-    printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n\n", visualization ? "true" : "false");
-    printf("\t[8] function_number = %d\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+    printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n", visualization ? "true" : "false");
+    printf("\t[8] function_number = %d\t\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
 
 }
 
@@ -252,7 +252,7 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
                 printf("\t[4] percent_mutation = %d\n", *percent_mutation);
                 printf("\t[5] percent_elite = %d\n", *percent_elite);
                 printf("\t[6] tournament_size = %d\n", *tournament_size);
-                printf("\t[7] visualization = %s\n\n", *visualization ? "true" : "false");
+                printf("\t[7] visualization = %s\n", *visualization ? "true" : "false");
                 printf("\t[8] function = %d\n\n", *func_num);
                 using_params_file = true;
             }
