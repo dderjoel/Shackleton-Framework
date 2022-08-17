@@ -84,5 +84,5 @@ clean :
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
 
 run: shackleton
-	./shackleton -llvm_optimize -test_file=mwe-fiat/main.c -source_file=fiat.txt
+	echo n | ./shackleton -test_file=mwe-fiat/main.c -source_file=fiat.txt -obj_type=6 -cache
 
