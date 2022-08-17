@@ -190,7 +190,7 @@ void print_help_msg(uint32_t argc, char* argv[], uint32_t num_generations, uint3
                 printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);  //Added 6/14/2021
                 printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
                 printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n", visualization ? "true" : "false");
-                printf("\t[8] function_number = %s\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+                printf("\t[8] function_number = %d\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
                 printf("These are all the options that are built into the command line interface for the Shackleton tool. If you have more questions about the inner"
                                         " workings of the tool and everything that goes into the implemention, please refer to the README documents contained in the github"
                                         " repository which can be found at: https://github.com/ARM-software/Shackleton-Framework. \n\n");
@@ -214,7 +214,7 @@ void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, ui
     printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);
     printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
     printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n\n", visualization ? "true" : "false");
-    printf("\t[8] function_number = %s\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+    printf("\t[8] function_number = %d\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
 
 }
 
@@ -253,7 +253,7 @@ void process_params(uint32_t argc, char* argv[], uint32_t *num_generations, uint
                 printf("\t[5] percent_elite = %d\n", *percent_elite);
                 printf("\t[6] tournament_size = %d\n", *tournament_size);
                 printf("\t[7] visualization = %s\n\n", *visualization ? "true" : "false");
-                printf("\t[8] function = %s\n\n", *func_num);
+                printf("\t[8] function = %d\n\n", *func_num);
                 using_params_file = true;
             }
         }
