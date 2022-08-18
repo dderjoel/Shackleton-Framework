@@ -95,5 +95,6 @@ run: shackleton ./src/files/params/fiat$(FUN_NUM).txt
 		-test_file=mwe-fiat/main.c \
 		-source_file=fiat.txt \
 		-obj_type=6 \
-		-cache
+		-cache \
+		-id fiat$(FUN_NUM)
 
