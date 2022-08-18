@@ -86,9 +86,14 @@ ensure_directories:
 clean :
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
 
-run: shackleton
-	echo n | ./shackleton -test_file=mwe-fiat/main.c -source_file=fiat.txt -obj_type=6 -cache
+./src/files/params/fiat$(FUN_NUM).txt:
+	cd ./src/files/params && ./fiat_gen.sh $(FUN_NUM)
 
-run_by_number: shackleton
-	echo n | ./shackleton -test_file=mwe-fiat/main.c -source_file=fiat.txt -obj_type=6 -cache -func_num=$(FUN_NUM)
+run: shackleton ./src/files/params/fiat$(FUN_NUM).txt
+	echo n | ./shackleton \
+		-parameters_file=fiat$(FUN_NUM).txt \
+		-test_file=mwe-fiat/main.c \
+		-source_file=fiat.txt \
+		-obj_type=6 \
+		-cache
 
