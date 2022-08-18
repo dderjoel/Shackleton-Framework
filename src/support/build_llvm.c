@@ -27,7 +27,7 @@ int build_commands(
     // <input>_linked.ll ---  clang  ---> <input>_shackleton.so
     printed = snprintf(build_command, build_command_len,
                        "llvm-as %s_linked.ll -o %s_shackleton.bc && "
-                       "clang %s_linked.ll -shared -fpic -fpie -o %s",
+                       "clang   %s_linked.ll -o %s -shared -fpic -fpie",
                        base_name, base_name, base_name, so_file);
     if (printed >= build_command_len) {
       return 11;
@@ -50,10 +50,10 @@ int build_commands(
     // <input>_opt_<level>.ll ---  clang  ---> <input>_shackleton.so
 
     printed = snprintf(build_command, build_command_len,
-                       "opt -%s %s_linked.ll -S -o %s_opt_%s.ll && "
-                       "llvm-as %s_opt_%s.ll    -o %s_shackleton.bc && "
-                       "clang   %s_opt_%s.ll -shared -fpic -fpie -o %s",
-                       level, base_name, base_name, level, base_name, level,
+                       "opt     %s_linked.ll -o %s_opt_%s.ll -S -%s && "
+                       "llvm-as %s_opt_%s.ll -o %s_shackleton.bc && "
+                       "clang   %s_opt_%s.ll -o %s -shared -fpic -fpie ",
+                       base_name, base_name, level, level, base_name, level,
                        base_name, base_name, level, so_file);
     if (printed >= build_command_len) {
       return 21;
@@ -96,10 +96,10 @@ int build_commands_sequence(
   // <input>_opt.ll ---  clang  ---> <input>_shackleton.so
 
   printed = snprintf(build_command, build_command_len,
-                     "opt %s %s_linked.ll -S -o %s_opt.ll && "
-                     "llvm-as %s_opt.ll      -o %s_shackleton.bc && "
-                     "clang   %s_opt.ll -shared -fpic -fpie -o %s",
-                     sequence, base_name, base_name, base_name, base_name,
+                     "opt     %s_linked.ll -o %s_opt.ll -S %s && "
+                     "llvm-as %s_opt.ll    -o %s_shackleton.bc && "
+                     "clang   %s_opt.ll    -o %s -shared -fpic -fpie ",
+                     base_name, base_name, sequence, base_name, base_name,
                      base_name, so_file);
   if (printed >= build_command_len) {
     return 21;
