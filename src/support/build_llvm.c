@@ -27,7 +27,8 @@ int build_commands(
     // <input>_linked.ll ---  clang  ---> <input>_shackleton.so
     printed = snprintf(build_command, build_command_len,
                        "llvm-as %s_linked.ll -o %s_shackleton.bc && "
-                       "clang   %s_linked.ll -o %s -shared -fpic -fpie",
+                       "clang   %s_linked.ll -o %s -shared -fpic -fpie "
+                       "-mtune=native -march=native",
                        base_name, base_name, base_name, so_file);
     if (printed >= build_command_len) {
       return 11;
@@ -52,7 +53,8 @@ int build_commands(
     printed = snprintf(build_command, build_command_len,
                        "opt     %s_linked.ll -o %s_opt_%s.ll -S -%s && "
                        "llvm-as %s_opt_%s.ll -o %s_shackleton.bc && "
-                       "clang   %s_opt_%s.ll -o %s -shared -fpic -fpie ",
+                       "clang   %s_opt_%s.ll -o %s -shared -fpic -fpie "
+                       "-mtune=native -march=native",
                        base_name, base_name, level, level, base_name, level,
                        base_name, base_name, level, so_file);
     if (printed >= build_command_len) {
@@ -98,7 +100,8 @@ int build_commands_sequence(
   printed = snprintf(build_command, build_command_len,
                      "opt     %s_linked.ll -o %s_opt.ll -S %s && "
                      "llvm-as %s_opt.ll    -o %s_shackleton.bc && "
-                     "clang   %s_opt.ll    -o %s -shared -fpic -fpie ",
+                     "clang   %s_opt.ll    -o %s -shared -fpic -fpie "
+                     "-mtune=native -march=native",
                      base_name, base_name, sequence, base_name, base_name,
                      base_name, so_file);
   if (printed >= build_command_len) {
