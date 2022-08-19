@@ -1,11 +1,4 @@
-10
+3
 mwe-fiat/helper.c
-mwe-fiat/fiat/curve25519_64.c
-mwe-fiat/fiat/p224_64.c
-mwe-fiat/fiat/p256_64.c
-mwe-fiat/fiat/p384_64.c
-mwe-fiat/fiat/p434_64.c
-mwe-fiat/fiat/p448_solinas_64.c
-mwe-fiat/fiat/p521_64.c
-mwe-fiat/fiat/poly1305_64.c
-mwe-fiat/fiat/secp256k1_64.c
+mwe-fiat/supercop/field.c
+mwe-fiat/supercop/base.c
