@@ -6,7 +6,13 @@ double run_with_measuresuite(int num_runs, bool fitness_with_var,
                              const char *so_file, double all_runtime[], int func_num) {
   measuresuite_t ms;
   const uint64_t bounds[] = {-1};
-  int init = ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, "function");
+  const size_t maxlen_function_symbol =
+      8 /*function*/ + 2 /*2 digits*/ + 1 /*\n*/;
+  char function_symbol[maxlen_function_symbol];
+  snprintf(function_symbol, maxlen_function_symbol, "function%d", func_num);
+
+  int init =
+      ms_measure_init(&ms, 10, 2, 1, 16, bounds, so_file, function_symbol);
   if (init == 1) {
     fprintf(stderr, "cannot initialize measuresuite. on file %s\n", so_file);
     ms_p_error(ms);

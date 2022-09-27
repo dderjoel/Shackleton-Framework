@@ -707,11 +707,6 @@ double fitness_llvm_pass(node_str *indiv, char *file, char **src_files,
   double fitness =
       run_with_measuresuite(num_runs, fitness_with_var, so_file, all_runtime, func_num);
 
-  for (size_t i = 0; i < num_runs; i++) {
-    printf("datapoint all_runtime[%lu]: %f\n", i, all_runtime[i]);
-  }
-  printf("fitness__llvmpass: %lf\n", fitness);
-
   return node_record_data(indiv_data, indiv, all_runtime, fitness, num_runs,
                           gen, fitness_with_var);
 }
@@ -890,8 +885,6 @@ void fitness_pre_cache_gi_llvm_pass(char *folder, char *test_file,
 
     double fitness =
         run_with_measuresuite(num_runs, fitness_with_var, so_file, NULL, func_num);
-
-    track_fitness[i] = fitness; // Added 6/8/2021
 
     track_fitness[i] = fitness; // Added 6/8/2021
 

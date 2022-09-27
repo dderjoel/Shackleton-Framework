@@ -213,8 +213,13 @@ void print_launch_msg(uint32_t num_generations, uint32_t num_population_size, ui
     printf("\t[4] percent_mutation = %d\t\t-- The percent chance that any one individual will have mutation applied to it\n", percent_mutation);
     printf("\t[5] percent_elite = %d\t\t-- The percentage of best individuals in the population to stay the same in the next generation\n", percent_elite);
     printf("\t[6] tournament_size = %d\t\t\t-- The number of individuals in each tournament for selection\n", tournament_size);
+<<<<<<< HEAD
     printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n", visualization ? "true" : "false");
     printf("\t[8] function_number = %s\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+=======
+    printf("\t[7] visualization = %s\t\t-- Whether or not visualization of the evolution process is enabled\n\n", visualization ? "true" : "false");
+    printf("\t[8] function_number = %d\t\t-- Which function are you optimizing? (for the cryptographic code optmization)\n\n", func_num);
+>>>>>>> 16b3f07e44d21c76e202008fff38cc8e02c19d67
 
 }
 
