@@ -4,7 +4,7 @@ pwd=$(dirname "${0}")
 # destination file
 cfile="${pwd}/llvm_pass_dflt.c"
 
-denylist="-loop-unswitch -prune-eh"
+denylist="-loop-unswitch -prune-eh -domtree -postdomtree -scalar-evolution -memdep -lazy-value-info -loops"
 
 (
   cat <<EOF
