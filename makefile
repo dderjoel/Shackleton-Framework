@@ -64,6 +64,9 @@ OBJS     := $(SRC_FILES:c=o)
 LIB_MS   := ./MeasureSuite/libmeasuresuite.a
 INCLUDES := -I src -I ./MeasureSuite/src/include
 
+# the local clang binaries will be in here's /bin
+LLVM_BUILD=./llvm-project/build
+
 #default function number
 FUN_NUM  ?= 0
 
@@ -84,7 +87,6 @@ ensure_directories:
 %.o: %.c makefile
 	cc -g $(INCLUDES) -c $< -o $@
 
-clang: LLVM_BUILD=./llvm-project/build
 clang:
 	mkdir -p $(LLVM_BUILD)
 	cd $(LLVM_BUILD) && cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -GNinja ../llvm
