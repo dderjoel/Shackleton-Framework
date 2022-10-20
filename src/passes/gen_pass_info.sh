@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+denylist="-loop-unswitch -prune-eh"
+
 (
   cat <<EOF
 #include <stdlib.h>
@@ -18,6 +20,11 @@ EOF
   while read -r optpass; do
     j=0
     while read -r -d' ' one_pass; do
+      # avoid switches from the denylist
+      for d in ${denylist}; do
+        [ "${d}" = "${one_pass}" ] && continue 2
+      done
+
       echo "  default_strings[$i][$j] = \"${one_pass}\";"
       ((j++))
     done < <(echo "${optpass}")
