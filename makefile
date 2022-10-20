@@ -65,7 +65,7 @@ LIB_MS   := ./MeasureSuite/libmeasuresuite.a
 INCLUDES := -I src -I ./MeasureSuite/src/include
 
 # the local clang binaries will be in here's /bin
-LLVM_BUILD=./llvm-project/build
+LLVM_BUILD=$(realpath ./llvm-project/build)
 
 #default function number
 FUN_NUM  ?= 0
@@ -87,10 +87,15 @@ ensure_directories:
 %.o: %.c makefile
 	cc -g $(INCLUDES) -c $< -o $@
 
+## to build the local clang
 clang:
 	mkdir -p $(LLVM_BUILD)
 	cd $(LLVM_BUILD) && cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -GNinja ../llvm
 	cd $(LLVM_BUILD) && ninja
+
+## to generate a new clang-optimizer list
+passes:
+	PATH=$(LLVM_BUILD)/bin/:$${PATH} ./src/passes/gen_pass_info.sh
 
 clean:
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
