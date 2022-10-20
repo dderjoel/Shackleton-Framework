@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+pwd=$(dirname $0)
+
+# destination file
+cfile="${pwd}/llvm_pass_dflt.c"
 
 denylist="-loop-unswitch -prune-eh"
 
@@ -53,11 +57,11 @@ $(for i in "${!lens[@]}"; do echo "  default_string_lengths[${i}] = ${lens[$i]};
 }
 EOF
 
-) >./llvm_pass_dflt.c
+) >"${cfile}"
 
-mapfile -t vals < <(sed -ne 's/.* = "\(.*\)";/\1/p' <./llvm_pass_dflt.c | sort -u)
+mapfile -t vals < <(sed -ne 's/.* = "\(.*\)";/\1/p' <"${cfile}" | sort -u)
 
-cat >>./llvm_pass_dflt.c <<EOF
+cat >>"${cfile}" <<EOF
 void llvm_pass_set_valid_values(object_llvm_pass_str* o) {
 
   int num_passes = ${#vals[@]};
