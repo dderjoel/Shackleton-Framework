@@ -79,6 +79,7 @@ $(LIB_MS):
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output
+	mkdir -p ./src/files/cache
 
 %.o: %.c makefile
 	cc -g $(INCLUDES) -c $< -o $@
