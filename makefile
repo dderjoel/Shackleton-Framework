@@ -65,7 +65,7 @@ LIB_MS   := ./MeasureSuite/libmeasuresuite.a
 INCLUDES := -I src -I ./MeasureSuite/src/include
 
 # the local clang binaries will be in here's /bin
-LLVM_BUILD=$(realpath ./llvm-project/build)
+LLVM_BUILD=./llvm-project/build
 
 #default function number
 FUN_NUM  ?= 0
@@ -95,7 +95,7 @@ clang:
 
 ## to generate a new clang-optimizer list
 passes:
-	PATH=$(LLVM_BUILD)/bin/:$${PATH} ./src/passes/gen_pass_info.sh
+	PATH=$(realpath $(LLVM_BUILD))/bin/:$${PATH} ./src/passes/gen_pass_info.sh
 
 clean:
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
@@ -104,7 +104,7 @@ clean:
 	cd ./src/files/params && ./fiat_gen.sh $(FUN_NUM)
 
 run: shackleton ./src/files/params/fiat$(FUN_NUM).txt
-	echo n | PATH=$(LLVM_BUILD)/bin/:$${PATH} ./shackleton \
+	echo n | PATH=$(realpath $(LLVM_BUILD))/bin/:$${PATH} ./shackleton \
 		-parameters_file=fiat$(FUN_NUM).txt \
 		-test_file=mwe-fiat/main.c \
 		-source_file=fiat.txt \
