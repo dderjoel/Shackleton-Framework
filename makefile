@@ -83,14 +83,20 @@ ensure_directories:
 %.o: %.c makefile
 	cc -g $(INCLUDES) -c $< -o $@
 
-clean :
+clang: LLVM_BUILD=./llvm-project/build
+clang:
+	mkdir -p $(LLVM_BUILD)
+	cd $(LLVM_BUILD) && cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -GNinja ../llvm
+	cd $(LLVM_BUILD) && ninja
+
+clean:
 	rm -rf $(OBJS) shackleton $(DIR)/bin/init
 
 ./src/files/params/fiat$(FUN_NUM).txt:
 	cd ./src/files/params && ./fiat_gen.sh $(FUN_NUM)
 
 run: shackleton ./src/files/params/fiat$(FUN_NUM).txt
-	echo n | ./shackleton \
+	echo n | PATH=$(LLVM_BUILD)/bin/:$${PATH} ./shackleton \
 		-parameters_file=fiat$(FUN_NUM).txt \
 		-test_file=mwe-fiat/main.c \
 		-source_file=fiat.txt \
