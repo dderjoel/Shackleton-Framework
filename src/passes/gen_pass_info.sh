@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pwd=$(dirname $0)
+pwd=$(dirname "${0}")
 
 # destination file
 cfile="${pwd}/llvm_pass_dflt.c"
