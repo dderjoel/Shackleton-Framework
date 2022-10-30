@@ -200,9 +200,13 @@ void node_log(char* indiv_info_dir, char* file, DataNode* d) {
 }
     
 void node_cache_llvm_pass(char* file_name, node_str* indiv, double fitness, int unique_id) {
-    char string[30000];
+    char string[300000];
     char fitness_num[100];
     char input_str[10000];
+
+    int len = 0;
+    node_str* indiv_cpy = osaka_copylist(indiv);
+    char* opt_seq_str = gen_seq_str(indiv_cpy, &len);
 
     strcpy(string, "");
     sprintf(string, "Description file for Individual (unique ID: %d)\n\nIndividual Size: %d\n\nBelow are the passes in this individual, in order:\n\n", unique_id, osaka_listlength(indiv));
@@ -216,6 +220,7 @@ void node_cache_llvm_pass(char* file_name, node_str* indiv, double fitness, int 
         osaka_describenode(desc, indiv);
         strcat(string, desc);
         strcat(string, "\n");
+        //printf("pass: %s\n", desc);
         indiv = NEXT(indiv);
     }
 
@@ -227,8 +232,6 @@ void node_cache_llvm_pass(char* file_name, node_str* indiv, double fitness, int 
     strcat(string, fitness_num);
     strcat(string, " sec\n\n");
 
-    int len = 0;
-    char* opt_seq_str = gen_seq_str(indiv, &len);
     strcat(string, opt_seq_str);
 
     char buffer[100];

@@ -37,10 +37,10 @@
 
 //char defaultO3[86][50] = {"-licm", "-jump-threading", "-memoryssa", "-early-cse-memssa", "-memdep", "-tbaa", "-bdce", "-instsimplify", "-loop-sink", "-strip-dead-prototypes", "-aa", "-argpromotion", "-callsite-splitting", "-aggressive-instcombine", "-scalar-evolution", "-transform-warning", "-phi-values", "-early-cse", "-block-freq", "-gvn", "-verify", "-globaldce", "-instcombine", "-correlated-propagation", "-prune-eh", "-postdomtree", "-mldst-motion", "-loop-unswitch", "-elim-avail-extern", "-ipsccp", "-slp-vectorizer", "-branch-prob", "-loop-unroll", "-basicaa", "-lower-expect", "-basiccg", "-loop-distribute", "-sccp", "-inline", "-functionattrs", "-lazy-branch-prob", "-adce", "-float2int", "-alignment-from-assumptions", "-inferattrs", "-profile-summary-info", "-lazy-value-info", "-rpo-functionattrs", "-globals-aa", "-constmerge", "-reassociate", "-libcalls-shrinkwrap", "-dse", "-loop-vectorize", "-domtree", "-mem2reg", "-opt-remark-emitter", "-loop-simplify", "-loop-idiom", "-pgo-memop-opt", "-lcssa-verification", "-called-value-propagation", "-demanded-bits", "-div-rem-pairs", "-forceattrs", "-globalopt", "-indvars", "-simplifycfg", "-tti", "-memcpyopt", "-loop-rotate", "-targetlibinfo", "-barrier", "-lcssa", "-loop-deletion", "-loop-load-elim", "-sroa", "-lazy-block-freq", "-ee-instrument", "-loops", "-assumption-cache-tracker", "-loop-accesses", "-deadargelim", "-scoped-noalias", "-speculative-execution", "-tailcallelim"};
 
-optseq* seq_from_default(char** org_seq, osaka_object_typ ot) {
+optseq* seq_from_default(char** org_seq, osaka_object_typ ot, int default_len) {
     struct optseq* seq = (optseq*) malloc(sizeof(optseq));
     struct linkedListNode *head = NULL;
-    int seq_len = 86;
+    int seq_len = default_len;
     int i;
     for (i = 0; i < seq_len; i++) {
         head = append(head, org_seq[i]);
@@ -57,6 +57,11 @@ char** get_default(int num_levels, int target_default) {
     return default_strings[target_default];
 }
 
+int get_default_length(int num_levels, int target_default) {
+    int* default_string_lengths = gi_llvm_default_level_string_lengths(num_levels);
+    return default_string_lengths[target_default];
+}
+
 char* seq_str_fitness(node_str* indiv) {
     int num_levels = 7;
     int target_default = 4;
@@ -67,41 +72,42 @@ char* seq_str_fitness(node_str* indiv) {
 }
 
 char* gen_seq_str(node_str* indiv, int* seq_length) {
-    int num_levels = 7;
-    int target_default = 4;
+    int num_levels = 7;      // O0, O1, O2, O3, Os, Oz
+    int target_default = 3;  // O3
     //visualization_print_individual_concise_details(indiv);
     char** default_str = get_default(num_levels, target_default);
-    optseq* seq = seq_from_default(default_str, indiv->objtype);
-    
+    int default_len = get_default_length(num_levels, target_default);
+    optseq* seq = seq_from_default(default_str, indiv->objtype, default_len);
+
     while (NEXT(indiv) != NULL){
         seq = mutate(seq, indiv);
         indiv = NEXT(indiv);
     }
 
     *seq_length = seq->length;
-    char* seq_str = malloc(2000);
+    char* seq_str = malloc(20000);
     strcpy(seq_str, "");
     linkedListNode* head = seq->seqList;
 
     //for (int i = 0; i < seq->length; i++) {
-    //int total = 0;
-    //int valid = 0;
+    int total = 0;
+    int valid = 0;
     while (head->next != NULL){
         char* pass_name = head->data;
         linkedListNode* temp = head;
         head = head->next;
         free(temp);
-        //printf("check result: %d\n", check_valid_pass(pass_name));
+        //printf("check result: %d - %s\n", check_valid_pass(pass_name), pass_name);
         if (check_valid_pass(pass_name)) {
             strcat(seq_str, pass_name);
             strcat(seq_str, " ");
             //printf("apppended\n");
-            //valid++;
+            valid++;
         }
-        //total++;
+        total++;
     }
     free(seq);
-    //printf("sequence: %s\nseq->length: %d, total: %d, valid: %d\n\n", seq_str, seq->length, total, valid);
+    //printf("AFTER sequence: %s\nseq->length: %d, total: %d, valid: %d\n\n", seq_str, seq->length, total, valid);
     return seq_str;
 }
 
@@ -223,80 +229,96 @@ linkedListNode* newLinkedListNode(char* pass) {
 }
 
 int get_num_valid() {
-    return 68;
+    return 82;
 }
 
 char** get_valid_passes() {
     int num_passes = get_num_valid();
+
     char** values = malloc(sizeof(char*) * num_passes);
-    values[0] = "-adce"; 
-    values[1] = "-always-inline";
-    values[2] = "-argpromotion";
-    values[3] = "-basicaa"; 
-    values[4] = "-break-crit-edges";
-    values[5] = "-codegenprepare"; 
-    values[6] = "-constmerge";
-    values[7] = "-constprop"; 
-    values[8] = "-da"; 
-    values[9] = "-dce"; 
-    values[10] = "-deadargelim";
-    values[11] = "-die"; 
-    values[12] = "-domfrontier";
-    values[13] = "-domtree"; 
-    values[14] = "-dse";
-    values[15] = "-functionattrs"; 
-    values[16] = "-globaldce"; 
-    values[17] = "-globalopt";
-    values[18] = "-gvn"; 
-    values[19] = "-indvars"; 
-    values[20] = "-inline";
-    values[21] = "-instcombine"; 
-    values[22] = "-instcount";
-    values[23] = "-intervals"; 
-    values[24] = "-ipconstprop"; 
-    values[25] = "-ipsccp"; 
-    values[26] = "-iv-users";
-    values[27] = "-jump-threading";
-    values[28] = "-lazy-value-info";
-    values[29] = "-lcssa"; 
-    values[30] = "-licm"; 
-    values[31] = "-simplifycfg"; 
-    values[32] = "-loop-deletion";
-    values[33] = "-loop-extract"; 
-    values[34] = "-loop-extract-single"; 
-    values[35] = "-loop-reduce";
-    values[36] = "-loop-rotate"; 
-    values[37] = "-loop-simplify"; 
-    values[38] = "-loop-unroll";
-    values[39] = "-loop-unswitch"; 
-    values[40] = "-loops"; 
-    values[41] = "-loweratomic";
-    values[42] = "-lowerinvoke"; 
-    values[43] = "-lowerswitch";
-    values[44] = "-mem2reg";
-    values[45] = "-memcpyopt";
-    values[46] = "-memdep";  
-    values[47] = "-mergefunc";
-    values[48] = "-mergereturn";
-    values[49] = "-module-debuginfo"; 
-    values[50] = "-partial-inliner"; 
-    values[51] = "-postdomtree"; 
-    values[52] = "-prune-eh";
-    values[53] = "-reassociate";
-    values[54] = "-reg2mem"; 
-    values[55] = "-regions";
-    values[56] = "-scalar-evolution"; 
-    values[57] = "-sccp";
-    values[58] = "-scev-aa"; 
-    values[59] = "-simplifycfg"; 
-    values[60] = "-sink"; 
-    values[61] = "-sroa"; 
-    values[62] = "-strip";
-    values[63] = "-strip-dead-debug-info"; 
-    values[64] = "-strip-dead-prototypes"; 
-    values[65] = "-strip-debug-declare";
-    values[66] = "-strip-nondebug"; 
-    values[67] = "-tailcallelim";
+
+    values[0] = "-aa";
+    values[1] = "-adce";
+    values[2] = "-aggressive-instcombine";
+    values[3] = "-alignment-from-assumptions";
+    values[4] = "-always-inline";
+    values[5] = "-annotation2metadata";
+    values[6] = "-annotation-remarks";
+    values[7] = "-assumption-cache-tracker";
+    values[8] = "-barrier";
+    values[9] = "-basic-aa";
+    values[10] = "-basiccg";
+    values[11] = "-bdce";
+    values[12] = "-block-freq";
+    values[13] = "-branch-prob";
+    values[14] = "-called-value-propagation";
+    values[15] = "-callsite-splitting";
+    values[16] = "-constmerge";
+    values[17] = "-correlated-propagation";
+    values[18] = "-deadargelim";
+    values[19] = "-demanded-bits";
+    values[20] = "-div-rem-pairs";
+    values[21] = "-dse";
+    values[22] = "-early-cse-memssa";
+    values[23] = "-elim-avail-extern";
+    values[24] = "-float2int";
+    values[25] = "-forceattrs";
+    values[26] = "-function-attrs";
+    values[27] = "-globaldce";
+    values[28] = "-globalopt";
+    values[29] = "-globals-aa";
+    values[30] = "-gvn";
+    values[31] = "-indvars";
+    values[32] = "-inferattrs";
+    values[33] = "-inject-tli-mappings";
+    values[34] = "-inline";
+    values[35] = "-instcombine";
+    values[36] = "-instsimplify";
+    values[37] = "-ipsccp";
+    values[38] = "-jump-threading";
+    values[39] = "-lazy-block-freq";
+    values[40] = "-lazy-branch-prob";
+    values[41] = "-lcssa";
+    values[42] = "-lcssa-verification";
+    values[43] = "-libcalls-shrinkwrap";
+    values[44] = "-licm";
+    values[45] = "-loop-accesses";
+    values[46] = "-loop-deletion";
+    values[47] = "-loop-distribute";
+    values[48] = "-loop-idiom";
+    values[49] = "-loop-instsimplify";
+    values[50] = "-loop-load-elim";
+    values[51] = "-loop-rotate";
+    values[52] = "-loop-simplify";
+    values[53] = "-loop-simplifycfg";
+    values[54] = "-loop-sink";
+    values[55] = "-loop-unroll";
+    values[56] = "-loop-vectorize";
+    values[57] = "-lower-constant-intrinsics";
+    values[58] = "-mem2reg";
+    values[59] = "-memcpyopt";
+    values[60] = "-memoryssa";
+    values[61] = "-mldst-motion";
+    values[62] = "-openmp-opt-cgscc";
+    values[63] = "-opt-remark-emitter";
+    values[64] = "-phi-values";
+    values[65] = "-profile-summary-info";
+    values[66] = "-reassociate";
+    values[67] = "-rpo-function-attrs";
+    values[68] = "-sccp";
+    values[69] = "-scoped-noalias-aa";
+    values[70] = "-simple-loop-unswitch";
+    values[71] = "-simplifycfg";
+    values[72] = "-slp-vectorizer";
+    values[73] = "-speculative-execution";
+    values[74] = "-sroa";
+    values[75] = "-strip-dead-prototypes";
+    values[76] = "-tailcallelim";
+    values[77] = "-targetlibinfo";
+    values[78] = "-tbaa";
+    values[79] = "-transform-warning";
+    values[80] = "-tti";
+    values[81] = "-vector-combine";
     return values;
 }
 

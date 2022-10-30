@@ -26,7 +26,8 @@ typedef struct optseq {
 
 char* seq_str_fitness(node_str* indiv);
 char* gen_seq_str(node_str* indiv, int* seq_length);
-optseq* seq_from_default(char* org_seq[50], osaka_object_typ ot);
+optseq* seq_from_default(char** org_seq, osaka_object_typ ot, int default_len);
+int get_default_length(int num_levels, int target_default);
 optseq* mutate(optseq* seq, node_str* indiv);
 optseq* insert(optseq* seq, node_str* patch);
 optseq* replace(optseq* seq, node_str* patch);
