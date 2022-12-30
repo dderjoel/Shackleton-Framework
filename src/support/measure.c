@@ -15,7 +15,6 @@ double run_with_measuresuite(int num_runs, bool fitness_with_var,
   const int arg_width = 10;
   const int num_arg_in = 2;
   const int num_arg_out = 1;
-  const int chunk_size = 16;
 
   int init = ms_initialize(&ms, arg_width, num_arg_in, num_arg_out);
 
