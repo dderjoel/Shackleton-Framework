@@ -5,6 +5,7 @@ vgcore.*
 .vscode/
 
 .cache
+.gdb_history
 compile_commands.json
 
 # outputs (mostly csv files)
