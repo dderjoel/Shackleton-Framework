@@ -78,7 +78,7 @@ shackleton: $(OBJS) $(LIB_MS)
 	$(CC) -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c  -ldl -lm 
 
 $(LIB_MS):
-	make -C ./MeasureSuite/lib -B libmeasuresuite.a
+	make AL=0 -C ./MeasureSuite/lib -B libmeasuresuite.a
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output
@@ -98,7 +98,7 @@ passes:
 	PATH=$(realpath $(LLVM_BUILD))/bin/:$${PATH} ./src/passes/gen_pass_info.sh
 
 clean:
-	rm -rf $(OBJS) shackleton $(DIR)/bin/init
+	rm -rf $(OBJS) shackleton $(DIR)/bin/init $(LIB_MS)
 
 ./src/files/params/fiat$(FUN_NUM).txt:
 	cd ./src/files/params && ./fiat_gen.sh $(FUN_NUM)
