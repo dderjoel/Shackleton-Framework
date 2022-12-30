@@ -61,8 +61,8 @@ SRC_FILES := \
 	$(SRCDIR)/passes/llvm_pass_dflt.c
                  
 OBJS     := $(SRC_FILES:c=o)
-LIB_MS   := ./MeasureSuite/libmeasuresuite.a
-INCLUDES := -I src -I ./MeasureSuite/src/include
+LIB_MS   := ./MeasureSuite/lib/libmeasuresuite.a
+INCLUDES := -I src -I ./MeasureSuite/lib/src/include
 
 # the local clang binaries will be in here's /bin
 LLVM_BUILD=./llvm-project/build
@@ -75,10 +75,10 @@ all: osaka ensure_directories
 osaka: shackleton
 
 shackleton: $(OBJS) $(LIB_MS)
-	cc -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c -L ./MeasureSuite -l:libmeasuresuite.a -ldl -lm 
+	$(CC) -g $(INCLUDES) -o ${@} $(^) $(DIR)/main.c  -ldl -lm 
 
 $(LIB_MS):
-	make -C ./MeasureSuite/ NO_AL=1 libmeasuresuite.a -B
+	make -C ./MeasureSuite/lib -B libmeasuresuite.a
 
 ensure_directories:
 	mkdir -p ./src/files/llvm/junk_output
@@ -103,7 +103,7 @@ clean:
 ./src/files/params/fiat$(FUN_NUM).txt:
 	cd ./src/files/params && ./fiat_gen.sh $(FUN_NUM)
 
-run: shackleton ./src/files/params/fiat$(FUN_NUM).txt
+run: ensure_directories shackleton ./src/files/params/fiat$(FUN_NUM).txt
 	echo n | PATH=$(realpath $(LLVM_BUILD))/bin/:$${PATH} ./shackleton \
 		-parameters_file=fiat$(FUN_NUM).txt \
 		-test_file=mwe-fiat/main.c \
