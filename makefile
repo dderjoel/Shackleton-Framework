@@ -85,13 +85,13 @@ ensure_directories:
 	mkdir -p ./src/files/cache
 
 %.o: %.c makefile
-	cc -g $(INCLUDES) -c $< -o $@
+	$(CC) -g $(INCLUDES) -c $< -o $@
 
 ## to build the local clang
 clang:
 	mkdir -p $(LLVM_BUILD)
-	cd $(LLVM_BUILD) && cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -GNinja ../llvm
-	cd $(LLVM_BUILD) && ninja
+	cd $(LLVM_BUILD) && CC=$(CC) cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -GNinja ../llvm
+	cd $(LLVM_BUILD) && CC=$(CC) ninja
 
 ## to generate a new clang-optimizer list
 passes:
